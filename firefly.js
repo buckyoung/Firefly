@@ -1,16 +1,28 @@
+// Firefly.proptype = {
+//     INVERSE_SIZE: 6,
+//     INVERSE_SPEED: 100,
+//     HEIGHT: 0,
+//     WIDTH: 0,
+//     CURRENT_WORLD: 0,
+//     NEXT_WORLD: 0,
+//     NEXT_CTX: 0
+// };
+
 // Sandbox Module JS Pattern from Stefanov, clarified here: http://stackoverflow.com/a/16224248
 function Firefly() {
     var args = Array.prototype.slice.call(arguments); 
     var callback = args.pop(); //The last argument is the callback
-    var requiredModules = args;  //The remaining arguments are the required modules
+    var requiredModules = (args[0] && typeof args[0] === "string") ? args : args[0];  //The remaining arguments are the required modules -- support single array or multiple strings
+
+    console.log(this);
 
     // Support simplified calling of this sandbox (automatically get modules)
-    if (requiredModules.length === 0) { 
-        return new Firefly('returnNumbers', 'returnLetters', callback);
+    if (!(this instanceof Firefly) || requiredModules.length === 0) { 
+        return new Firefly(['world', 'returnLetters'], callback);
     }
 
     //For each of the modules in 'requiredModules', add the module's methods to 'this'
-    for (var i=0; i < requiredModules.length; i++) {
+    for (var i = 0; i < requiredModules.length; i++) {
         Firefly.modules[requiredModules[i]](this);
     }
 
@@ -19,7 +31,7 @@ function Firefly() {
 
 Firefly.modules = {};
 
-Firefly.modules.returnNumbers = function(FIREFLY) {
+Firefly.modules.world = function(FIREFLY) {
     FIREFLY.return100 = function() {return 100;};
 };
 
