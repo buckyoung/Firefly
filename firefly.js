@@ -21,34 +21,92 @@ Firefly.modules.cell = function(FF) {
     // Public Class
     FF.Cell = Cell;
 
-    function Cell(state, location) {
-        var self = this; 
+    // Prototypical Methods
+    Cell.prototype.mooreNeighbors = mooreNeighbors;
+    Cell.prototype.neumannNeighbors = neumannNeighbors;
 
-        self.state = state; // NOTE: you can access these properties directly! i should have a getter/setter only
-        self.location = location; // CAN MAKE CONSTANT???
+    /**
+     * @public Cell Class Constructor
+     * @param {String} initState Initial cell type
+     * @param {Integer} x Horizontal location in world
+     * @param {Integer} y Vertical location in world
+     */
+    function Cell(initState, x, y) {
+        var state = initState;
+        var position = {
+            x: x,
+            y: y
+        };
+
+        // Public Methods
+        this.setState = setState;
+        this.getState = getState;
+        this.getPosition = getPosition;
+
+        /**
+         * @public Set cell state
+         * @param {String} newState Cell state
+         */
+        function setState(newState) {
+            state = newState;
+        }
+
+        /**
+         * @public Return cell state
+         * @return {String} cell state
+         */
+        function getState() {
+            return state;
+        }
+
+        /**
+         * @public Return cell position
+         * @return {String} cell position
+         */
+        function getPosition() {
+            return Firefly.util.extendDeep(position);
+        }
     }
 
-    Cell.prototype.changeState = function(state) {
-        var self = this; 
-
-        self.state = state;
-    }
-
-    Cell.prototype.mooreNeighbors = function(targetState) {
-        var self = this;
-
+    /**
+     * @public Return count of Moore Neighbors of type targetState
+     * @param  {String} targetState Cell type to count
+     * @return {Integer} count of Moore Neighbors
+     */
+    function mooreNeighbors(targetState) {
         var result = 0;
-        var x = self.location.x;
-        var y = self.location.y;
+        var x = this.getPosition().x;
+        var y = this.getPosition().y;
+        var world = Firefly.CURRENT_WORLD;
 
-        if ( Firefly.CURRENT_WORLD[x-1][y-1].state === targetState ) { result++; }
-        if ( Firefly.CURRENT_WORLD[x  ][y-1].state === targetState ) { result++; }
-        if ( Firefly.CURRENT_WORLD[x+1][y-1].state === targetState ) { result++; }
-        if ( Firefly.CURRENT_WORLD[x-1][y  ].state === targetState ) { result++; }
-        if ( Firefly.CURRENT_WORLD[x+1][y  ].state === targetState ) { result++; }
-        if ( Firefly.CURRENT_WORLD[x-1][y+1].state === targetState ) { result++; }
-        if ( Firefly.CURRENT_WORLD[x  ][y+1].state === targetState ) { result++; }
-        if ( Firefly.CURRENT_WORLD[x+1][y+1].state === targetState ) { result++; }
+        if ( world[x  ][y-1].getState() === targetState ) { result++; }
+        if ( world[x-1][y  ].getState() === targetState ) { result++; }
+        if ( world[x+1][y  ].getState() === targetState ) { result++; }
+        if ( world[x  ][y+1].getState() === targetState ) { result++; }
+
+        if ( world[x-1][y-1].getState() === targetState ) { result++; }
+        if ( world[x+1][y-1].getState() === targetState ) { result++; }
+        if ( world[x-1][y+1].getState() === targetState ) { result++; }
+        if ( world[x+1][y+1].getState() === targetState ) { result++; }
+
+        return result;
+    }
+
+    /**
+     * @public Return count of von Neumann Neighbors of type targetState
+     * @param  {String} targetState Cell type to count
+     * @return {Integer} count of von Neumann Neighbors
+     */
+    function neumannNeighbors(targetState) {
+        var result = 0;
+        var x = this.getPosition().x;
+        var y = this.getPosition().y;
+        var world = Firefly.CURRENT_WORLD;
+
+        if ( world[x  ][y-1].getState() === targetState ) { result++; }
+        if ( world[x-1][y  ].getState() === targetState ) { result++; }
+        if ( world[x+1][y  ].getState() === targetState ) { result++; }
+        if ( world[x  ][y+1].getState() === targetState ) { result++; }
 
         return result;
     }
@@ -64,8 +122,6 @@ Firefly.modules.world = function(FF) {
     FF.initialize = initialize;
 
     // Private Variables
-    var INVERSE_SIZE = Firefly.params.INVERSE_SIZE;
-    var INVERSE_SPEED = Firefly.params.INVERSE_SPEED;
     var NEXT_WORLD;
     var NEXT_CTX;
 
@@ -92,14 +148,13 @@ Firefly.modules.world = function(FF) {
         // Initialize world
         var world_1 = Firefly.util.create2dArray(Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
         var world_2 = Firefly.util.create2dArray(Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
+        
         initWorld(world_1, Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
         initWorld(world_2, Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
 
         // Start the engine
         swapBuffer(true, false, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2);
-    }
-
-    
+    }    
 
     /**
      * The double-buffer engine. Will swap visibility between each buffer at time INVERSE_SPEED
@@ -124,7 +179,7 @@ Firefly.modules.world = function(FF) {
             NEXT_WORLD = world_1;
             NEXT_CTX = ctx_1;
 
-            prepareNext();
+            prepareNextStep();
 
             canvas_1.className = "visible";
             canvas_2.className = "hidden";
@@ -133,7 +188,7 @@ Firefly.modules.world = function(FF) {
             NEXT_WORLD = world_2;
             NEXT_CTX = ctx_2;
 
-            prepareNext();
+            prepareNextStep();
 
             canvas_1.className = "hidden";
             canvas_2.className = "visible";
@@ -145,13 +200,13 @@ Firefly.modules.world = function(FF) {
 
         window.setTimeout(function() {
             swapBuffer(visible_1, visible_2, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2);
-        }, INVERSE_SPEED);
+        }, Firefly.params.INVERSE_SPEED);
     }
 
     /**
      * Populate and draw the next step in buffer
      */
-    function prepareNext() {
+    function prepareNextStep() {
         // Clear next 
         NEXT_CTX.clearRect(0, 0, Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
 
@@ -165,22 +220,16 @@ Firefly.modules.world = function(FF) {
                 nextCell = NEXT_WORLD[i][j];
 
                 // Process next state
-                Firefly.getStates()[currentCell.state].processor(currentCell, nextCell);
+                Firefly.getStates()[currentCell.getState()].processor(currentCell, nextCell);
 
                 // Draw next 
-                NEXT_CTX.fillStyle = Firefly.getStates()[nextCell.state].color;
+                NEXT_CTX.fillStyle = Firefly.getStates()[nextCell.getState()].color;
                 NEXT_CTX.fillRect(i, j, 1, 1); // putImageData // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Pixel_manipulation_with_canvas
             }
         }
     }
 
-
-    //ctx.fillStyle = cell.color;
-    // ctx.fillRect (i, j, 1, 1);
-
-    // TODO BUCK: I NEED A DOUBLE BUFFER WORLD? CELL I,J IS DIFFERERNT THAN CELL.LOCATION.X, Y... WHAT DOES THIS MEAN
-
-    // I COULD JUST REINIT UPON PAGE RESIZE - this is probably a good solution
+    // TODO BUCK I COULD JUST REINIT UPON PAGE RESIZE - this is probably a good solution
 };
 
 
@@ -216,7 +265,7 @@ Firefly.modules.state = function(FF) {
      * @return {Object} states internal object
      */
     function getStates() {
-        return states;
+        return Firefly.util.extendDeep(states);
     }
 };
 
@@ -254,15 +303,36 @@ Firefly.util = {
             var args = Array.prototype.slice.call(arguments, 1);
             while(i--) arr[length-1 - i] = Firefly.util.create2dArray.apply(this, args);
         }
+
         return arr;
     },
     setDimensions: function(canvas_1, canvas_2) {
-        console.log(this);
         Firefly.CANVAS_WIDTH = Math.floor(window.innerWidth/Firefly.params.INVERSE_SIZE);
         Firefly.CANVAS_HEIGHT = Math.floor(window.innerHeight/Firefly.params.INVERSE_SIZE);
         canvas_1.width = Firefly.CANVAS_WIDTH;
         canvas_1.height = Firefly.CANVAS_HEIGHT;
         canvas_2.width = Firefly.CANVAS_WIDTH;
         canvas_2.height = Firefly.CANVAS_HEIGHT;
+    }, 
+    extendDeep: function(parent, child) {
+        // Stefanov p. 134
+        var i;
+        var toStr = Object.prototype.toString;
+        var astr = "[object Array]";
+
+        child = child || {};
+
+        for (i in parent) {
+            if (parent.hasOwnProperty(i)) {
+                if (typeof parent[i] === 'object') {
+                    child[i] = (toStr.call(parent[i]) === astr) ? [] : {};
+                    Firefly.util.extendDeep(parent[i], child[i]);
+                } else {
+                    child[i] = parent[i];
+                }
+            }
+        }
+
+        return child;
     }
 };

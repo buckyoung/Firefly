@@ -3,7 +3,7 @@ function initFirst() {
         FF.registerState('alive', [200, 0, 0], processAlive);
         FF.registerState('dead', [240, 240, 250], processDead);
 
-        FF.initialize(initializeWorld(FF));        
+        FF.initialize(initializeWorld(FF));
     });
 };
 
@@ -11,12 +11,12 @@ function processAlive(currentCell, nextCell) {
     var aliveNeighborCount = currentCell.mooreNeighbors('alive');
 
     if (aliveNeighborCount < 2 || aliveNeighborCount > 3) {
-        nextCell.state = 'dead';
+        nextCell.setState('dead');
         return;
     }
 
     if (aliveNeighborCount === 2 || aliveNeighborCount === 3) {
-        nextCell.state = 'alive';
+        nextCell.setState('alive');
         return;
     }
 }
@@ -25,10 +25,10 @@ function processDead(currentCell, nextCell) {
     var aliveNeighborCount = currentCell.mooreNeighbors('alive');
 
     if (aliveNeighborCount === 3) {
-        nextCell.state = 'alive';
+        nextCell.setState('alive');
         return;
     } else {
-        nextCell.state = 'dead';
+        nextCell.setState('dead');
         return;
     }
 }
@@ -39,7 +39,7 @@ function initializeWorld(FF) {
             for (var j = 0; j < height; j++) {
                 var state = (Math.random() > .4 ? 'dead' : 'alive');
                 
-                world[i][j] = new FF.Cell(state, { x: i, y: j }); 
+                world[i][j] = new FF.Cell(state, i, j); 
             }
         }
     };
