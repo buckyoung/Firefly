@@ -1,4 +1,5 @@
-Firefly(function(ffly) {
-    console.log(ffly.return100());
-    console.log(ffly.returnABC());
-});
+function initFirst() {
+    Firefly(function(MYAPP) {
+        MYAPP.init();
+    });
+};
