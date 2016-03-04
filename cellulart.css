@@ -1,0 +1,24 @@
+* { 
+    margin: 0; 
+    padding: 0;
+}
+
+body, html { 
+    height: 100%; 
+    width: 100%;
+}
+
+canvas {
+    display: block;
+    height: 100%;
+    position: absolute;
+    width: 100%;
+}
+
+.visible {
+    visibility: visible;
+}
+
+.hidden {
+    visibility: hidden;
+}
