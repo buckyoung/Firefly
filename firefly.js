@@ -8,6 +8,26 @@ Firefly.params = {
 
 
 /***************************
+ * Internal utilites
+ */
+Firefly.util = {
+    getStates: function() {
+        return Firefly.getStates();
+    },
+    create2dArray: function (length) {
+        var arr = new Array(length || 0)
+        var i = length;
+
+        if (arguments.length > 1) {
+            var args = Array.prototype.slice.call(arguments, 1);
+            while(i--) arr[length-1 - i] = Firefly.util.create2dArray.apply(this, args);
+        }
+        return arr;
+    }
+};
+
+
+/***************************
  * Modules
  */
 Firefly.modules = {};
@@ -37,40 +57,7 @@ Firefly.modules.world = function(FIREFLY) {
     ///
     ///
     /// THIS LIVES IN ANOTHER FILE
-    var STATES = {
-        alive: {
-            color: 'rgb(200,0,0)',
-            processor: function(currentCell, nextCell) {
-                var aliveNeighborCount = currentCell.mooreNeighbors('alive');
-
-                if (aliveNeighborCount < 2 || aliveNeighborCount > 3) {
-                    nextCell.state = 'dead';
-                    return;
-                }
-
-                if (aliveNeighborCount === 2 || aliveNeighborCount === 3) {
-                    nextCell.state = 'alive';
-                    return;
-                }
-            },
-            state: 'alive'
-        },
-        dead: {
-            color: 'rgb(255,255,255)',
-            processor: function(currentCell, nextCell) {
-                var aliveNeighborCount = currentCell.mooreNeighbors('alive');
-
-                if (aliveNeighborCount === 3) {
-                    nextCell.state = 'alive';
-                    return;
-                } else {
-                    nextCell.state = 'dead';
-                    return;
-                }
-            },
-            state: 'dead'
-        }
-    };
+    
     /// THEY ARE REGISTERED
     /// 
     /// 
@@ -219,10 +206,10 @@ Firefly.modules.world = function(FIREFLY) {
                 nextCell = NEXT_WORLD[i][j];
 
                 // Process next state
-                STATES[ currentCell.state ].processor(currentCell, nextCell);
+                Firefly.util.getStates()[currentCell.state].processor(currentCell, nextCell);
 
                 // Draw next 
-                NEXT_CTX.fillStyle = STATES[nextCell.state].color;
+                NEXT_CTX.fillStyle = Firefly.util.getStates()[nextCell.state].color;
                 NEXT_CTX.fillRect(i, j, 1, 1); // putImageData // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Pixel_manipulation_with_canvas
             }
         }
@@ -239,10 +226,39 @@ Firefly.modules.world = function(FIREFLY) {
 
 
 /***************************
- * Cell module
+ * state module
  */
-Firefly.modules.cell = function(FIREFLY) {
-    
+Firefly.modules.state = function(FF) {
+    // Private Variables
+    var states = {};
+
+    // Public Methods
+    FF.registerState = registerState;
+
+    // Protected Methods
+    Firefly.getStates = getStates;
+
+    /**
+     * @public Register a cell type
+     * @param {String} name State name
+     * @param {Array} color Array in RGB format, example: [255, 0, 128]
+     * @param {Function} processor Rules to process every step
+     */
+    function registerState(name, color, processor) {
+        states[name] = {
+            color: 'rgb(' + color.toString() + ')',
+            processor: processor,
+            state: name
+        };
+    }
+
+    /**
+     * @protected Return the states object
+     * @return {Object} states internal object
+     */
+    function getStates() {
+        return states;
+    }
 };
 
 
@@ -257,7 +273,7 @@ function Firefly() {
 
     // Support simplified calling of this sandbox (automatically get modules)
     if (!(this instanceof Firefly) || requiredModules.length === 0) { 
-        return new Firefly(['cell', 'world'], callback);
+        return new Firefly(['state', 'world'], callback);
     }
 
     //For each of the modules in 'requiredModules', add the module's methods to 'this'
@@ -267,20 +283,3 @@ function Firefly() {
 
     callback(this);
 }
-
-
-/***************************
- * Internal utilites
- */
-Firefly.util = {
-    create2dArray: function (length) {
-        var arr = new Array(length || 0)
-        var i = length;
-
-        if (arguments.length > 1) {
-            var args = Array.prototype.slice.call(arguments, 1);
-            while(i--) arr[length-1 - i] = Firefly.util.create2dArray.apply(this, args);
-        }
-        return arr;
-    }
-};
