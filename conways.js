@@ -2,7 +2,8 @@ function initFirst() {
     Firefly(function(FF) {
         FF.registerState('alive', [200, 0, 0], processAlive);
         FF.registerState('dead', [240, 240, 250], processDead);
-        FF.init();
+
+        FF.initialize(initializeWorld(FF));        
     });
 };
 
@@ -30,4 +31,16 @@ function processDead(currentCell, nextCell) {
         nextCell.state = 'dead';
         return;
     }
+}
+
+function initializeWorld(FF) {
+    return function(world, width, height) {
+        for (var i = 0; i < width; i++) {
+            for (var j = 0; j < height; j++) {
+                var state = (Math.random() > .4 ? 'dead' : 'alive');
+                
+                world[i][j] = new FF.Cell(state, { x: i, y: j }); 
+            }
+        }
+    };
 }
