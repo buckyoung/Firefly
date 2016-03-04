@@ -1,3 +1,39 @@
+// Sandbox Module JS Pattern from Stefanov, clarified here: http://stackoverflow.com/a/16224248
+function Firefly() {
+    var args = Array.prototype.slice.call(arguments); 
+    var callback = args.pop(); //The last argument is the callback
+    var requiredModules = args;  //The remaining arguments are the required modules
+
+    // Support simplified calling of this sandbox (automatically get modules)
+    if (requiredModules.length === 0) { 
+        return new Firefly('returnNumbers', 'returnLetters', callback);
+    }
+
+    //For each of the modules in 'requiredModules', add the module's methods to 'this'
+    for (var i=0; i < requiredModules.length; i++) {
+        Firefly.modules[requiredModules[i]](this);
+    }
+
+    callback(this);
+}
+
+Firefly.modules = {};
+
+Firefly.modules.returnNumbers = function(FIREFLY) {
+    FIREFLY.return100 = function() {return 100;};
+};
+
+Firefly.modules.returnLetters = function(FIREFLY) {
+    FIREFLY.returnABC = function() {return "ABC";};
+};
+
+    
+
+
+
+
+
+
 var INVERSE_SIZE = 6;
 var INVERSE_SPEED = 100;
 
