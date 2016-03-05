@@ -207,9 +207,9 @@ Firefly.modules.world = function(FF) {
 
     /**
      * Initialize the engine
-     * @param {Function} initWorld Enable client to initialize the world 
+     * @param {Function} clientInitWorld Enable client to initialize the world 
      */
-    function initialize(initWorld) {
+    function initialize(clientInitWorld) {
         // Prime the engine
         var canvas_1 = document.getElementById(Firefly.params.CANVAS_1_ID);
         var ctx_1 = canvas_1.getContext('2d');
@@ -224,8 +224,8 @@ Firefly.modules.world = function(FF) {
         var world_1 = Firefly.util.create2dArray(Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
         var world_2 = Firefly.util.create2dArray(Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
         
-        initWorld(world_1, Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
-        initWorld(world_2, Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
+        clientInitWorld(world_1, Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
+        clientInitWorld(world_2, Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
 
         // Draw first frame
         Firefly.CURRENT_WORLD = world_1;
