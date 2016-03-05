@@ -47,8 +47,8 @@ Firefly.modules.world = function(FF) {
         // Draw first frame
         Firefly.CURRENT_WORLD = world_1;
         NEXT_CTX = ctx_1;
-        for (var i = 1; i < Firefly.CANVAS_WIDTH-1; i++) {
-            for (var j = 1; j < Firefly.CANVAS_HEIGHT-1; j++) {
+        for (var i = 0; i < Firefly.CANVAS_WIDTH; i++) {
+            for (var j = 0; j < Firefly.CANVAS_HEIGHT; j++) {
                 drawStep(Firefly.CURRENT_WORLD[i][j], i, j);
             }
         }
@@ -115,8 +115,8 @@ Firefly.modules.world = function(FF) {
         var currentCell;
         var nextCell;
 
-        for (var i = 1; i < Firefly.CANVAS_WIDTH-1; i++) {
-            for (var j = 1; j < Firefly.CANVAS_HEIGHT-1; j++) {
+        for (var i = 0; i < Firefly.CANVAS_WIDTH; i++) {
+            for (var j = 0; j < Firefly.CANVAS_HEIGHT; j++) {
                 currentCell = Firefly.CURRENT_WORLD[i][j];
                 nextCell = NEXT_WORLD[i][j];
 
