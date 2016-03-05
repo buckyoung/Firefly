@@ -2,12 +2,21 @@
 <head>
     <title>firefly</title>
     <script src="firefly.js"></script>
-    <script src="rps.js"></script>
-    <!-- <script src="conway.js"></script> -->
-    <!-- <script src="forest.js"></script> -->
+    <script src="./games/rps.js"></script>
+    <!-- <script src="/games/conway.js"></script> -->
+    <!-- <script src="/games/forest.js"></script> -->
+    <!-- <script src="/games/rps.js"></script> -->
+    <!-- <script src="/games/rps-with-conway.js"></script> -->
     <link rel="stylesheet" href="firefly.css">
 </head>
 <body onload="initGame();">
+    <div id="toggle">
+        &#9881;
+    </div>
+    <div id="drawer">
+        <input type="range" min="-700" max="-10" value="-250" onchange="showValue(this.value)">
+        <span id="range">0</span>
+    </div>
     <canvas id="A"></canvas>
     <canvas id="B"></canvas>
 </body>

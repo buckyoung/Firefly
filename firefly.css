@@ -22,3 +22,21 @@ canvas {
 .hidden {
     visibility: hidden;
 }
+
+#toggle {
+    cursor: pointer;
+    font-size: 1.4em;
+    margin: 13px;
+    opacity: .5;
+    position: fixed;
+    z-index: 2;
+}
+
+#drawer {
+    position: fixed;
+    background-color: white;
+    padding: 40px;
+    z-index: 1;
+    width: 100%;
+    opacity: .9;
+}

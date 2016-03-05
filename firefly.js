@@ -3,7 +3,7 @@
  */
 Firefly.params = {
     INVERSE_SIZE: 5,
-    INVERSE_SPEED: 10,
+    INVERSE_SPEED: 700,
     CANVAS_1_ID: 'A',
     CANVAS_2_ID: 'B'
 };
@@ -15,7 +15,7 @@ Firefly.params = {
 Firefly.modules = {};
 
 /***************************
- * World Module
+ * cell module
  */
 Firefly.modules.cell = function(FF) {
     // Public Class
@@ -24,6 +24,8 @@ Firefly.modules.cell = function(FF) {
     // Prototypical Methods
     Cell.prototype.mooreNeighbors = mooreNeighbors;
     Cell.prototype.neumannNeighbors = neumannNeighbors;
+    Cell.prototype.randomMooreNeighborState = randomMooreNeighborState;
+    Cell.prototype.randomNeumannNeighborState = randomNeumannNeighborState;
 
     /**
      * @public Cell Class Constructor
@@ -113,10 +115,80 @@ Firefly.modules.cell = function(FF) {
 
         return result;
     }
+
+    /**
+     * @public Return the state of a random Moore Neighbor
+     * @return {String} 
+     */
+    function randomMooreNeighborState() {
+        // Get two values between -1 and 1
+        var randoX = (Math.floor(Math.random() * 100) % 3) - 1;
+        var randoY = (Math.floor(Math.random() * 100) % 3) - 1;
+        var world = Firefly.CURRENT_WORLD;
+
+        var partial = world[randoX];
+
+        if (!partial) {
+            return Cell.prototype.randomMooreNeighborState();    
+        }
+
+        var cell = world[randoX][randoY];
+
+        // Sanity check if defined
+        if (!cell) {
+            return Cell.prototype.randomMooreNeighborState();
+        }
+        
+        return cell.getState();    
+    }
+
+    /**
+     * @public Return the state of a random von Neumann Neighbor
+     * @return {String} 
+     */
+    function randomNeumannNeighborState() {
+        // Get two values between -1 and 1
+        var randoX = (Math.floor(Math.random() * 100) % 3) - 1;
+        var randoY = (Math.floor(Math.random() * 100) % 3) - 1;
+        
+        // Do not allow diagonals
+        if (randoX < 0 && randoY != 0) {
+            return Cell.prototype.randomNeumannNeighborState();
+        }
+
+        if (randoX > 0 && randoY != 0) {
+            return Cell.prototype.randomNeumannNeighborState();
+        }
+
+        if (randoY > 0 && randoX != 0) {
+            return Cell.prototype.randomNeumannNeighborState();
+        }
+
+        if (randoY < 0 && randoX != 0) {
+            return Cell.prototype.randomNeumannNeighborState();
+        }
+
+        var world = Firefly.CURRENT_WORLD;
+
+        var partial = world[randoX];
+
+        if (!partial) {
+            return Cell.prototype.randomNeumannNeighborState();    
+        }
+
+        var cell = world[randoX][randoY];
+
+        // Sanity check if defined
+        if (!cell) {
+            return Cell.prototype.randomNeumannNeighborState();
+        }
+        
+        return cell.getState();    
+    }
 }
 
 /***************************
- * World Module
+ * world module
  */
 Firefly.modules.world = function(FF) {
     // Public Variables
@@ -285,6 +357,19 @@ Firefly.modules.state = function(FF) {
     }
 };
 
+
+/***************************
+ * drawer module
+ */
+Firefly.modules.drawer = function(FF) {
+    var toggle = document.getElementById('toggle');
+    var drawer = document.getElementById('drawer');
+    var range = document.getElementById('range');
+
+    
+};
+
+
 /***************************
  * Client Constructor
  */
@@ -296,7 +381,7 @@ function Firefly() {
 
     // Support simplified calling of this sandbox (automatically get modules)
     if (!(this instanceof Firefly) || requiredModules.length === 0) { 
-        return new Firefly(['cell', 'state', 'world'], callback);
+        return new Firefly(['cell', 'state', 'world', 'drawer'], callback);
     }
 
     //For each of the modules in 'requiredModules', add the module's methods to 'this'
