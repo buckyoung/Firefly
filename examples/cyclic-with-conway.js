@@ -23,8 +23,6 @@ FFExamples.cyclicWithConway.initialize = function(FF) {
         FF.initialize(initializeWorld(FF));
     }
 
-    var rotator = 0;
-
     function process(currentCell, nextCell) {
         // Conway:
         var aliveNeighborCount = currentCell.mooreNeighbors('alive');
@@ -56,9 +54,9 @@ FFExamples.cyclicWithConway.initialize = function(FF) {
     // Conway:
     function processAlive(currentCell, nextCell) {
         var aliveNeighborCount = currentCell.mooreNeighbors('alive');
-
+        var rotator = 0;
         var rando = Math.floor(Math.random() * 100);
-        var state = colors[rotator + rando  % colors.length];
+        var state = colors[rotator++ + rando  % colors.length];
 
         if (aliveNeighborCount < 2 || aliveNeighborCount > 3) {
             nextCell.setState(state);
@@ -72,8 +70,9 @@ FFExamples.cyclicWithConway.initialize = function(FF) {
         return function(world, width, height) {
             for (var i = 0; i < width; i++) {
                 for (var j = 0; j < height; j++) {
+                    var rotator = 0;
                     var rando = Math.floor(Math.random() * 100);
-                    var state = colors[rotator + rando  % colors.length];
+                    var state = colors[rotator++ + rando  % colors.length];
 
                     // Conway:
                     if (rando < 30) {
