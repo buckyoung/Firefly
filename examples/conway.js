@@ -1,6 +1,8 @@
 var FFExamples = FFExamples || {};
 
-FFExamples.conway = {};
+FFExamples.conway = {
+    name = 'Conway\'s Game of Life'
+};
 
 FFExamples.conway.initialize = function() {
     Firefly(function(FF) {

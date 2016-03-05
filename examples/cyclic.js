@@ -1,8 +1,10 @@
 var FFExamples = FFExamples || {};
 
-FFExamples.rps = {};
+FFExamples.cyclic = {
+    name = 'Cyclic'
+};
 
-FFExamples.rps.initialize = function() {
+FFExamples.cyclic.initialize = function() {
     var colors = [
         'a',
         'b',

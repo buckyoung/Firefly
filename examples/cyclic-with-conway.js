@@ -1,8 +1,10 @@
 var FFExamples = FFExamples || {};
 
-FFExamples.rpsWithConway = {};
+FFExamples.cyclicWithConway = {
+    name = 'Cyclic (with Conway\'s)'
+};
 
-FFExamples.rpsWithConway.initialize = function() {
+FFExamples.cyclicWithConway.initialize = function() {
     var colors = [
         'a', 
         'b', 
