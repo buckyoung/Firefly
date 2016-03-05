@@ -1,4 +1,4 @@
-function initFirst() {
+function initGame() {
     Firefly(function(FF) {
         FF.registerState('alive', [200, 0, 0], processAlive);
         FF.registerState('dead', [240, 240, 250], processDead);
@@ -15,10 +15,7 @@ function processAlive(currentCell, nextCell) {
         return;
     }
 
-    if (aliveNeighborCount === 2 || aliveNeighborCount === 3) {
-        nextCell.setState('alive');
-        return;
-    }
+    nextCell.setState('alive');
 }
 
 function processDead(currentCell, nextCell) {
@@ -27,10 +24,9 @@ function processDead(currentCell, nextCell) {
     if (aliveNeighborCount === 3) {
         nextCell.setState('alive');
         return;
-    } else {
-        nextCell.setState('dead');
-        return;
     }
+    
+    nextCell.setState('dead');
 }
 
 function initializeWorld(FF) {

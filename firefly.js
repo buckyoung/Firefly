@@ -2,8 +2,8 @@
  * Quick access parameters
  */
 Firefly.params = {
-    INVERSE_SIZE: 6,
-    INVERSE_SPEED: 100,
+    INVERSE_SIZE: 5,
+    INVERSE_SPEED: 10,
     CANVAS_1_ID: 'A',
     CANVAS_2_ID: 'B'
 };
@@ -64,7 +64,10 @@ Firefly.modules.cell = function(FF) {
          * @return {String} cell position
          */
         function getPosition() {
-            return Firefly.util.extendDeep(position);
+            return {
+                x: position.x,
+                y: position.y
+            };
         }
     }
 
@@ -152,8 +155,17 @@ Firefly.modules.world = function(FF) {
         initWorld(world_1, Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
         initWorld(world_2, Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
 
+        // Draw first frame
+        Firefly.CURRENT_WORLD = world_1;
+        NEXT_CTX = ctx_1;
+        for (var i = 1; i < Firefly.CANVAS_WIDTH-1; i++) {
+            for (var j = 1; j < Firefly.CANVAS_HEIGHT-1; j++) {
+                drawStep(Firefly.CURRENT_WORLD[i][j], i, j);
+            }
+        }
+
         // Start the engine
-        swapBuffer(true, false, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2);
+        swapBuffer(false, true, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2);
     }    
 
     /**
@@ -222,14 +234,18 @@ Firefly.modules.world = function(FF) {
                 // Process next state
                 Firefly.getStates()[currentCell.getState()].processor(currentCell, nextCell);
 
-                // Draw next 
-                NEXT_CTX.fillStyle = Firefly.getStates()[nextCell.getState()].color;
-                NEXT_CTX.fillRect(i, j, 1, 1); // putImageData // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Pixel_manipulation_with_canvas
+                drawStep(nextCell, i, j);
             }
         }
     }
 
-    // TODO BUCK I COULD JUST REINIT UPON PAGE RESIZE - this is probably a good solution
+    /**
+     * Draw a step on NEXT_CTX
+     */
+    function drawStep(cell, x, y) {
+        NEXT_CTX.fillStyle = Firefly.getStates()[cell.getState()].color;
+        NEXT_CTX.fillRect(x, y, 1, 1); 
+    }
 };
 
 
@@ -265,7 +281,7 @@ Firefly.modules.state = function(FF) {
      * @return {Object} states internal object
      */
     function getStates() {
-        return Firefly.util.extendDeep(states);
+        return states;
     }
 };
 
@@ -313,26 +329,5 @@ Firefly.util = {
         canvas_1.height = Firefly.CANVAS_HEIGHT;
         canvas_2.width = Firefly.CANVAS_WIDTH;
         canvas_2.height = Firefly.CANVAS_HEIGHT;
-    }, 
-    extendDeep: function(parent, child) {
-        // Stefanov p. 134
-        var i;
-        var toStr = Object.prototype.toString;
-        var astr = "[object Array]";
-
-        child = child || {};
-
-        for (i in parent) {
-            if (parent.hasOwnProperty(i)) {
-                if (typeof parent[i] === 'object') {
-                    child[i] = (toStr.call(parent[i]) === astr) ? [] : {};
-                    Firefly.util.extendDeep(parent[i], child[i]);
-                } else {
-                    child[i] = parent[i];
-                }
-            }
-        }
-
-        return child;
     }
 };
