@@ -5,7 +5,7 @@ function initGame() {
     Firefly(function(FF) {
         var inx = 0;
 
-        FF.registerState(colors[inx++], [255, 204, 150], process);
+        FF.registerState(colors[inx++], [150, 204, 150], process);
         FF.registerState(colors[inx++], [0, 128, 255], process);
         FF.registerState(colors[inx++], [102, 178, 255], process);
         FF.registerState(colors[inx++], [150, 230, 30], process);
