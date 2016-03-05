@@ -35,7 +35,7 @@ canvas {
 #drawer {
     position: fixed;
     background-color: white;
-    padding: 40px;
+    padding: 20px 20px 20px 80px;
     z-index: 1;
     width: 100%;
     opacity: .9;
