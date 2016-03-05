@@ -5,11 +5,11 @@ function initGame() {
     Firefly(function(FF) {
         var inx = 0;
 
-        FF.registerState(colors[inx++], [100, 0, 0], process);
-        FF.registerState(colors[inx++], [30, 130, 10], process);
-        FF.registerState(colors[inx++], [0, 0, 130], process);
+        FF.registerState(colors[inx++], [223, 163, 163], process);
+        FF.registerState(colors[inx++], [171, 223, 163], process);
+        FF.registerState(colors[inx++], [185, 163, 223], process);
 
-        FF.registerState('alive', [255, 255, 255], processAlive);
+        FF.registerState('alive', [30, 30, 140], processAlive);
 
         FF.initialize(initializeWorld(FF));
     });

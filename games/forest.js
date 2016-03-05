@@ -2,7 +2,7 @@ function initGame() {
     Firefly(function(FF) {
         FF.registerState('tree', [100, 200, 100], processTree);
         FF.registerState('fire', [255, 70, 70], processFire);
-        FF.registerState('empty', [30, 30, 30], processEmpty);
+        FF.registerState('empty', [40, 40, 40], processEmpty);
 
         FF.initialize(initializeWorld(FF));
     });

@@ -1,7 +1,7 @@
 function initGame() {
     Firefly(function(FF) {
-        FF.registerState('alive', [200, 0, 0], processAlive);
-        FF.registerState('dead', [240, 240, 250], processDead);
+        FF.registerState('alive', [160, 0, 0], processAlive);
+        FF.registerState('dead', [200, 200, 200], processDead);
 
         FF.initialize(initializeWorld(FF));
     });
