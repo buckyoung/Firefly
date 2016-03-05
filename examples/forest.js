@@ -3,7 +3,7 @@ var FFExamples = FFExamples || {};
 FFExamples.forest = {};
 
 FFExamples.forest.initialize = function(FF) {
-    var treeProb = .0005;
+    var treeProb = .0006;
     var fireProb = .00001;
 
     initializeModel(FF);
