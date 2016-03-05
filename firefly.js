@@ -199,6 +199,7 @@ Firefly.modules.world = function(FF) {
     // Private Variables
     var NEXT_WORLD;
     var NEXT_CTX;
+    var CANCEL_TIMEOUT;
 
     // Protected Variables
     Firefly.CANVAS_HEIGHT;
@@ -210,6 +211,9 @@ Firefly.modules.world = function(FF) {
      * @param {Function} clientInitWorld Enable client to initialize the world 
      */
     function initialize(clientInitWorld) {
+        // Stop any previous models
+        clearTimeout(CANCEL_TIMEOUT);
+
         // Prime the engine
         var canvas_1 = document.getElementById(Firefly.params.CANVAS_1_ID);
         var ctx_1 = canvas_1.getContext('2d');
@@ -218,7 +222,6 @@ Firefly.modules.world = function(FF) {
         var ctx_2 = canvas_2.getContext('2d');
 
         Firefly.util.setDimensions(canvas_1, canvas_2);
-        // window.addEventListener("resize", setDimensions); -- this would change the size of the world mid game! is that even possible! no way! // Altho we could reinitialize the game upon resize
 
         // Initialize world
         var world_1 = Firefly.util.create2dArray(Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
@@ -282,7 +285,7 @@ Firefly.modules.world = function(FF) {
         visible_1 = !visible_1;
         visible_2 = !visible_2;
 
-        window.setTimeout(function() {
+        CANCEL_TIMEOUT = window.setTimeout(function() {
             swapBuffer(visible_1, visible_2, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2);
         }, Firefly.params.INVERSE_SPEED);
     }
