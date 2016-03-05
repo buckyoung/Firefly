@@ -350,10 +350,53 @@ Firefly.modules.state = function(FF) {
 
     /**
      * @protected Return the states object
-     * @return {Object} states internal object
+     * @return {Object} Internal states object
      */
     function getStates() {
         return states;
+    }
+};
+
+
+/***************************
+ * model module
+ */
+Firefly.modules.model = function(FF) {
+    // Private Variables
+    var models = [];
+
+    // Public Methods
+    FF.registerModel = registerModel;
+
+    // Protected Methods
+    Firefly.getModels = getModels;
+    Firefly.runModel = runModel;
+
+    /**
+     * @public Register a model type
+     * @param {String} name Model name
+     * @param {Function} initializer Function to initialize model
+     */
+    function registerModel(name, initializer) {
+        models.push({
+            initializer: initializer,
+            name: name
+        });
+    }
+
+    /**
+     * @protected Return the models object
+     * @return {Array} Internal models array
+     */
+    function getModels() {
+        return models;
+    }
+
+    /**
+     * @public Runs the initializer at index in models array
+     */
+    function runModel(index) {
+        models[index].initializer(FF);
     }
 };
 
@@ -364,6 +407,7 @@ Firefly.modules.state = function(FF) {
 Firefly.modules.drawer = function(FF) {
     var toggle = document.getElementById('toggle');
     var drawer = document.getElementById('drawer');
+    var modelSelect = document.getElementById('model-input');
     var speedValue = document.getElementById('speed-value');
     var speedInput = document.getElementById('speed-input');
     var sizeValue = document.getElementById('size-value');
@@ -389,6 +433,30 @@ Firefly.modules.drawer = function(FF) {
 
         speedInput.value = speed;
         sizeInput.value = size;
+
+        var timeout = setTimeout(function() {
+            if (Firefly.getModels().length) {
+                populateModelSelect();
+                clearTimeout(timeout); 
+            }
+        }, 100);
+
+    }
+
+    /**
+     * @private Initialize the model selector
+     */
+    function populateModelSelect() {
+        var models = Firefly.getModels();
+
+        models.forEach(function(model, index) {
+            var option = document.createElement('option');
+
+            option.appendChild(document.createTextNode(model.name));
+            option.value = index;
+
+            modelSelect.appendChild(option);
+        });
     }
 
     /**
@@ -431,7 +499,7 @@ function Firefly() {
 
     // Support simplified calling of this sandbox (automatically get modules)
     if (!(this instanceof Firefly) || requiredModules.length === 0) { 
-        return new Firefly(['cell', 'state', 'world', 'drawer'], callback);
+        return new Firefly(['cell', 'state', 'world', 'model', 'drawer'], callback);
     }
 
     //For each of the modules in 'requiredModules', add the module's methods to 'this'

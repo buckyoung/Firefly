@@ -1,18 +1,17 @@
 var FFExamples = FFExamples || {};
 
-FFExamples.cyclicWithConway = {
-    name = 'Cyclic (with Conway\'s)'
-};
+FFExamples.cyclicWithConway = {};
 
-FFExamples.cyclicWithConway.initialize = function() {
+FFExamples.cyclicWithConway.initialize = function(FF) {
     var colors = [
         'a', 
         'b', 
         'c'
     ];
     
+    initializeModel(FF);
 
-    Firefly(function(FF) {
+    function initializeModel(FF) {
         var index = 0;
 
         FF.registerState(colors[index++], [223, 163, 163], process);
@@ -22,7 +21,7 @@ FFExamples.cyclicWithConway.initialize = function() {
         FF.registerState('alive', [30, 30, 140], processAlive);
 
         FF.initialize(initializeWorld(FF));
-    });
+    }
 
     var rotator = 0;
 

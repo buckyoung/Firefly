@@ -1,16 +1,16 @@
 var FFExamples = FFExamples || {};
 
-FFExamples.conway = {
-    name = 'Conway\'s Game of Life'
-};
+FFExamples.conway = {};
 
-FFExamples.conway.initialize = function() {
-    Firefly(function(FF) {
+FFExamples.conway.initialize = function(FF) {
+    initializeModel(FF);
+
+    function initializeModel(FF) {
         FF.registerState('alive', [160, 0, 0], processAlive);
         FF.registerState('dead', [200, 200, 200], processDead);
 
         FF.initialize(initializeWorld(FF));
-    }); 
+    }
 
     function processAlive(currentCell, nextCell) {
         var aliveNeighborCount = currentCell.mooreNeighbors('alive');

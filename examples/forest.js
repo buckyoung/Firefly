@@ -1,20 +1,20 @@
 var FFExamples = FFExamples || {};
 
-FFExamples.forest = {
-    name = 'Forest Fire'
-};
+FFExamples.forest = {};
 
-FFExamples.forest.initialize = function() {
+FFExamples.forest.initialize = function(FF) {
     var treeProb = .0005;
     var fireProb = .00001;
 
-    Firefly(function(FF) {
+    initializeModel(FF);
+
+    function initializeModel(FF) {
         FF.registerState('tree', [100, 200, 100], processTree);
         FF.registerState('fire', [255, 70, 70], processFire);
         FF.registerState('empty', [40, 40, 40], processEmpty);
 
         FF.initialize(initializeWorld(FF));
-    });
+    }
 
     function processTree(currentCell, nextCell) {
         var burningNeighborCount = currentCell.mooreNeighbors('fire');
