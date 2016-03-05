@@ -2,8 +2,8 @@
  * Quick access parameters
  */
 Firefly.params = {
-    INVERSE_SIZE: 5,
-    INVERSE_SPEED: 700,
+    INVERSE_SIZE: 6, // Min 1 Max 10 on frontend
+    INVERSE_SPEED: 100, // Min 10 Max 300 on frontend
     CANVAS_1_ID: 'A',
     CANVAS_2_ID: 'B'
 };
@@ -364,9 +364,59 @@ Firefly.modules.state = function(FF) {
 Firefly.modules.drawer = function(FF) {
     var toggle = document.getElementById('toggle');
     var drawer = document.getElementById('drawer');
-    var range = document.getElementById('range');
+    var speedValue = document.getElementById('speed-value');
+    var speedInput = document.getElementById('speed-input');
+    var sizeValue = document.getElementById('size-value');
+    var sizeInput = document.getElementById('size-input');
 
-    
+    // Protected Methods
+    Firefly.toggleSettings = toggleSettings;
+    Firefly.updateSpeed = updateSpeed;
+    Firefly.updateSize = updateSize;
+
+    // Initialize
+    initialize();
+
+    /**
+     * @private Initialize
+     */
+    function initialize() {
+        var speed = Firefly.params.INVERSE_SPEED;
+        var size = Firefly.params.INVERSE_SIZE;
+
+        speedValue.innerText = speed;
+        sizeValue.innerText = size;
+
+        speedInput.value = speed;
+        sizeInput.value = size;
+    }
+
+    /**
+     * @protected Show/hide the setting drawer
+     */
+    function toggleSettings() {
+        if (drawer.className === 'hidden') {
+            drawer.className = 'visible';
+        } else {
+            drawer.className = 'hidden';
+        }
+    }
+
+    /**
+     * @protected Set speed in game and on frontend
+     */
+    function updateSpeed(value) {
+        speedValue.innerText = value;
+        Firefly.params.INVERSE_SPEED = value;
+    }
+
+    /**
+     * @protected Set size in game and on frontend
+     */
+    function updateSize(value) {
+        sizeValue.innerText = value;
+        // TODO
+    }
 };
 
 

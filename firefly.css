@@ -40,3 +40,8 @@ canvas {
     width: 100%;
     opacity: .9;
 }
+
+.control {
+    display: inline-block;
+    padding-right: 20px;
+}

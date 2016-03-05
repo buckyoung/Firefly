@@ -10,16 +10,26 @@
     <link rel="stylesheet" href="firefly.css">
 </head>
 <body onload="initGame();">
-    <div id="toggle">
+    <div id="toggle" onclick="Firefly.toggleSettings()">
         &#9881;
     </div>
-    <div id="drawer">
-        <div>
-            <label for="range-input">Speed</label>
-            <span id="range">0</span>
+    <div id="drawer" class="hidden">
+        <!-- SPEED -->
+        <div class="control">
+            <div>
+                <label for="speed-input">Speed</label>
+                <span id="speed-value"></span>
+            </div>
+            <input id="speed-input" type="range" min="10" max="300" onchange="Firefly.updateSpeed(this.value)">
         </div>
-        <input id="range-input" type="range" min="10" max="600" value="250" onchange="showValue(this.value)">
-        
+        <!-- SIZE -->
+        <div class="control">
+            <div>
+                <label for="size-input">Size</label>
+                <span id="size-value"></span>
+            </div>
+            <input disabled id="size-input" type="range" min="1" max="10" onchange="Firefly.updateSize(this.value)">
+        </div>
     </div>
     <canvas id="A"></canvas>
     <canvas id="B"></canvas>
