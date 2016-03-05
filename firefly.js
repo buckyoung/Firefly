@@ -199,6 +199,7 @@ Firefly.modules.world = function(FF) {
     // Private Variables
     var NEXT_WORLD;
     var NEXT_CTX;
+    var CANCEL_TIMEOUT;
 
     // Protected Variables
     Firefly.CANVAS_HEIGHT;
@@ -207,9 +208,12 @@ Firefly.modules.world = function(FF) {
 
     /**
      * Initialize the engine
-     * @param {Function} initWorld Enable client to initialize the world 
+     * @param {Function} clientInitWorld Enable client to initialize the world 
      */
-    function initialize(initWorld) {
+    function initialize(clientInitWorld) {
+        // Stop any previous models
+        clearTimeout(CANCEL_TIMEOUT);
+
         // Prime the engine
         var canvas_1 = document.getElementById(Firefly.params.CANVAS_1_ID);
         var ctx_1 = canvas_1.getContext('2d');
@@ -218,14 +222,13 @@ Firefly.modules.world = function(FF) {
         var ctx_2 = canvas_2.getContext('2d');
 
         Firefly.util.setDimensions(canvas_1, canvas_2);
-        // window.addEventListener("resize", setDimensions); -- this would change the size of the world mid game! is that even possible! no way! // Altho we could reinitialize the game upon resize
 
         // Initialize world
         var world_1 = Firefly.util.create2dArray(Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
         var world_2 = Firefly.util.create2dArray(Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
         
-        initWorld(world_1, Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
-        initWorld(world_2, Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
+        clientInitWorld(world_1, Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
+        clientInitWorld(world_2, Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
 
         // Draw first frame
         Firefly.CURRENT_WORLD = world_1;
@@ -282,7 +285,7 @@ Firefly.modules.world = function(FF) {
         visible_1 = !visible_1;
         visible_2 = !visible_2;
 
-        window.setTimeout(function() {
+        CANCEL_TIMEOUT = window.setTimeout(function() {
             swapBuffer(visible_1, visible_2, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2);
         }, Firefly.params.INVERSE_SPEED);
     }
@@ -350,10 +353,53 @@ Firefly.modules.state = function(FF) {
 
     /**
      * @protected Return the states object
-     * @return {Object} states internal object
+     * @return {Object} Internal states object
      */
     function getStates() {
         return states;
+    }
+};
+
+
+/***************************
+ * model module
+ */
+Firefly.modules.model = function(FF) {
+    // Private Variables
+    var models = [];
+
+    // Public Methods
+    FF.registerModel = registerModel;
+
+    // Protected Methods
+    Firefly.getModels = getModels;
+    Firefly.runModel = runModel;
+
+    /**
+     * @public Register a model type
+     * @param {String} name Model name
+     * @param {Function} initializer Function to initialize model
+     */
+    function registerModel(name, initializer) {
+        models.push({
+            initializer: initializer,
+            name: name
+        });
+    }
+
+    /**
+     * @protected Return the models object
+     * @return {Array} Internal models array
+     */
+    function getModels() {
+        return models;
+    }
+
+    /**
+     * @public Runs the initializer at index in models array
+     */
+    function runModel(index) {
+        models[index].initializer(FF);
     }
 };
 
@@ -364,6 +410,7 @@ Firefly.modules.state = function(FF) {
 Firefly.modules.drawer = function(FF) {
     var toggle = document.getElementById('toggle');
     var drawer = document.getElementById('drawer');
+    var modelSelect = document.getElementById('model-input');
     var speedValue = document.getElementById('speed-value');
     var speedInput = document.getElementById('speed-input');
     var sizeValue = document.getElementById('size-value');
@@ -389,6 +436,30 @@ Firefly.modules.drawer = function(FF) {
 
         speedInput.value = speed;
         sizeInput.value = size;
+
+        var timeout = setTimeout(function() {
+            if (Firefly.getModels().length) {
+                populateModelSelect();
+                clearTimeout(timeout); 
+            }
+        }, 100);
+
+    }
+
+    /**
+     * @private Initialize the model selector
+     */
+    function populateModelSelect() {
+        var models = Firefly.getModels();
+
+        models.forEach(function(model, index) {
+            var option = document.createElement('option');
+
+            option.appendChild(document.createTextNode(model.name));
+            option.value = index;
+
+            modelSelect.appendChild(option);
+        });
     }
 
     /**
@@ -431,7 +502,7 @@ function Firefly() {
 
     // Support simplified calling of this sandbox (automatically get modules)
     if (!(this instanceof Firefly) || requiredModules.length === 0) { 
-        return new Firefly(['cell', 'state', 'world', 'drawer'], callback);
+        return new Firefly(['cell', 'state', 'world', 'model', 'drawer'], callback);
     }
 
     //For each of the modules in 'requiredModules', add the module's methods to 'this'

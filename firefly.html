@@ -1,21 +1,31 @@
 <html>
 <head>
     <title>firefly</title>
-    
+
     <script src="firefly.js"></script>
 
+    <script src="./examples/all-examples.js"></script>
     <script src="./examples/conway.js"></script>
     <script src="./examples/forest.js"></script>
-    <script src="./examples/rps-with-conway.js"></script>
-    <script src="./examples/rps.js"></script>
+    <script src="./examples/cyclic-with-conway.js"></script>
+    <script src="./examples/cyclic.js"></script>
 
     <link rel="stylesheet" href="firefly.css">
 </head>
-<body onload="FFExamples.forest.initialize();">
+<body onload="FFExamples.all.initialize();">
     <div id="toggle" onclick="Firefly.toggleSettings()">
         &#9881;
     </div>
-    <div id="drawer" class="hidden">
+    <div id="drawer" class="visible">
+        <!-- GAMETYPE -->
+        <div class="control">
+            <div>
+                <label for="model-input">Model</label>
+            </div>
+            <select id="model-input" onchange="Firefly.runModel(this.value)">
+                <option>Select...</option>
+            </select>
+        </div>
         <!-- SPEED -->
         <div class="control">
             <div>

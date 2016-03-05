@@ -1,10 +1,8 @@
 var FFExamples = FFExamples || {};
 
-FFExamples.cyclic = {
-    name = 'Cyclic'
-};
+FFExamples.cyclic = {};
 
-FFExamples.cyclic.initialize = function() {
+FFExamples.cyclic.initialize = function(FF) {
     var colors = [
         'a',
         'b',
@@ -12,19 +10,19 @@ FFExamples.cyclic.initialize = function() {
         // 'd'
     ];
 
-    Firefly(function(FF) {
-        var inx = 0;
+    initializeModel(FF);
 
-        FF.registerState(colors[inx++], [150, 204, 150], processAverage);
-        FF.registerState(colors[inx++], [0, 128, 255], processAverage);
-        FF.registerState(colors[inx++], [102, 178, 255], processAverage);
+    function initializeModel(FF) {
+        var index = 0;
 
-        // FF.registerState(colors[inx++], [150, 230, 30], processAverage);
+        FF.registerState(colors[index++], [150, 204, 150], processAverage);
+        FF.registerState(colors[index++], [0, 128, 255], processAverage);
+        FF.registerState(colors[index++], [102, 178, 255], processAverage);
+
+        // FF.registerState(colors[index++], [150, 230, 30], processAverage);
 
         FF.initialize(initializeWorld(FF));
-    });
-
-    var rotator = 0;
+    }
 
     function processAverage(currentCell, nextCell) {
         var currentState = currentCell.getState();
@@ -49,8 +47,13 @@ FFExamples.cyclic.initialize = function() {
         return function(world, width, height) {
             for (var i = 0; i < width; i++) {
                 for (var j = 0; j < height; j++) {
+                    var rotator = 0;
                     var rando = Math.floor(Math.random() * 100);
-                    var state = colors[rotator + rando  % colors.length];
+                    var state = colors[rotator++ + rando  % colors.length];
+
+                    if (!state) {
+                        console.log('ERROR');
+                    }
 
                     world[i][j] = new FF.Cell(state, i, j); 
                 }

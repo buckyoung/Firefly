@@ -1,18 +1,17 @@
 var FFExamples = FFExamples || {};
 
-FFExamples.cyclicWithConway = {
-    name = 'Cyclic (with Conway\'s)'
-};
+FFExamples.cyclicWithConway = {};
 
-FFExamples.cyclicWithConway.initialize = function() {
+FFExamples.cyclicWithConway.initialize = function(FF) {
     var colors = [
         'a', 
         'b', 
         'c'
     ];
     
+    initializeModel(FF);
 
-    Firefly(function(FF) {
+    function initializeModel(FF) {
         var index = 0;
 
         FF.registerState(colors[index++], [223, 163, 163], process);
@@ -22,9 +21,7 @@ FFExamples.cyclicWithConway.initialize = function() {
         FF.registerState('alive', [30, 30, 140], processAlive);
 
         FF.initialize(initializeWorld(FF));
-    });
-
-    var rotator = 0;
+    }
 
     function process(currentCell, nextCell) {
         // Conway:
@@ -57,9 +54,9 @@ FFExamples.cyclicWithConway.initialize = function() {
     // Conway:
     function processAlive(currentCell, nextCell) {
         var aliveNeighborCount = currentCell.mooreNeighbors('alive');
-
+        var rotator = 0;
         var rando = Math.floor(Math.random() * 100);
-        var state = colors[rotator + rando  % colors.length];
+        var state = colors[rotator++ + rando  % colors.length];
 
         if (aliveNeighborCount < 2 || aliveNeighborCount > 3) {
             nextCell.setState(state);
@@ -73,8 +70,9 @@ FFExamples.cyclicWithConway.initialize = function() {
         return function(world, width, height) {
             for (var i = 0; i < width; i++) {
                 for (var j = 0; j < height; j++) {
+                    var rotator = 0;
                     var rando = Math.floor(Math.random() * 100);
-                    var state = colors[rotator + rando  % colors.length];
+                    var state = colors[rotator++ + rando  % colors.length];
 
                     // Conway:
                     if (rando < 30) {
