@@ -214,6 +214,9 @@ Firefly.modules.world = function(FF) {
         // Stop any previous models
         clearTimeout(CANCEL_TIMEOUT);
 
+        // Listen for resize
+        window.onresize = Firefly.resetPlayModel;
+
         // Prime the engine
         var canvas_1 = document.getElementById(Firefly.params.CANVAS_1_ID);
         var ctx_1 = canvas_1.getContext('2d');
@@ -408,7 +411,7 @@ Firefly.modules.model = function(FF) {
  * drawer module
  */
 Firefly.modules.drawer = function(FF) {
-    var toggle = document.getElementById('toggle');
+    var reset = document.getElementById('reset');
     var drawer = document.getElementById('drawer');
     var modelSelect = document.getElementById('model-input');
     var speedValue = document.getElementById('speed-value');
@@ -420,6 +423,8 @@ Firefly.modules.drawer = function(FF) {
     Firefly.toggleSettings = toggleSettings;
     Firefly.updateSpeed = updateSpeed;
     Firefly.updateSize = updateSize;
+    Firefly.resetPlayModel = resetPlayModel;
+    Firefly.showPlayIcon = showPlayIcon;
 
     // Initialize
     initialize();
@@ -436,6 +441,8 @@ Firefly.modules.drawer = function(FF) {
 
         speedInput.value = speed;
         sizeInput.value = size;
+
+        Firefly.showPlayIcon()
 
         var timeout = setTimeout(function() {
             if (Firefly.getModels().length) {
@@ -486,7 +493,23 @@ Firefly.modules.drawer = function(FF) {
      */
     function updateSize(value) {
         sizeValue.innerText = value;
-        // TODO
+        Firefly.params.INVERSE_SIZE = value;
+        Firefly.resetPlayModel();
+    }
+
+    /**
+     * @protected Reinitialize the model from step 0
+     */
+    function resetPlayModel() {
+        Firefly.runModel(modelSelect.value);
+        reset.innerText = '\u27F3';
+    }
+
+    /**
+     * @protected Shows the play icon
+     */
+    function showPlayIcon() {
+        reset.innerText = '\u25B6';
     }
 };
 

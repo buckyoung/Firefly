@@ -17,14 +17,14 @@
         &#9881;
     </div>
     <div id="drawer" class="visible">
+        <!-- RESET / PLAY -->
+        <div id="reset" class="control" onclick="Firefly.resetPlayModel()"></div>
         <!-- GAMETYPE -->
         <div class="control">
             <div>
                 <label for="model-input">Model</label>
             </div>
-            <select id="model-input" onchange="Firefly.runModel(this.value)">
-                <option>Select...</option>
-            </select>
+            <select id="model-input" onchange="Firefly.showPlayIcon()"></select>
         </div>
         <!-- SPEED -->
         <div class="control">
@@ -40,7 +40,7 @@
                 <label for="size-input">Size</label>
                 <span id="size-value"></span>
             </div>
-            <input disabled id="size-input" type="range" min="1" max="10" onchange="Firefly.updateSize(this.value)">
+            <input id="size-input" type="range" min="1" max="10" onchange="Firefly.updateSize(this.value)">
         </div>
     </div>
     <canvas id="A"></canvas>

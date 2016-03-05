@@ -45,3 +45,7 @@ canvas {
     display: inline-block;
     padding-right: 20px;
 }
+
+#reset {
+    font-size: 1.4em;
+}
