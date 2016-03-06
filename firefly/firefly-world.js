@@ -56,11 +56,14 @@ Firefly.modules.world = function(FF) {
 
         // Draw first frame
         Firefly.CURRENT_WORLD = world_1;
+        var states = Firefly.getStates();
+        var id = beginPaint(ctx_1);
         for (var i = 0; i < Firefly.CANVAS_WIDTH; i++) {
             for (var j = 0; j < Firefly.CANVAS_HEIGHT; j++) {
-                drawStep(ctx_1, world_1[i][j], i, j);
+                drawStep(id.data, states[world_1[i][j].state].color, i, j);
             }
         }
+        endPaint(ctx_1, id);
 
         // Start the engine
         swapBuffer(false, true, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2);
@@ -123,9 +126,7 @@ Firefly.modules.world = function(FF) {
         var states = Firefly.getStates();
 
         // Begin paint
-        var id = nextCtx.getImageData(0, 0, Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
-
-        var data = id.data;
+        var id = beginPaint(nextCtx);
 
         for (var i = 0; i < Firefly.CANVAS_WIDTH; i++) {
             for (var j = 0; j < Firefly.CANVAS_HEIGHT; j++) {
@@ -133,15 +134,33 @@ Firefly.modules.world = function(FF) {
                 nextCell = nextWorld[i][j];
 
                 // Process next state
-                states[currentCell.getState()].processor(currentCell, nextCell);
+                states[currentCell.state].processor(currentCell, nextCell);
 
                 // Draw next state
-                drawStep(data, states[nextCell.getState()].color, i, j);
+                drawStep(id.data, states[nextCell.state].color, i, j);
             }
         }
 
         // End paint
-        nextCtx.putImageData(id, 0, 0);
+        endPaint(nextCtx, id);
+    }
+
+    /**
+     * Get the image data object -- 'open' it for drawing
+     * @param  {Ctx} ctx The context to draw on
+     * @return {ImageData}
+     */
+    function beginPaint(ctx) {
+        return ctx.getImageData(0, 0, Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
+    }
+
+    /**
+     * Draw the image -- 'close' it for drawing
+     * @param  {Ctx} ctx The context to draw on
+     * @param  {ImageData} imageData The image we are drawing
+     */
+    function endPaint(ctx, imageData) {
+        ctx.putImageData(imageData, 0, 0);
     }
 
     /**
