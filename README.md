@@ -9,6 +9,8 @@ A framework for designing cellular automata written in pure, vanilla JavaScript
 
 ![conways](examples/gifs/conway.gif)
 
+![icevsseed](examples/gifs/icevsseed.gif)
+
 ![rule90](examples/gifs/rule90.gif)
 
 ![rule110](examples/gifs/rule110.gif)
