@@ -107,6 +107,7 @@ Firefly.modules.world = function(FF) {
         var currentCell;
         var nextCell;
         var states = Firefly.getStates(); 
+        var color; 
 
         for (var i = 0; i < Firefly.CANVAS_WIDTH; i++) {
             for (var j = 0; j < Firefly.CANVAS_HEIGHT; j++) {
@@ -116,16 +117,22 @@ Firefly.modules.world = function(FF) {
                 // Process next state
                 states[currentCell.getState()].processor(currentCell, nextCell);
 
-                drawStep(nextCtx, nextCell, i, j);
+                // Draw next state
+                color = states[nextCell.getState()].color;
+                drawStep(nextCtx, color, i, j);
             }
         }
     }
 
     /**
-     * Draw a step on NEXT_CTX
+     * Draw a step on ctx
+     * @param  {Ctx} ctx The context to draw on
+     * @param  {String} color In rbg(#, #, #) format
+     * @param  {Integer} x The x position of the cell
+     * @param  {Integer} y The y position of the cell
      */
-    function drawStep(ctx, cell, x, y) {
-        ctx.fillStyle = Firefly.getStates()[cell.getState()].color;
+    function drawStep(ctx, color, x, y) {
+        ctx.fillStyle = color;
         ctx.fillRect(x, y, 1, 1); 
     }
 };
