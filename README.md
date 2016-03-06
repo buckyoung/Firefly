@@ -1,6 +1,8 @@
 # Firefly
 A framework for designing cellular automata written in pure, vanilla JavaScript
 
+http://buckyoung.com/firefly/
+
 ## Currently a WIP. Examples:
 
 ![settings](examples/gifs/settings.gif)
