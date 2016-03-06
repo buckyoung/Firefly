@@ -25,7 +25,7 @@ FFExamples.cyclicWithConway.initialize = function(FF) {
 
     function process(currentCell, nextCell) {
         // Conway:
-        var aliveNeighborCount = currentCell.mooreNeighbors('alive');
+        var aliveNeighborCount = currentCell.countMooreNeighbors('alive');
 
         if (aliveNeighborCount === 3) {
             nextCell.setState('alive');
@@ -41,7 +41,7 @@ FFExamples.cyclicWithConway.initialize = function(FF) {
 
         var newState = colors[index];
 
-        var neighborCount = currentCell.mooreNeighbors(newState);
+        var neighborCount = currentCell.countMooreNeighbors(newState);
 
         if (neighborCount >= 3) {
             nextCell.setState(newState);
@@ -53,7 +53,7 @@ FFExamples.cyclicWithConway.initialize = function(FF) {
 
     // Conway:
     function processAlive(currentCell, nextCell) {
-        var aliveNeighborCount = currentCell.mooreNeighbors('alive');
+        var aliveNeighborCount = currentCell.countMooreNeighbors('alive');
         var rotator = 0;
         var rando = Math.floor(Math.random() * 100);
         var state = colors[rotator++ + rando  % colors.length];

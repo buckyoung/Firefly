@@ -13,7 +13,7 @@ FFExamples.conway.initialize = function(FF) {
     }
 
     function processAlive(currentCell, nextCell) {
-        var aliveNeighborCount = currentCell.mooreNeighbors('alive');
+        var aliveNeighborCount = currentCell.countMooreNeighbors('alive');
 
         if (aliveNeighborCount < 2 || aliveNeighborCount > 3) {
             nextCell.setState('dead');
@@ -24,7 +24,7 @@ FFExamples.conway.initialize = function(FF) {
     }
 
     function processDead(currentCell, nextCell) {
-        var aliveNeighborCount = currentCell.mooreNeighbors('alive');
+        var aliveNeighborCount = currentCell.countMooreNeighbors('alive');
 
         if (aliveNeighborCount === 3) {
             nextCell.setState('alive');

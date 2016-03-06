@@ -61,8 +61,14 @@ Firefly.modules.drawer = function(FF) {
 
     /**
      * @protected Show/hide the setting drawer
+     * @param {Booler} override Force the drawer into one state or another
      */
-    function toggleSettings() {
+    function toggleSettings(override) {
+        if (override) {
+            drawer.className = override;
+            return;
+        }
+
         if (drawer.className === 'hidden') {
             drawer.className = 'visible';
         } else {

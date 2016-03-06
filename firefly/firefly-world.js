@@ -23,6 +23,7 @@ Firefly.modules.world = function(FF) {
         // Enter runs model
         if (e.keyCode == 13) {
             Firefly.resetPlayModel();
+            Firefly.toggleSettings('hidden');
         }
     };
 

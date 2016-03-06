@@ -33,7 +33,7 @@ FFExamples.cyclic.initialize = function(FF) {
 
         var newState = colors[index];
 
-        var neighborCount = currentCell.mooreNeighbors(newState);
+        var neighborCount = currentCell.countMooreNeighbors(newState);
 
         if (neighborCount >= 3) {
             nextCell.setState(newState);

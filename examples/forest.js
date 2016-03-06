@@ -17,7 +17,7 @@ FFExamples.forest.initialize = function(FF) {
     }
 
     function processTree(currentCell, nextCell) {
-        var burningNeighborCount = currentCell.mooreNeighbors('fire');
+        var burningNeighborCount = currentCell.countMooreNeighbors('fire');
 
         if (burningNeighborCount > 0) {
             nextCell.setState('fire');

@@ -19,5 +19,25 @@ FFExamples.all.initialize = function() {
         FF.registerModel('Cyclic (with Conway\'s)', function() {
             FFExamples.cyclicWithConway.initialize(FF);
         });
+
+        FF.registerModel('Elementary \- Rule 184', function() {
+            FFExamples.rule184.initialize(FF);
+        });
+
+        FF.registerModel('Elementary \- Rule 184 Single Line', function() {
+            FFExamples.rule184SingleLine.initialize(FF);
+        });
+
+        FF.registerModel('Elementary \- Rule 90', function() {
+            FFExamples.rule90.initialize(FF);
+        });
+
+        FF.registerModel('Elementary \- Rule 30 (chaos)', function() {
+            FFExamples.rule30.initialize(FF);
+        });
+
+        FF.registerModel('Elementary \- Rule 110 (stable/chaos)', function() {
+            FFExamples.rule110.initialize(FF);
+        });
     });
 };
