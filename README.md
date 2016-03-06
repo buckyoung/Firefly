@@ -1,7 +1,7 @@
 # Firefly
 A framework for designing cellular automata written in pure, vanilla JavaScript
 
-## Currently a WIP. Here's the current state:
+## Currently a WIP. Examples:
 
 ![cyclicconways](examples/gifs/cyclicwconway.gif)
 
