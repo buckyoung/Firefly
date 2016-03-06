@@ -20,6 +20,14 @@ FFExamples.all.initialize = function() {
             FFExamples.cyclicWithConway.initialize(FF);
         });
 
+        FF.registerModel('Ice vs. Seed (mod)', function() {
+            FFExamples.iceVsSeed.initialize(FF);
+        });
+
+        FF.registerModel('Seed', function() {
+            FFExamples.seed.initialize(FF);
+        });
+
         FF.registerModel('Elementary \- Rule 184', function() {
             FFExamples.rule184.initialize(FF);
         });
