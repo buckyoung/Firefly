@@ -20,12 +20,12 @@ FFExamples.all.initialize = function() {
             FFExamples.cyclicWithConway.initialize(FF);
         });
 
-        FF.registerModel('Ice vs. Seed (mod)', function() {
-            FFExamples.iceVsSeed.initialize(FF);
+        FF.registerModel('Walled Cities', function() {
+            FFExamples.walledCities.initialize(FF);
         });
 
-        FF.registerModel('Seed', function() {
-            FFExamples.seed.initialize(FF);
+        FF.registerModel('Serviettes', function() {
+            FFExamples.serviettes.initialize(FF);
         });
 
         FF.registerModel('Elementary \- Rule 184', function() {
@@ -47,5 +47,13 @@ FFExamples.all.initialize = function() {
         FF.registerModel('Elementary \- Rule 110 (stable/chaos)', function() {
             FFExamples.rule110.initialize(FF);
         });
+
+        FF.registerModel('Seed', function() {
+            FFExamples.seed.initialize(FF);
+        });
+
+        FF.registerModel('Ice vs. Seed (mod)', function() {
+            FFExamples.iceVsSeed.initialize(FF);
+        });        
     });
 };

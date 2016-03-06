@@ -4,7 +4,7 @@ Firefly.modules = {};
  * Quick access parameters
  */
 Firefly.params = {
-    INVERSE_SIZE: 6, // Min 1 Max 10 on frontend
+    INVERSE_SIZE: 3, // Min 1 Max 10 on frontend
     INVERSE_SPEED: 100, // Min 10 Max 300 on frontend
     CANVAS_1_ID: 'A',
     CANVAS_2_ID: 'B'
