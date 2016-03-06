@@ -8,13 +8,9 @@ Firefly.modules.world = function(FF) {
     FF.initialize = initialize;
 
     // Private Variables
-    var NEXT_WORLD;
-    var NEXT_CTX;
     var CANCEL_TIMEOUT;
 
     // Protected Variables
-    Firefly.CANVAS_HEIGHT;
-    Firefly.CANVAS_WIDTH;
     Firefly.CURRENT_WORLD;
 
     /**
@@ -46,10 +42,9 @@ Firefly.modules.world = function(FF) {
 
         // Draw first frame
         Firefly.CURRENT_WORLD = world_1;
-        NEXT_CTX = ctx_1;
         for (var i = 0; i < Firefly.CANVAS_WIDTH; i++) {
             for (var j = 0; j < Firefly.CANVAS_HEIGHT; j++) {
-                drawStep(Firefly.CURRENT_WORLD[i][j], i, j);
+                drawStep(ctx_1, world_1[i][j], i, j);
             }
         }
 
@@ -76,20 +71,12 @@ Firefly.modules.world = function(FF) {
 
         // Draw and show
         if (visible_1) {
-            Firefly.CURRENT_WORLD = world_2;
-            NEXT_WORLD = world_1;
-            NEXT_CTX = ctx_1;
-
-            prepareNextStep();
+            prepareNextStep(world_2, world_1, ctx_1);
 
             canvas_1.className = "visible";
             canvas_2.className = "hidden";
         } else {
-            Firefly.CURRENT_WORLD = world_1;
-            NEXT_WORLD = world_2;
-            NEXT_CTX = ctx_2;
-
-            prepareNextStep();
+            prepareNextStep(world_1, world_2, ctx_2);
 
             canvas_1.className = "hidden";
             canvas_2.className = "visible";
@@ -106,24 +93,30 @@ Firefly.modules.world = function(FF) {
 
     /**
      * Populate and draw the next step in buffer
+     * @param  {World} currentWorld The grid system of the current step
+     * @param  {World} nextWorld The grid system of the next step (the buffer)
+     * @param  {Ctx} nextCanvas The canvas context to paint to (the buffer)
      */
-    function prepareNextStep() {
+    function prepareNextStep(currentWorld, nextWorld, nextCtx) {
         // Clear next 
-        NEXT_CTX.clearRect(0, 0, Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
+        nextCtx.clearRect(0, 0, Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
+
+        Firefly.CURRENT_WORLD = currentWorld;
 
         // Populate
         var currentCell;
         var nextCell;
+        var states = Firefly.getStates(); 
 
         for (var i = 0; i < Firefly.CANVAS_WIDTH; i++) {
             for (var j = 0; j < Firefly.CANVAS_HEIGHT; j++) {
-                currentCell = Firefly.CURRENT_WORLD[i][j];
-                nextCell = NEXT_WORLD[i][j];
+                currentCell = currentWorld[i][j];
+                nextCell = nextWorld[i][j];
 
                 // Process next state
-                Firefly.getStates()[currentCell.getState()].processor(currentCell, nextCell);
+                states[currentCell.getState()].processor(currentCell, nextCell);
 
-                drawStep(nextCell, i, j);
+                drawStep(nextCtx, nextCell, i, j);
             }
         }
     }
@@ -131,8 +124,8 @@ Firefly.modules.world = function(FF) {
     /**
      * Draw a step on NEXT_CTX
      */
-    function drawStep(cell, x, y) {
-        NEXT_CTX.fillStyle = Firefly.getStates()[cell.getState()].color;
-        NEXT_CTX.fillRect(x, y, 1, 1); 
+    function drawStep(ctx, cell, x, y) {
+        ctx.fillStyle = Firefly.getStates()[cell.getState()].color;
+        ctx.fillRect(x, y, 1, 1); 
     }
 };
