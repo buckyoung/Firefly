@@ -13,6 +13,19 @@ Firefly.modules.world = function(FF) {
     // Protected Variables
     Firefly.CURRENT_WORLD;
 
+    // Listen for escape and enter keys
+    document.onkeydown = function(e) {
+        // Escape toggles settings
+        if (e.keyCode == 27) {
+            Firefly.toggleSettings();
+        }
+
+        // Enter runs model
+        if (e.keyCode == 13) {
+            Firefly.resetPlayModel();
+        }
+    };
+
     /**
      * Initialize the engine
      * @param {Function} clientInitWorld Enable client to initialize the world 
