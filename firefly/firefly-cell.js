@@ -17,11 +17,15 @@ Firefly.modules.cell = function(FF) {
      * @param {Integer} y Vertical location in world
      */
     function Cell(initState, x, y) {
-        var state = initState;
-        var position = {
+        var state = initState; //TODO REMOVE?
+        var position = { //TODO REMOVE?
             x: x,
             y: y
         };
+
+        this.x = x;
+        this.y = y;
+        this.state = initState;
 
         // Public Methods
         this.setState = setState;
@@ -33,7 +37,7 @@ Firefly.modules.cell = function(FF) {
          * @param {String} newState Cell state
          */
         function setState(newState) {
-            state = newState;
+            this.state = newState;
         }
 
         /**
@@ -41,7 +45,7 @@ Firefly.modules.cell = function(FF) {
          * @return {String} cell state
          */
         function getState() {
-            return state;
+            return this.state;
         }
 
         /**
@@ -66,9 +70,8 @@ Firefly.modules.cell = function(FF) {
         if (!distance) { distance = 1; }
 
         var result = 0;
-        var pos = this.getPosition();
-        var x = pos.x;
-        var y = pos.y;
+        var x = this.x;
+        var y = this.y;
         var world = Firefly.CURRENT_WORLD;
 
         var xminus = (x-distance < 0) ? Firefly.CANVAS_WIDTH-distance : x-distance;
@@ -77,15 +80,15 @@ Firefly.modules.cell = function(FF) {
         var yminus = (y-distance < 0) ? Firefly.CANVAS_HEIGHT-distance : y-distance;
         var yplus = (y+distance >= Firefly.CANVAS_HEIGHT) ? -1+distance : y+distance; 
 
-        if ( world[x     ][yminus].getState() === targetState ) { result++; }
-        if ( world[xminus][y     ].getState() === targetState ) { result++; }
-        if ( world[xplus ][y     ].getState() === targetState ) { result++; }
-        if ( world[x     ][yplus ].getState() === targetState ) { result++; }
+        if ( world[x     ][yminus].state === targetState ) { result++; }
+        if ( world[xminus][y     ].state === targetState ) { result++; }
+        if ( world[xplus ][y     ].state === targetState ) { result++; }
+        if ( world[x     ][yplus ].state === targetState ) { result++; }
 
-        if ( world[xminus][yminus].getState() === targetState ) { result++; }
-        if ( world[xplus ][yminus].getState() === targetState ) { result++; }
-        if ( world[xminus][yplus ].getState() === targetState ) { result++; }
-        if ( world[xplus ][yplus ].getState() === targetState ) { result++; }
+        if ( world[xminus][yminus].state === targetState ) { result++; }
+        if ( world[xplus ][yminus].state === targetState ) { result++; }
+        if ( world[xminus][yplus ].state === targetState ) { result++; }
+        if ( world[xplus ][yplus ].state === targetState ) { result++; }
 
         return result;
     }
@@ -111,10 +114,10 @@ Firefly.modules.cell = function(FF) {
         var yminus = (y-distance < 0) ? Firefly.CANVAS_HEIGHT-distance : y-distance;
         var yplus = (y+distance >= Firefly.CANVAS_HEIGHT) ? -1+distance : y+distance;
 
-        if ( world[x     ][yminus].getState() === targetState ) { result++; }
-        if ( world[xminus][y     ].getState() === targetState ) { result++; }
-        if ( world[xplus ][y     ].getState() === targetState ) { result++; }
-        if ( world[x     ][yplus ].getState() === targetState ) { result++; }
+        if ( world[x     ][yminus].state === targetState ) { result++; }
+        if ( world[xminus][y     ].state === targetState ) { result++; }
+        if ( world[xplus ][y     ].state === targetState ) { result++; }
+        if ( world[x     ][yplus ].state === targetState ) { result++; }
 
         return result;
     }

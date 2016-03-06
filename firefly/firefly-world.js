@@ -120,8 +120,12 @@ Firefly.modules.world = function(FF) {
         // Populate
         var currentCell;
         var nextCell;
-        var states = Firefly.getStates(); 
-        var color; 
+        var states = Firefly.getStates();
+
+        // Begin paint
+        var id = nextCtx.getImageData(0, 0, Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
+
+        var data = id.data;
 
         for (var i = 0; i < Firefly.CANVAS_WIDTH; i++) {
             for (var j = 0; j < Firefly.CANVAS_HEIGHT; j++) {
@@ -132,10 +136,12 @@ Firefly.modules.world = function(FF) {
                 states[currentCell.getState()].processor(currentCell, nextCell);
 
                 // Draw next state
-                color = states[nextCell.getState()].color;
-                drawStep(nextCtx, color, i, j);
+                drawStep(data, states[nextCell.getState()].color, i, j);
             }
         }
+
+        // End paint
+        nextCtx.putImageData(id, 0, 0);
     }
 
     /**
@@ -145,8 +151,12 @@ Firefly.modules.world = function(FF) {
      * @param  {Integer} x The x position of the cell
      * @param  {Integer} y The y position of the cell
      */
-    function drawStep(ctx, color, x, y) {
-        ctx.fillStyle = color;
-        ctx.fillRect(x, y, 1, 1); 
+    function drawStep(data, color, x, y) {
+        var index = (x + Firefly.CANVAS_WIDTH * y) * 4;
+
+        data[index++] = color[0];
+        data[index++] = color[1];
+        data[index++] = color[2];
+        data[index] = 255;
     }
 };

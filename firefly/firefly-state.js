@@ -19,7 +19,7 @@ Firefly.modules.state = function(FF) {
      */
     function registerState(name, color, processor) {
         states[name] = {
-            color: 'rgb(' + color.toString() + ')',
+            color: color,
             processor: processor,
             state: name
         };
