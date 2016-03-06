@@ -17,17 +17,12 @@ Firefly.modules.cell = function(FF) {
      * @param {Integer} y Vertical location in world
      */
     function Cell(initState, x, y) {
-        var state = initState; //TODO REMOVE?
-        var position = { //TODO REMOVE?
-            x: x,
-            y: y
-        };
-
+        // Public variables
         this.x = x;
         this.y = y;
         this.state = initState;
 
-        // Public Methods
+        // Public Methods (redundant)
         this.setState = setState;
         this.getState = getState;
         this.getPosition = getPosition;
@@ -54,8 +49,8 @@ Firefly.modules.cell = function(FF) {
          */
         function getPosition() {
             return {
-                x: position.x,
-                y: position.y
+                x: this.x,
+                y: this.y
             };
         }
     }
@@ -103,9 +98,8 @@ Firefly.modules.cell = function(FF) {
         if (!distance) { distance = 1; }
 
         var result = 0;
-        var pos = this.getPosition();
-        var x = pos.x;
-        var y = pos.y;
+        var x = this.x;
+        var y = this.y;
         var world = Firefly.CURRENT_WORLD;
 
         var xminus = (x-distance < 0) ? Firefly.CANVAS_WIDTH-distance : x-distance;
@@ -135,9 +129,8 @@ Firefly.modules.cell = function(FF) {
         if (wrapX === undefined) { wrapX = true; }
         if (wrapY === undefined) { wrapY = true; }
 
-        var pos = this.getPosition();
-        var x = pos.x;
-        var y = pos.y;
+        var x = this.x;
+        var y = this.y;
         var world = Firefly.CURRENT_WORLD;
         var xval = 0;
         var yval = 0;
