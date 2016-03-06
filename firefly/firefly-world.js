@@ -56,11 +56,14 @@ Firefly.modules.world = function(FF) {
 
         // Draw first frame
         Firefly.CURRENT_WORLD = world_1;
+        var states = Firefly.getStates();
+        var id = beginPaint(ctx_1);
         for (var i = 0; i < Firefly.CANVAS_WIDTH; i++) {
             for (var j = 0; j < Firefly.CANVAS_HEIGHT; j++) {
-                drawStep(ctx_1, world_1[i][j], i, j);
+                drawStep(id.data, states[world_1[i][j].state].color, i, j);
             }
         }
+        endPaint(ctx_1, id);
 
         // Start the engine
         swapBuffer(false, true, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2);
@@ -120,8 +123,10 @@ Firefly.modules.world = function(FF) {
         // Populate
         var currentCell;
         var nextCell;
-        var states = Firefly.getStates(); 
-        var color; 
+        var states = Firefly.getStates();
+
+        // Begin paint
+        var id = beginPaint(nextCtx);
 
         for (var i = 0; i < Firefly.CANVAS_WIDTH; i++) {
             for (var j = 0; j < Firefly.CANVAS_HEIGHT; j++) {
@@ -129,13 +134,33 @@ Firefly.modules.world = function(FF) {
                 nextCell = nextWorld[i][j];
 
                 // Process next state
-                states[currentCell.getState()].processor(currentCell, nextCell);
+                states[currentCell.state].processor(currentCell, nextCell);
 
                 // Draw next state
-                color = states[nextCell.getState()].color;
-                drawStep(nextCtx, color, i, j);
+                drawStep(id.data, states[nextCell.state].color, i, j);
             }
         }
+
+        // End paint
+        endPaint(nextCtx, id);
+    }
+
+    /**
+     * Get the image data object -- 'open' it for drawing
+     * @param  {Ctx} ctx The context to draw on
+     * @return {ImageData}
+     */
+    function beginPaint(ctx) {
+        return ctx.getImageData(0, 0, Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
+    }
+
+    /**
+     * Draw the image -- 'close' it for drawing
+     * @param  {Ctx} ctx The context to draw on
+     * @param  {ImageData} imageData The image we are drawing
+     */
+    function endPaint(ctx, imageData) {
+        ctx.putImageData(imageData, 0, 0);
     }
 
     /**
@@ -145,8 +170,12 @@ Firefly.modules.world = function(FF) {
      * @param  {Integer} x The x position of the cell
      * @param  {Integer} y The y position of the cell
      */
-    function drawStep(ctx, color, x, y) {
-        ctx.fillStyle = color;
-        ctx.fillRect(x, y, 1, 1); 
+    function drawStep(data, color, x, y) {
+        var index = (x + Firefly.CANVAS_WIDTH * y) * 4;
+
+        data[index++] = color[0];
+        data[index++] = color[1];
+        data[index++] = color[2];
+        data[index] = 255;
     }
 };
