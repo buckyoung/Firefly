@@ -8,8 +8,6 @@ Firefly.modules.cell = function(FF) {
     // Prototypical Methods
     Cell.prototype.mooreNeighbors = mooreNeighbors;
     Cell.prototype.neumannNeighbors = neumannNeighbors;
-    Cell.prototype.randomMooreNeighborState = randomMooreNeighborState;
-    Cell.prototype.randomNeumannNeighborState = randomNeumannNeighborState;
 
     /**
      * @public Cell Class Constructor
@@ -118,75 +116,5 @@ Firefly.modules.cell = function(FF) {
         if ( world[x     ][yplus ].getState() === targetState ) { result++; }
 
         return result;
-    }
-
-    /**
-     * @public Return the state of a random Moore Neighbor
-     * @return {String} 
-     */
-    function randomMooreNeighborState() {
-        // Get two values between -1 and 1
-        var randoX = (Math.floor(Math.random() * 100) % 3) - 1;
-        var randoY = (Math.floor(Math.random() * 100) % 3) - 1;
-        var world = Firefly.CURRENT_WORLD;
-
-        var partial = world[randoX];
-
-        if (!partial) {
-            return Cell.prototype.randomMooreNeighborState();    
-        }
-
-        var cell = world[randoX][randoY];
-
-        // Sanity check if defined
-        if (!cell) {
-            return Cell.prototype.randomMooreNeighborState();
-        }
-        
-        return cell.getState();    
-    }
-
-    /**
-     * @public Return the state of a random von Neumann Neighbor
-     * @return {String} 
-     */
-    function randomNeumannNeighborState() {
-        // Get two values between -1 and 1
-        var randoX = (Math.floor(Math.random() * 100) % 3) - 1;
-        var randoY = (Math.floor(Math.random() * 100) % 3) - 1;
-        
-        // Do not allow diagonals
-        if (randoX < 0 && randoY != 0) {
-            return Cell.prototype.randomNeumannNeighborState();
-        }
-
-        if (randoX > 0 && randoY != 0) {
-            return Cell.prototype.randomNeumannNeighborState();
-        }
-
-        if (randoY > 0 && randoX != 0) {
-            return Cell.prototype.randomNeumannNeighborState();
-        }
-
-        if (randoY < 0 && randoX != 0) {
-            return Cell.prototype.randomNeumannNeighborState();
-        }
-
-        var world = Firefly.CURRENT_WORLD;
-
-        var partial = world[randoX];
-
-        if (!partial) {
-            return Cell.prototype.randomNeumannNeighborState();    
-        }
-
-        var cell = world[randoX][randoY];
-
-        // Sanity check if defined
-        if (!cell) {
-            return Cell.prototype.randomNeumannNeighborState();
-        }
-        
-        return cell.getState();    
     }
 }

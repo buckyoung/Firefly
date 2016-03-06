@@ -51,10 +51,6 @@ FFExamples.cyclic.initialize = function(FF) {
                     var rando = Math.floor(Math.random() * 100);
                     var state = colors[rotator++ + rando  % colors.length];
 
-                    if (!state) {
-                        console.log('ERROR');
-                    }
-
                     world[i][j] = new FF.Cell(state, i, j); 
                 }
             }
