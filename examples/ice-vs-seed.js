@@ -50,7 +50,7 @@ FFExamples.iceVsSeed.initialize = function(FF) {
                 }
             }
 
-            world[Math.floor(width/2)][Math.floor(height/2)] = new FF.Cell('ice', i, j); 
+            world[Math.floor(width/2)][Math.floor(height/2)] = new FF.Cell('ice', Math.floor(width/2), Math.floor(height/2)); 
         };
     }
 };

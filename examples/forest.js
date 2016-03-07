@@ -24,8 +24,6 @@ FFExamples.forest.initialize = function(FF) {
             return;
         }
 
-        var rando = Math.random();
-
         if (Math.random() <= fireProb) {
             nextCell.setState('fire');
             return;

@@ -48,12 +48,16 @@ FFExamples.all.initialize = function() {
             FFExamples.rule110.initialize(FF);
         });
 
-        FF.registerModel('Seed', function() {
+        FF.registerModel('Seeds', function() {
             FFExamples.seed.initialize(FF);
         });
 
-        FF.registerModel('Ice vs. Seed (mod)', function() {
+        FF.registerModel('Ice vs. Seeds (mod)', function() {
             FFExamples.iceVsSeed.initialize(FF);
-        });        
+        });
+
+        FF.registerModel('Ice vs. Forest Fire', function() {
+            FFExamples.iceVsForest.initialize(FF);
+        });      
     });
 };
