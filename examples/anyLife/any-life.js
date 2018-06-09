@@ -4,20 +4,50 @@ FFExamples.anylife = {};
 
 var S = []; // Survive
 var B = []; // Born
+var initialBirthRate = .2;
+var birthRateMap = {
+    '1': .00005,
+    '2': .0015,
+    '3': .005,
+    '4': .01,
+    '5': .1,
+    '6': .25,
+    '7': .5,
+    '8': .6,
+    '9': .8,
+    '10': .99
+};
+
+Firefly.params = {
+    INVERSE_SIZE: 5, // Min 1 Max 10 on frontend
+    INVERSE_SPEED: 100, // Min 10 Max 300 on frontend
+    CANVAS_1_ID: 'A',
+    CANVAS_2_ID: 'B',
+    POPULATION: 5
+};
 
 FFExamples.anylife.initialize = function(FF) {
     // 134/3 -- my shit!
     // 678/2 or 456/2 or 234/2, etc -- crazy glider world
     // 23/3458/.05 - cool diamond world
     // 23/38/.15 - cool reaction world  --- 2378/38/.15 - more stable
+    // 13/34 - very cool white shapes trippy
+    // 34578/45678 - wild black diamond world very stable
+    // 34578/34568 - OCTOGON WORLD - start w low pop, octogons when growing
+    // 45678/01678 - black world w/ tunnels and movement in the tunnels
+    // 14567/278 - speed 10, wild geometry in black pieces - constantly reconfiguring - toggle B6 on for more structure, then toggle on B1 on and turn B6 off to harden everything. Allow it to thaw before its totally hard. b6 does quick thaw
 
     // var sb = '2378/38'; // S/B String
-
-    var initialBirthRate = .2;
-
+    
     initializeModel(FF);
 
     function initializeModel(FF) {
+        var populationValue = document.getElementById('population-value');
+        var populationInput = document.getElementById('population-input');
+
+        populationValue.innerText = Firefly.params.POPULATION;
+        populationInput.value = Firefly.params.POPULATION;
+
         FF.registerState('alive', [0,0,0], processAlive);
         FF.registerState('dead', [255,255,255], processDead);
         
@@ -50,7 +80,7 @@ FFExamples.anylife.initialize = function(FF) {
         return function(world, width, height) {
             for (var i = 0; i < width; i++) {
                 for (var j = 0; j < height; j++) {
-                    var state = (Math.random() > initialBirthRate ? 'dead' : 'alive');
+                    var state = (Math.random() < initialBirthRate ? 'alive' : 'dead');
                     
                     world[i][j] = new FF.Cell(state, i, j); 
                 }
@@ -93,7 +123,17 @@ FFExamples.anylife.onClickB = function(num) {
     B.splice(index, 1);
 };
 
+FFExamples.anylife.updatePopulation = function(value) {
+    var populationValue = document.getElementById('population-value');
+    populationValue.innerText = value;
+    Firefly.params.POPULATION = value;
+    initialBirthRate = birthRateMap[value];
+    Firefly.resetPlayModel();
+};
+
 // TODO BUCK - add generation counter to drawer
-// TODO BUCK - add initial birth rate to drawer
+    // DONE BUCK - add initial birth rate to drawer
     // DONE BUCK - add ruleset multiselect to drawer
 // TODO BUCK - save & name SB functionality 
+// TODO BUCK - turn off wrapping... how to count outside bounds?
+// TODO BUCK - automatically change ruleset every so many seconds

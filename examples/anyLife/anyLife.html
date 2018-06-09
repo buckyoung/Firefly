@@ -14,11 +14,34 @@
 
     <link rel="stylesheet" href="./../../firefly.css">
     <style>
-        .absolute { position: absolute; }
+        .absolute { 
+            position: absolute; 
+        }
 
-        button { background: white; font-size: 13px; padding: 0 4px 0 4px;}
+        button { 
+            background: white; 
+            font-size: 13px; 
+            padding: 0 4px 0 4px;
+        }
 
-        button.on { background: lightgreen; }
+        button.on { 
+            background: lightgreen; 
+        }
+
+        /* petri dish look */
+        body { 
+            background: darkgray; 
+        }
+
+        canvas {
+            border-radius: 50%;
+            border: 10px solid black;
+            box-shadow: 0px 20px gray;
+            height: 65%;
+            width: 65%;
+            bottom: 5%;
+            left: 20%;
+        }
     </style>
 </head>
 <body onload="FFExamples.anyInit.initialize();">
@@ -38,7 +61,7 @@
         <!-- SPEED -->
         <div class="control">
             <div>
-                <label for="speed-input">Frame Delay</label>
+                <label for="speed-input">Slow Motion</label>
                 <span id="speed-value"></span>
             </div>
             <input id="speed-input" type="range" min="10" max="300" onchange="Firefly.updateSpeed(this.value)">
@@ -46,12 +69,12 @@
         <!-- SIZE -->
         <div class="control">
             <div>
-                <label for="size-input">Size</label>
+                <label for="size-input">Zoom</label>
                 <span id="size-value"></span>
             </div>
             <input id="size-input" type="range" min="1" max="10" onchange="Firefly.updateSize(this.value)">
         </div>
-        <!-- COUNTER -->
+        <!-- S/B -->
         <div class="control">
             <div>
                 S: 
@@ -77,6 +100,14 @@
                 <button type="button" id="b-7" class="off" onclick="FFExamples.anylife.onClickB(7)">7</button>
                 <button type="button" id="b-8" class="off" onclick="FFExamples.anylife.onClickB(8)">8</button>
             </div>
+        </div>
+        <!-- INITIAL POPULATION -->
+        <div class="control">
+            <div>
+                <label style="font-size:0.68em;" for="population-input">Starting Population Density</label>
+                <span id="population-value"></span>
+            </div>
+            <input id="population-input" type="range" min="1" max="10" onchange="FFExamples.anylife.updatePopulation(this.value)">
         </div>
     </div>
     <canvas id="A"></canvas>
