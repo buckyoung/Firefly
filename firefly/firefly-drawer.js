@@ -40,7 +40,7 @@ Firefly.modules.drawer = function(FF) {
                 populateModelSelect();
                 clearTimeout(timeout); 
             }
-        }, 100);
+        }, 250);
     }
 
     /**

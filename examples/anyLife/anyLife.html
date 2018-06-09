@@ -1,0 +1,85 @@
+<html>
+<head>
+    <title>firefly</title>
+
+    <script src="./../../firefly/firefly.js"></script>
+    <script src="./../../firefly/firefly-cell.js"></script>
+    <script src="./../../firefly/firefly-drawer.js"></script>
+    <script src="./../../firefly/firefly-model.js"></script>
+    <script src="./../../firefly/firefly-state.js"></script>
+    <script src="./../../firefly/firefly-world.js"></script>
+
+    <script src="./any-life-init.js"></script>
+    <script src="./any-life.js"></script>
+
+    <link rel="stylesheet" href="./../../firefly.css">
+    <style>
+        .absolute { position: absolute; }
+
+        button { background: white; font-size: 13px; padding: 0 4px 0 4px;}
+
+        button.on { background: lightgreen; }
+    </style>
+</head>
+<body onload="FFExamples.anyInit.initialize();">
+    <div id="toggle" onclick="Firefly.toggleSettings()">
+        &#9881;
+    </div>
+    <div id="drawer" class="visible">
+        <!-- RESET / PLAY -->
+        <div id="reset" class="control" onclick="Firefly.resetPlayModel()"></div>
+        <!-- GAMETYPE -->
+        <div class="control hidden absolute">
+            <div>
+                <label for="model-input">Model</label>
+            </div>
+            <select id="model-input" onchange="Firefly.showPlayIcon()"></select>
+        </div>
+        <!-- SPEED -->
+        <div class="control">
+            <div>
+                <label for="speed-input">Frame Delay</label>
+                <span id="speed-value"></span>
+            </div>
+            <input id="speed-input" type="range" min="10" max="300" onchange="Firefly.updateSpeed(this.value)">
+        </div>
+        <!-- SIZE -->
+        <div class="control">
+            <div>
+                <label for="size-input">Size</label>
+                <span id="size-value"></span>
+            </div>
+            <input id="size-input" type="range" min="1" max="10" onchange="Firefly.updateSize(this.value)">
+        </div>
+        <!-- COUNTER -->
+        <div class="control">
+            <div>
+                S: 
+                <button type="button" id="s-0" class="off" onclick="FFExamples.anylife.onClickS(0)">0</button>
+                <button type="button" id="s-1" class="off" onclick="FFExamples.anylife.onClickS(1)">1</button>
+                <button type="button" id="s-2" class="off" onclick="FFExamples.anylife.onClickS(2)">2</button>
+                <button type="button" id="s-3" class="off" onclick="FFExamples.anylife.onClickS(3)">3</button>
+                <button type="button" id="s-4" class="off" onclick="FFExamples.anylife.onClickS(4)">4</button>
+                <button type="button" id="s-5" class="off" onclick="FFExamples.anylife.onClickS(5)">5</button>
+                <button type="button" id="s-6" class="off" onclick="FFExamples.anylife.onClickS(6)">6</button>
+                <button type="button" id="s-7" class="off" onclick="FFExamples.anylife.onClickS(7)">7</button>
+                <button type="button" id="s-8" class="off" onclick="FFExamples.anylife.onClickS(8)">8</button>
+            </div>
+            <div>
+                B: 
+                <button type="button" id="b-0" class="off" onclick="FFExamples.anylife.onClickB(0)">0</button>
+                <button type="button" id="b-1" class="off" onclick="FFExamples.anylife.onClickB(1)">1</button>
+                <button type="button" id="b-2" class="off" onclick="FFExamples.anylife.onClickB(2)">2</button>
+                <button type="button" id="b-3" class="off" onclick="FFExamples.anylife.onClickB(3)">3</button>
+                <button type="button" id="b-4" class="off" onclick="FFExamples.anylife.onClickB(4)">4</button>
+                <button type="button" id="b-5" class="off" onclick="FFExamples.anylife.onClickB(5)">5</button>
+                <button type="button" id="b-6" class="off" onclick="FFExamples.anylife.onClickB(6)">6</button>
+                <button type="button" id="b-7" class="off" onclick="FFExamples.anylife.onClickB(7)">7</button>
+                <button type="button" id="b-8" class="off" onclick="FFExamples.anylife.onClickB(8)">8</button>
+            </div>
+        </div>
+    </div>
+    <canvas id="A"></canvas>
+    <canvas id="B"></canvas>
+</body>
+</html>

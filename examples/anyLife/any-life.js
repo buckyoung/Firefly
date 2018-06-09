@@ -2,28 +2,24 @@ var FFExamples = FFExamples || {};
 
 FFExamples.anylife = {};
 
+var S = []; // Survive
+var B = []; // Born
+
 FFExamples.anylife.initialize = function(FF) {
-
-
     // 134/3 -- my shit!
     // 678/2 or 456/2 or 234/2, etc -- crazy glider world
     // 23/3458/.05 - cool diamond world
     // 23/38/.15 - cool reaction world  --- 2378/38/.15 - more stable
 
-    var sb = '2378/38'; // S/B String
+    // var sb = '2378/38'; // S/B String
 
     var initialBirthRate = .2;
-
-    var S = []; // Survive
-    var B = []; // Born
 
     initializeModel(FF);
 
     function initializeModel(FF) {
         FF.registerState('alive', [0,0,0], processAlive);
         FF.registerState('dead', [255,255,255], processDead);
-
-        initSB();
         
         FF.initialize(initializeWorld(FF));
     }
@@ -61,23 +57,43 @@ FFExamples.anylife.initialize = function(FF) {
             }
         };
     }
+};
 
-    function initSB() {
-        var sbarr = sb.split('/');
+FFExamples.anylife.onClickS = function(num) {
+    var element = document.getElementById('s-' + num);
+    var isTurningOn = element.className == 'off';
 
-        S = sbarr[0].split('');
-        B = sbarr[1].split('');
-
-        for (var i=0; i<S.length; i++) {
-            S[i] = parseInt(S[i]);
-        }
-
-        for (var i=0; i<B.length; i++) {
-            B[i] = parseInt(B[i]);
-        }
+    // is turning on
+    if (isTurningOn) {
+        element.className = 'on';
+        S.push(num);
+        return;
     }
+
+    // is turning off
+    element.className = 'off';
+    var index = S.indexOf(num);
+    S.splice(index, 1);
+};
+
+FFExamples.anylife.onClickB = function(num) {
+    var element = document.getElementById('b-' + num);
+    var isTurningOn = element.className == 'off';
+
+    // is turning on
+    if (isTurningOn) {
+        element.className = 'on';
+        B.push(num);
+        return;
+    }
+
+    // is turning off
+    element.className = 'off';
+    var index = B.indexOf(num);
+    B.splice(index, 1);
 };
 
 // TODO BUCK - add generation counter to drawer
 // TODO BUCK - add initial birth rate to drawer
-// TODO BUCK - add ruleset multiselect to drawer
+    // DONE BUCK - add ruleset multiselect to drawer
+// TODO BUCK - save & name SB functionality 

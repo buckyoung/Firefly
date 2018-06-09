@@ -4,10 +4,6 @@ FFExamples.all = {};
 
 FFExamples.all.initialize = function() {
     Firefly(function(FF) {
-        FF.registerModel('Any LIFE', function() {
-            FFExamples.anylife.initialize(FF);
-        });
-
         FF.registerModel('Brian\'s Brain', function() {
             FFExamples.brians.initialize(FF);
         });
