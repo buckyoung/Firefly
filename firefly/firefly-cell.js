@@ -140,12 +140,16 @@ Firefly.modules.cell = function(FF) {
             xval = (x+targetX >= Firefly.CANVAS_WIDTH) ? -1+targetX : x+targetX;
         } else if (targetX < 0) {
             xval = (x+targetX < 0) ? Firefly.CANVAS_WIDTH+targetX : x+targetX;
+        } else {
+            xval = x;
         }
 
         if (wrapY && targetY > 0) {
             yval = (y+targetY >= Firefly.CANVAS_HEIGHT) ? -1+targetY : y+targetY;
         } else if (targetY < 0) {
             yval = (y+targetY < 0) ? Firefly.CANVAS_HEIGHT+targetY : y+targetY;
+        } else {
+            yval = y;
         }
 
         // Calculate without wrapping

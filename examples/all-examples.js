@@ -4,6 +4,14 @@ FFExamples.all = {};
 
 FFExamples.all.initialize = function() {
     Firefly(function(FF) {
+        FF.registerModel('Any LIFE', function() {
+            FFExamples.anylife.initialize(FF);
+        });
+
+        FF.registerModel('Brian\'s Brain', function() {
+            FFExamples.brians.initialize(FF);
+        });
+
         FF.registerModel('Conway\'s Game of Life', function() {
             FFExamples.conway.initialize(FF);
         });
