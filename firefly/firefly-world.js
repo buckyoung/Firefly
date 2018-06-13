@@ -165,7 +165,7 @@ Firefly.modules.world = function(FF) {
     /**
      * Draw a step on ctx
      * @param  {Ctx} ctx The context to draw on
-     * @param  {String} color In rbg(#, #, #) format
+     * @param  {Array} color In rbg(#, #, #) format
      * @param  {Integer} x The x position of the cell
      * @param  {Integer} y The y position of the cell
      */

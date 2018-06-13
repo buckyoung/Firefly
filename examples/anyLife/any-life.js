@@ -50,8 +50,8 @@ FFExamples.anylife.initialize = function(FF) {
         populationValue.innerText = Firefly.params.POPULATION;
         populationInput.value = Firefly.params.POPULATION;
 
-        FF.registerState('alive', [0,0,0], processAlive);
-        FF.registerState('dead', [255,255,255], processDead);
+        FF.registerState('alive', [250,255,0], processAlive);
+        FF.registerState('dead', [67,36,127], processDead);
         
         FF.initialize(initializeWorld(FF));
 
@@ -75,22 +75,53 @@ FFExamples.anylife.initialize = function(FF) {
         var aliveNeighborCount = currentCell.countMooreNeighbors('alive');
 
         if (S.includes(aliveNeighborCount)) {
+            // Staying alive, lets keep the color the same
             nextCell.setState('alive');
             return;
         }
 
-        nextCell.setState('dead');
+        nextCell.setState('dead', false);
+
+        // Transitioning from alive to dead, lets transition color
+        var currentColor = nextCell.getColor();
+        var deadColor = Firefly.getStates()['dead'].color;
+
+        var halfRed = parseInt((currentColor[0] - deadColor[0]) / 2);
+        var newRed = currentColor[0] - halfRed;
+
+        var halfGreen = parseInt((currentColor[1] - deadColor[1]) / 2);
+        var newGreen = currentColor[1] - halfGreen;
+
+        var halfBlue = parseInt((currentColor[2] - deadColor[2]) / 2);
+        var newBlue = currentColor[2] - halfBlue;
+
+        nextCell.setColor([newRed, newGreen, newBlue]);
     }
 
     function processDead(currentCell, nextCell) {
         var aliveNeighborCount = currentCell.countMooreNeighbors('alive');
 
         if (B.includes(aliveNeighborCount)) {
-            nextCell.setState('alive');
+            nextCell.setState('alive'); // Always make alive color "pop"
             return;
         }
 
-        nextCell.setState('dead');
+        nextCell.setState('dead', false);
+        
+        // Potentially still transitioning to full-on dead color
+        var currentColor = nextCell.getColor();
+        var deadColor = Firefly.getStates()['dead'].color;
+
+        var halfRed = parseInt((currentColor[0] - deadColor[0]) / 2);
+        var newRed = currentColor[0] - halfRed;
+
+        var halfGreen = parseInt((currentColor[1] - deadColor[1]) / 2);
+        var newGreen = currentColor[1] - halfGreen;
+
+        var halfBlue = parseInt((currentColor[2] - deadColor[2]) / 2);
+        var newBlue = currentColor[2] - halfBlue;
+
+        nextCell.setColor([newRed, newGreen, newBlue]);
     }
 
     function initializeWorld(FF) {
@@ -188,3 +219,6 @@ FFExamples.anylife.updatePopulation = function(value) {
 // basically fire event before / after every FRAME
 // generation could use this event to update the dom
 // cells could use this event to ease color transitions
+
+// TODO BUCK - implement color picker
+// TODO BUCK - implement trails on/off checkbox

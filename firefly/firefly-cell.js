@@ -21,18 +21,28 @@ Firefly.modules.cell = function(FF) {
         this.x = x;
         this.y = y;
         this.state = initState;
+        this.color = Firefly.getStates()[this.state].color;
 
         // Public Methods (redundant)
         this.setState = setState;
         this.getState = getState;
         this.getPosition = getPosition;
+        this.setColor = setColor;
+        this.getColor = getColor;
 
         /**
          * @public Set cell state
          * @param {String} newState Cell state
+         * @param {Boolean} shouldSetColor [optional, default true] set cell color to state color
          */
-        function setState(newState) {
+        function setState(newState, shouldSetColor) {
+            if (shouldSetColor === undefined) { shouldSetColor = true; }
+
             this.state = newState;
+
+            if (shouldSetColor) {
+                this.setColor(Firefly.getStates()[this.state].color);
+            }
         }
 
         /**
@@ -52,6 +62,22 @@ Firefly.modules.cell = function(FF) {
                 x: this.x,
                 y: this.y
             };
+        }
+
+        /**
+         * @public Set the cell color
+         * @param {Array} newColor RGB
+         */
+        function setColor(newColor) {
+            this.color = newColor;
+        }
+
+        /**
+         * @public Return cell position
+         * @return {Array} color RGB
+         */
+        function getColor() {
+            return this.color;
         }
     }
 
