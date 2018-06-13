@@ -36,6 +36,8 @@ FFExamples.anylife.initialize = function(FF) {
     // 34578/34568 - OCTOGON WORLD - start w low pop, octogons when growing
     // 45678/01678 - black world w/ tunnels and movement in the tunnels
     // 14567/278 - speed 10, wild geometry in black pieces - constantly reconfiguring - toggle B6 on for more structure, then toggle on B1 on and turn B6 off to harden everything. Allow it to thaw before its totally hard. b6 does quick thaw
+    // 
+    // 78/12345678 - 10 pop density -- also try 8/12345678 - transfer down to /12345 - /1234
 
     // var sb = '2378/38'; // S/B String
     
@@ -52,6 +54,21 @@ FFExamples.anylife.initialize = function(FF) {
         FF.registerState('dead', [255,255,255], processDead);
         
         FF.initialize(initializeWorld(FF));
+
+        // Initial randomization for S/B
+        // for (var i = 0; i < 9; i++) {
+        //     if (Math.random() < .5) {
+        //         FFExamples.anylife.onClickS(i);
+        //     }
+        // }
+
+        // for (var i = 0; i < 9; i++) {
+        //     if (Math.random() < .5) {
+        //         FFExamples.anylife.onClickB(i);
+        //     }
+        // }
+        // 
+        // randomizeRules();
     }
 
     function processAlive(currentCell, nextCell) {
@@ -87,6 +104,30 @@ FFExamples.anylife.initialize = function(FF) {
             }
         };
     }
+
+    // function randomizeRules() {
+    //     S = [];
+    //     B = [];
+
+    //     var numOfChanges = parseInt(Math.random() * (3 - 1) + 1); // between 2 and 1 changes
+
+    //     for (var i = 0; i < numOfChanges; i++) {
+    //         var numToChange = parseInt(Math.random() * (9 - 0) + 0); // between 8 and 0, toggle
+
+    //         if (Math.random() < .5) { // change S
+    //             FFExamples.anylife.onClickS(numToChange);
+    //         } else { // change B
+    //             FFExamples.anylife.onClickB(numToChange);
+    //         }
+    //     }
+
+    //     FF.initialize(initializeWorld(FF));
+
+    //     var timeout = setTimeout(function() {
+    //         randomizeRules();
+    //         clearTimeout(timeout); 
+    //     }, 3000);
+    // }
 };
 
 FFExamples.anylife.onClickS = function(num) {
@@ -134,6 +175,16 @@ FFExamples.anylife.updatePopulation = function(value) {
 // TODO BUCK - add generation counter to drawer
     // DONE BUCK - add initial birth rate to drawer
     // DONE BUCK - add ruleset multiselect to drawer
-// TODO BUCK - save & name SB functionality 
+// TODO BUCK - save & name SB functionality, maybe with voting functionality?
 // TODO BUCK - turn off wrapping... how to count outside bounds?
 // TODO BUCK - automatically change ruleset every so many seconds
+
+// TODO BUCK - introduce cool/hot colors based on cell lifetime - or maybe just a generic color easing from alive to dead... basically have color over time be a property of the cell somehow... might have to introduce ease in / ease out concepts to states??
+// TODO BUCK - pause button? should be easy just clear timeout function -- but PLAYing again will be hard cause we lose the context for swap buffer -- OH DUDE JUST SET THE FRAME DELAY TO 999999999
+
+
+// Might need to implement an eventing hook system
+// i could use this for generation counter and for cell color updates
+// basically fire event before / after every FRAME
+// generation could use this event to update the dom
+// cells could use this event to ease color transitions

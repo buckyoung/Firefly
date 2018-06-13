@@ -56,11 +56,10 @@ Firefly.modules.world = function(FF) {
 
         // Draw first frame
         Firefly.CURRENT_WORLD = world_1;
-        var states = Firefly.getStates();
         var id = beginPaint(ctx_1);
         for (var i = 0; i < Firefly.CANVAS_WIDTH; i++) {
             for (var j = 0; j < Firefly.CANVAS_HEIGHT; j++) {
-                drawStep(id.data, states[world_1[i][j].state].color, i, j);
+                drawStep(id.data, world_1[i][j].getColor(), i, j);
             }
         }
         endPaint(ctx_1, id);
@@ -137,7 +136,7 @@ Firefly.modules.world = function(FF) {
                 states[currentCell.state].processor(currentCell, nextCell);
 
                 // Draw next state
-                drawStep(id.data, states[nextCell.state].color, i, j);
+                drawStep(id.data, nextCell.getColor(), i, j);
             }
         }
 
