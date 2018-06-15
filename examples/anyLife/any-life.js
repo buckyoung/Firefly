@@ -203,15 +203,18 @@ FFExamples.anylife.updatePopulation = function(value) {
     Firefly.resetPlayModel();
 };
 
-// TODO BUCK - add generation counter to drawer
-    // DONE BUCK - add initial birth rate to drawer
-    // DONE BUCK - add ruleset multiselect to drawer
-// TODO BUCK - save & name SB functionality, maybe with voting functionality?
-// TODO BUCK - turn off wrapping... how to count outside bounds?
-// TODO BUCK - automatically change ruleset every so many seconds
-
-// TODO BUCK - introduce cool/hot colors based on cell lifetime - or maybe just a generic color easing from alive to dead... basically have color over time be a property of the cell somehow... might have to introduce ease in / ease out concepts to states??
 // TODO BUCK - pause button? should be easy just clear timeout function -- but PLAYing again will be hard cause we lose the context for swap buffer -- OH DUDE JUST SET THE FRAME DELAY TO 999999999
+// TODO BUCK - implement color picker
+// TODO BUCK - implement trails on/off checkbox
+// TODO BUCK - implement thermal color spectrum?
+// TODO BUCK - add generation counter to drawer
+// TODO BUCK - save & name SB functionality, maybe with voting functionality?
+// TODO BUCK - automatically change ruleset every so many seconds
+// TODO BUCK - turn off wrapping... how to count outside bounds?
+
+// DONE BUCK - add initial birth rate to drawer
+// DONE BUCK - add ruleset multiselect to drawer
+// DONE BUCK - introduce cool/hot colors based on cell lifetime - or maybe just a generic color easing from alive to dead... basically have color over time be a property of the cell somehow... might have to introduce ease in / ease out concepts to states??
 
 
 // Might need to implement an eventing hook system
@@ -219,6 +222,3 @@ FFExamples.anylife.updatePopulation = function(value) {
 // basically fire event before / after every FRAME
 // generation could use this event to update the dom
 // cells could use this event to ease color transitions
-
-// TODO BUCK - implement color picker
-// TODO BUCK - implement trails on/off checkbox
