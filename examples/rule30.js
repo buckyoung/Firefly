@@ -2,6 +2,7 @@ var FFExamples = FFExamples || {};
 
 FFExamples.rule30 = {};
 
+// "CHAOS" RULE
 FFExamples.rule30.initialize = function(FF) {
     initializeModel(FF);
 
