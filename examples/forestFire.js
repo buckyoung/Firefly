@@ -1,8 +1,8 @@
 var FFExamples = FFExamples || {};
 
-FFExamples.forest = {};
+FFExamples.forestFire = {};
 
-FFExamples.forest.initialize = function(FF) {
+FFExamples.forestFire.initialize = function(FF) {
     var treeProb = .0006;
     var fireProb = .00001;
 

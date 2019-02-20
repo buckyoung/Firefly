@@ -1,8 +1,8 @@
 var FFExamples = FFExamples || {};
 
-FFExamples.conway = {};
+FFExamples.conwaysGameOfLife = {};
 
-FFExamples.conway.initialize = function(FF) {
+FFExamples.conwaysGameOfLife.initialize = function(FF) {
     initializeModel(FF);
 
     function initializeModel(FF) {

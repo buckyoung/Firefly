@@ -1,13 +1,13 @@
 var FFExamples = FFExamples || {};
 
-FFExamples.brians = {};
+FFExamples.briansBrain = {};
 
-FFExamples.brians.initialize = function(FF) {
+FFExamples.briansBrain.initialize = function(FF) {
     initializeModel(FF);
 
     function initializeModel(FF) {
         FF.registerState('alive', [200, 0, 0], processAlive);
-        FF.registerState('dying', [160, 0, 0], processDying);
+        FF.registerState('dying', [100, 0, 0], processDying);
         FF.registerState('dead', [200, 200, 200], processDead);
 
         FF.initialize(initializeWorld(FF));
