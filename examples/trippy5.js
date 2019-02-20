@@ -1,10 +1,8 @@
-WOW WORLD
-
 var FFExamples = FFExamples || {};
 
-FFExamples.beehive2 = {};
+FFExamples.trippy5 = {};
 
-FFExamples.beehive2.initialize = function(FF) {
+FFExamples.trippy5.initialize = function(FF) {
     var numOfTurningBackFrames = 400; // 2 is dope and trippy -- 4 is stable
     var threatProb = .0001;
     var spreadProb = .5;

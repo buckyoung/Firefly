@@ -26,6 +26,7 @@ FFExamples.all.initialize = function() {
         'trippy2SunBurst',
         'trippy3RippleWorld',
         'trippy4MergingDiamonds',
+        'trippy5',
         'walledCities',
 	];
 
