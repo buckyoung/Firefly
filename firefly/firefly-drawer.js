@@ -3,6 +3,7 @@
  */
 Firefly.modules.drawer = function(FF) {
     var reset = document.getElementById('reset');
+    var counter = document.getElementById('counter');
     var drawer = document.getElementById('drawer');
     var modelSelect = document.getElementById('model-input');
     var speedValue = document.getElementById('speed-value');
@@ -16,6 +17,7 @@ Firefly.modules.drawer = function(FF) {
     Firefly.updateSize = updateSize;
     Firefly.resetPlayModel = resetPlayModel;
     Firefly.showPlayIcon = showPlayIcon;
+    Firefly.updateCounter = updateCounter;
 
     // Initialize
     initialize();
@@ -106,5 +108,12 @@ Firefly.modules.drawer = function(FF) {
      */
     function showPlayIcon() {
         reset.innerText = '\u25B6';
+    }
+
+    /**
+     * @protected Update the generation counter
+     */
+    function updateCounter(value) {
+        counter.innerText = value;
     }
 };

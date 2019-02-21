@@ -65,7 +65,7 @@ Firefly.modules.world = function(FF) {
         endPaint(ctx_1, id);
 
         // Start the engine
-        swapBuffer(false, true, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2);
+        swapBuffer(false, true, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2, 1);
     }    
 
     /**
@@ -78,8 +78,11 @@ Firefly.modules.world = function(FF) {
      * @param  {Context} ctx_2 The context of canvas 2
      * @param  {World} world_1 The grid system of world 1
      * @param  {World} world_2 The grid system of world 2
+     * @param  {integer} count Generation counter
      */
-    function swapBuffer(visible_1, visible_2, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2) {
+    function swapBuffer(visible_1, visible_2, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2, count) {
+        Firefly.updateCounter(count);
+
         // Ensure boolean opposites
         if (visible_1 === visible_2) {
             visible_2 = !visible_1;
@@ -103,7 +106,7 @@ Firefly.modules.world = function(FF) {
         visible_2 = !visible_2;
 
         CANCEL_TIMEOUT = window.setTimeout(function() {
-            swapBuffer(visible_1, visible_2, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2);
+            swapBuffer(visible_1, visible_2, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2, ++count);
         }, Firefly.params.INVERSE_SPEED);
     }
 

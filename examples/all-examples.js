@@ -6,12 +6,24 @@ FFExamples.all.initialize = function() {
 
     // To add an example, just put the filename here:
 	var examples = [
+        'gas',
+        'gasVsGas',
+        'warringNations',
+        'trippy1AvocadoWorld',
+        'trippy2Epidemic',
+        'trippy2SunBurst',
+        'trippy3RippleWorld',
+        'trippy4MergingDiamonds',
+        'trippy5',
         'beehive',
         'briansBrain',
         'conwaysGameOfLife',
         'cyclic',
         'cyclicWithConway',
         'forestFire',
+        'seed',
+        'serviettes',
+        'walledCities',
         'iceVsForest',
         'iceVsSeed',
         'rule110',
@@ -19,15 +31,6 @@ FFExamples.all.initialize = function() {
         'rule184SingleLine',
         'rule30',
         'rule90',
-        'seed',
-        'serviettes',
-        'trippy1AvocadoWorld',
-        'trippy2Epidemic',
-        'trippy2SunBurst',
-        'trippy3RippleWorld',
-        'trippy4MergingDiamonds',
-        'trippy5',
-        'walledCities',
 	];
 
     // Dynamically load js on page
