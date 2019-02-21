@@ -3,38 +3,38 @@ var FFExamples = FFExamples || {};
 FFExamples.warringNations = {};
 
 FFExamples.warringNations.initialize = function(FF) {
-    var gasProb = .4;
+    var peopleProb = .4;
 
     initializeModel(FF);
 
     function initializeModel(FF) {
         FF.registerState('empty', [0,0,0], processEmpty);
 
-        FF.registerState('greenGas', [30, 100, 30], processGreenGas);
-        FF.registerState('greenGasEmitter', [0, 255, 0], processGreenGasEmitter);
+        FF.registerState('greenPeople', [0, 179, 0], processGreenPeople);
+        FF.registerState('greenPeopleCapital', [0, 255, 0], processGreenPeopleCapital);
         
-        FF.registerState('blueGas', [60, 100, 160], processBlueGas);
-        FF.registerState('blueGasEmitter', [120, 200, 255], processBlueGasEmitter);
+        FF.registerState('pinkPeople', [179, 0, 179], processPinkPeople);
+        FF.registerState('pinkPeopleCapital', [255, 0, 255], processPinkPeopleCapital);
         
-        FF.registerState('fire', [170, 30, 30], processFire);
+        FF.registerState('fire', [255, 30, 30], processFire);
 
         FF.initialize(initializeWorld(FF));
     }
 
-    // Kill the emitters if the other gas reaches it
-    function processGreenGasEmitter(currentCell, nextCell) {
-        if (currentCell.countMooreNeighbors('blueGas') > 0) {
-            nextCell.setState('blueGasEmitter');
+    // Capital should switch sides if the other faction gets there
+    function processGreenPeopleCapital(currentCell, nextCell) {
+        if (currentCell.countMooreNeighbors('pinkPeople') > 0) {
+            nextCell.setState('pinkPeopleCapital');
             return;
         }
 
         nextCell.setState(currentCell.getState());
     }
 
-    // Kill the emitters if the other gas reaches it
-    function processBlueGasEmitter(currentCell, nextCell) {
-        if (currentCell.countMooreNeighbors('greenGas') > 0) {
-            nextCell.setState('greenGasEmitter');
+    // Capital should switch sides if the other faction gets there
+    function processPinkPeopleCapital(currentCell, nextCell) {
+        if (currentCell.countMooreNeighbors('greenPeople') > 0) {
+            nextCell.setState('greenPeopleCapital');
             return;
         }
 
@@ -42,61 +42,61 @@ FFExamples.warringNations.initialize = function(FF) {
     }
 
     function processEmpty(currentCell, nextCell) {
-        var blueCount = currentCell.countMooreNeighbors('blueGas');
-        var greenCount = currentCell.countMooreNeighbors('greenGas');
+        var pinkCount = currentCell.countMooreNeighbors('pinkPeople');
+        var greenCount = currentCell.countMooreNeighbors('greenPeople');
 
-        // Determine if emitters should fire off some gas
-        if (currentCell.countMooreNeighbors('greenGasEmitter') > 0 
-            && Math.random() < gasProb/100
+        // Determine if capital should produce people
+        if (currentCell.countMooreNeighbors('greenPeopleCapital') > 0 
+            && Math.random() < peopleProb/100
         ) {
-            nextCell.setState('greenGas');
+            nextCell.setState('greenPeople');
             return;
         }
 
-        if (currentCell.countMooreNeighbors('blueGasEmitter') > 0 
-            && Math.random() < gasProb/100
+        if (currentCell.countMooreNeighbors('pinkPeopleCapital') > 0 
+            && Math.random() < peopleProb/100
         ) {
-            nextCell.setState('blueGas');
+            nextCell.setState('pinkPeople');
             return;
         }
 
         var isFireNear = currentCell.countMooreNeighbors('fire', 1) > 0 || currentCell.countMooreNeighbors('fire', 2) > 0;
-        var shouldSpread = Math.random() < gasProb;
+        var shouldSpread = Math.random() < peopleProb;
 
-        // Determine if green gas should propagate
+        // Determine if green people should propagate
         if (
-            currentCell.countNeumannNeighbors('greenGas') == 0 &&// Remove / add - Explosive gas vs warring nations
-            greenCount > blueCount
+            currentCell.countNeumannNeighbors('greenPeople') == 0 &&// Remove / add - Explosive people vs warring nations
+            greenCount > pinkCount
             && greenCount > 0 
             && greenCount < 5 
             && shouldSpread
             && !isFireNear
         ) {
-            nextCell.setState('greenGas');
+            nextCell.setState('greenPeople');
             return;
         }
 
-        // Determine if blue gas should propagate
+        // Determine if pink people should propagate
         if (
-            currentCell.countNeumannNeighbors('blueGas') == 0 &&// Remove / add - Explosive gas vs warring nations
-            blueCount > greenCount
-            && blueCount > 0 
-            && blueCount < 5 
+            currentCell.countNeumannNeighbors('pinkPeople') == 0 &&// Remove / add - Explosive people vs warring nations
+            pinkCount > greenCount
+            && pinkCount > 0 
+            && pinkCount < 5 
             && shouldSpread
             && !isFireNear
         ) {
-            nextCell.setState('blueGas');
+            nextCell.setState('pinkPeople');
             return;
         }
 
         nextCell.setState(currentCell.getState());
     }
 
-    function processGreenGas(currentCell, nextCell) {
-        var blueCount = currentCell.countMooreNeighbors('blueGas');
-        var greenCount = currentCell.countMooreNeighbors('greenGas');
+    function processGreenPeople(currentCell, nextCell) {
+        var pinkCount = currentCell.countMooreNeighbors('pinkPeople');
+        var greenCount = currentCell.countMooreNeighbors('greenPeople');
 
-        if (greenCount < blueCount) {
+        if (greenCount < pinkCount) {
             nextCell.setState('fire');
             return;
         }
@@ -112,11 +112,11 @@ FFExamples.warringNations.initialize = function(FF) {
         nextCell.setState('empty');
     }
 
-    function processBlueGas(currentCell, nextCell) {
-        var blueCount = currentCell.countMooreNeighbors('blueGas');
-        var greenCount = currentCell.countMooreNeighbors('greenGas');
+    function processPinkPeople(currentCell, nextCell) {
+        var pinkCount = currentCell.countMooreNeighbors('pinkPeople');
+        var greenCount = currentCell.countMooreNeighbors('greenPeople');
 
-        if (blueCount < greenCount) {
+        if (pinkCount < greenCount) {
             nextCell.setState('fire');
             return;
         }
@@ -149,45 +149,75 @@ FFExamples.warringNations.initialize = function(FF) {
             // Row 1
             w = Math.floor(width*1/5);
             h = Math.floor(height*1/4);
-            world[w][h] = new FF.Cell('blueGasEmitter', w, h);
+            world[w][h] = new FF.Cell('pinkPeopleCapital', w, h);
+            world[w+1][h] = new FF.Cell('pinkPeopleCapital', w+1, h);
+            world[w][h+1] = new FF.Cell('pinkPeopleCapital', w, h+1);
+            world[w+1][h+1] = new FF.Cell('pinkPeopleCapital', w+1, h+1);
 
             w = Math.floor(width*2/5);
             h = Math.floor(height*1/4);
-            world[w][h] = new FF.Cell('greenGasEmitter', w, h);
+            world[w][h] = new FF.Cell('greenPeopleCapital', w, h);
+            world[w+1][h] = new FF.Cell('greenPeopleCapital', w+1, h);
+            world[w][h+1] = new FF.Cell('greenPeopleCapital', w, h+1);
+            world[w+1][h+1] = new FF.Cell('greenPeopleCapital', w+1, h+1);
 
             w = Math.floor(width*3/5);
             h = Math.floor(height*1/4);
-            world[w][h] = new FF.Cell('blueGasEmitter', w, h);
+            world[w][h] = new FF.Cell('pinkPeopleCapital', w, h);
+            world[w+1][h] = new FF.Cell('pinkPeopleCapital', w+1, h);
+            world[w][h+1] = new FF.Cell('pinkPeopleCapital', w, h+1);
+            world[w+1][h+1] = new FF.Cell('pinkPeopleCapital', w+1, h+1);
 
             w = Math.floor(width*4/5);
             h = Math.floor(height*1/4);
-            world[w][h] = new FF.Cell('greenGasEmitter', w, h);
+            world[w][h] = new FF.Cell('greenPeopleCapital', w, h);
+            world[w+1][h] = new FF.Cell('greenPeopleCapital', w+1, h);
+            world[w][h+1] = new FF.Cell('greenPeopleCapital', w, h+1);
+            world[w+1][h+1] = new FF.Cell('greenPeopleCapital', w+1, h+1);
 
             // Row 2
             w = Math.floor(width*1/3);
             h = Math.floor(height*2/4);
-            world[w][h] = new FF.Cell('blueGasEmitter', w, h);
+            world[w][h] = new FF.Cell('pinkPeopleCapital', w, h);
+            world[w+1][h] = new FF.Cell('pinkPeopleCapital', w+1, h);
+            world[w][h+1] = new FF.Cell('pinkPeopleCapital', w, h+1);
+            world[w+1][h+1] = new FF.Cell('pinkPeopleCapital', w+1, h+1);
 
             w = Math.floor(width*2/3);
             h = Math.floor(height*2/4);
-            world[w][h] = new FF.Cell('greenGasEmitter', w, h);
+            world[w][h] = new FF.Cell('greenPeopleCapital', w, h);
+            world[w+1][h] = new FF.Cell('greenPeopleCapital', w+1, h);
+            world[w][h+1] = new FF.Cell('greenPeopleCapital', w, h+1);
+            world[w+1][h+1] = new FF.Cell('greenPeopleCapital', w+1, h+1);
 
             // Row 3
             w = Math.floor(width*1/5);
             h = Math.floor(height*3/4);
-            world[w][h] = new FF.Cell('greenGasEmitter', w, h);
+            world[w][h] = new FF.Cell('greenPeopleCapital', w, h);
+            world[w+1][h] = new FF.Cell('greenPeopleCapital', w+1, h);
+            world[w][h+1] = new FF.Cell('greenPeopleCapital', w, h+1);
+            world[w+1][h+1] = new FF.Cell('greenPeopleCapital', w+1, h+1);
 
             w = Math.floor(width*2/5);
             h = Math.floor(height*3/4);
-            world[w][h] = new FF.Cell('blueGasEmitter', w, h);
+            world[w][h] = new FF.Cell('pinkPeopleCapital', w, h);
+            world[w+1][h] = new FF.Cell('pinkPeopleCapital', w+1, h);
+            world[w][h+1] = new FF.Cell('pinkPeopleCapital', w, h+1);
+            world[w+1][h+1] = new FF.Cell('pinkPeopleCapital', w+1, h+1);
 
             w = Math.floor(width*3/5);
             h = Math.floor(height*3/4);
-            world[w][h] = new FF.Cell('greenGasEmitter', w, h);
+            world[w][h] = new FF.Cell('greenPeopleCapital', w, h);
+            world[w+1][h] = new FF.Cell('greenPeopleCapital', w+1, h);
+            world[w][h+1] = new FF.Cell('greenPeopleCapital', w, h+1);
+            world[w+1][h+1] = new FF.Cell('greenPeopleCapital', w+1, h+1);
 
             w = Math.floor(width*4/5);
             h = Math.floor(height*3/4);
-            world[w][h] = new FF.Cell('blueGasEmitter', w, h);
+            world[w][h] = new FF.Cell('pinkPeopleCapital', w, h);
+            world[w+1][h] = new FF.Cell('pinkPeopleCapital', w+1, h);
+            world[w][h+1] = new FF.Cell('pinkPeopleCapital', w, h+1);
+            world[w+1][h+1] = new FF.Cell('pinkPeopleCapital', w+1, h+1);
         };
     }
 };
