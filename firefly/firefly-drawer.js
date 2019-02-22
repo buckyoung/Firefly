@@ -115,6 +115,6 @@ Firefly.modules.drawer = function(FF) {
      * @protected Update the generation counter
      */
     function updateCounter() {
-        counter.innerText = FF.generationCount;
+        counter.innerText = FF.getGenerationCount();
     }
 };

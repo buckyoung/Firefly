@@ -3,7 +3,7 @@
  */
 Firefly.modules.world = function(FF) {
     // Public Variables
-    FF.generationCount = 1;
+    FF.getGenerationCount = getGenerationCount;
 
     // Public Methods
     FF.initialize = initialize;
@@ -13,6 +13,7 @@ Firefly.modules.world = function(FF) {
 
     // Protected Variables
     Firefly.CURRENT_WORLD;
+    Firefly.GENERATION_COUNT;
 
     // Listen for escape and enter keys
     document.onkeydown = function(e) {
@@ -65,7 +66,7 @@ Firefly.modules.world = function(FF) {
         }
         endPaint(ctx_1, id);
 
-        FF.generationCount = 1;
+        Firefly.GENERATION_COUNT = 1;
 
         // Start the engine
         swapBuffer(false, true, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2);
@@ -83,7 +84,7 @@ Firefly.modules.world = function(FF) {
      * @param  {World} world_2 The grid system of world 2
      */
     function swapBuffer(visible_1, visible_2, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2) {
-        FF.generationCount++;
+        Firefly.GENERATION_COUNT++;
         Firefly.drawer.updateCounter();
 
         // Ensure boolean opposites
@@ -182,5 +183,9 @@ Firefly.modules.world = function(FF) {
         data[index++] = color[1];
         data[index++] = color[2];
         data[index] = 255;
+    }
+
+    function getGenerationCount() {
+        return Firefly.GENERATION_COUNT;
     }
 };
