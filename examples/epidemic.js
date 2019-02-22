@@ -1,16 +1,16 @@
 var FFExamples = FFExamples || {};
 
-FFExamples.trippy5 = {};
+FFExamples.epidemic = {};
 
-FFExamples.trippy5.initialize = function(FF) {
-    var numOfTurningBackFrames = 400; // 2 is dope and trippy -- 4 is stable
-    var threatProb = .0001;
-    var spreadProb = .5;
+FFExamples.epidemic.initialize = function(FF) {
+    var numOfTurningBackFrames = 500;
+    var threatProb = .00001; // Adjust this for wild differences
+    var spreadProb = .4;
 
     initializeModel(FF);
 
     function initializeModel(FF) {
-        FF.registerState('back', [255, 213, 0], processBack);
+        FF.registerState('back', [255,255,255], processBack);
         FF.registerState('belly', [179, 149, 0], processBelly);
 
         for (var i=0; i < numOfTurningBackFrames; i++) {
@@ -61,12 +61,16 @@ FFExamples.trippy5.initialize = function(FF) {
             return;
         }
 
-        if (Math.random() < spreadProb/30) {
+        if (Math.random() < spreadProb/20) {
             nextCell.setState('back');
             return;
         }
 
         nextCell.setState('' + newState);
+
+        var color = (newState*10);
+
+        nextCell.setColor([30+color,0+color,color-170]);
     }
 
     function processBelly(currentCell, nextCell) {

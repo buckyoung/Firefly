@@ -45,18 +45,18 @@
     </style>
 </head>
 <body onload="FFExamples.anyInit.initialize();">
-    <div id="toggle" onclick="Firefly.toggleSettings()">
+    <div id="toggle" onclick="Firefly.drawer.toggleSettings()">
         &#9881;
     </div>
     <div id="drawer" class="visible">
         <!-- RESET / PLAY -->
-        <div id="reset" class="control" onclick="Firefly.resetPlayModel()"></div>
+        <div id="reset" class="control" onclick="Firefly.drawer.resetPlayModel()"></div>
         <!-- GAMETYPE -->
         <div class="control hidden absolute">
             <div>
                 <label for="model-input">Model</label>
             </div>
-            <select id="model-input" onchange="Firefly.showPlayIcon()"></select>
+            <select id="model-input" onchange="Firefly.drawer.showPlayIcon()"></select>
         </div>
         <!-- SPEED -->
         <div class="control">
@@ -64,7 +64,7 @@
                 <label for="speed-input">Slow Motion</label>
                 <span id="speed-value"></span>
             </div>
-            <input id="speed-input" type="range" min="10" max="300" onchange="Firefly.updateSpeed(this.value)">
+            <input id="speed-input" type="range" min="10" max="300" onchange="Firefly.drawer.updateSpeed(this.value)">
         </div>
         <!-- SIZE -->
         <div class="control">
@@ -72,7 +72,7 @@
                 <label for="size-input">Zoom</label>
                 <span id="size-value"></span>
             </div>
-            <input id="size-input" type="range" min="1" max="10" onchange="Firefly.updateSize(this.value)">
+            <input id="size-input" type="range" min="1" max="10" onchange="Firefly.drawer.updateSize(this.value)">
         </div>
         <!-- S/B -->
         <div class="control">

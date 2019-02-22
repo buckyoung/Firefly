@@ -1,8 +1,8 @@
 var FFExamples = FFExamples || {};
 
-FFExamples.trippy2SunBurst = {};
+FFExamples.sunBurst = {};
 
-FFExamples.trippy2SunBurst.initialize = function(FF) {
+FFExamples.sunBurst.initialize = function(FF) {
     var numOfTurningBackFrames = 500;
     var threatProb = .000001; // Adjust this for wild differences
     var spreadProb = .4;

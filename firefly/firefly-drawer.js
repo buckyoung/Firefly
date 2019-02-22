@@ -12,12 +12,13 @@ Firefly.modules.drawer = function(FF) {
     var sizeInput = document.getElementById('size-input');
 
     // Protected Methods
-    Firefly.toggleSettings = toggleSettings;
-    Firefly.updateSpeed = updateSpeed;
-    Firefly.updateSize = updateSize;
-    Firefly.resetPlayModel = resetPlayModel;
-    Firefly.showPlayIcon = showPlayIcon;
-    Firefly.updateCounter = updateCounter;
+    Firefly.drawer = {};
+    Firefly.drawer.toggleSettings = toggleSettings;
+    Firefly.drawer.updateSpeed = updateSpeed;
+    Firefly.drawer.updateSize = updateSize;
+    Firefly.drawer.resetPlayModel = resetPlayModel;
+    Firefly.drawer.showPlayIcon = showPlayIcon;
+    Firefly.drawer.updateCounter = updateCounter;
 
     // Initialize
     initialize();
@@ -35,7 +36,7 @@ Firefly.modules.drawer = function(FF) {
         speedInput.value = speed;
         sizeInput.value = size;
 
-        Firefly.showPlayIcon()
+        Firefly.drawer.showPlayIcon()
 
         var timeout = setTimeout(function() {
             if (Firefly.getModels().length) {
@@ -92,7 +93,7 @@ Firefly.modules.drawer = function(FF) {
     function updateSize(value) {
         sizeValue.innerText = value;
         Firefly.params.INVERSE_SIZE = value;
-        Firefly.resetPlayModel();
+        Firefly.drawer.resetPlayModel();
     }
 
     /**
@@ -113,7 +114,7 @@ Firefly.modules.drawer = function(FF) {
     /**
      * @protected Update the generation counter
      */
-    function updateCounter(value) {
-        counter.innerText = value;
+    function updateCounter() {
+        counter.innerText = FF.generationCount;
     }
 };

@@ -1,8 +1,8 @@
 var FFExamples = FFExamples || {};
 
-FFExamples.trippy1AvocadoWorld = {};
+FFExamples.avocadoWorld = {};
 
-FFExamples.trippy1AvocadoWorld.initialize = function(FF) {
+FFExamples.avocadoWorld.initialize = function(FF) {
    var numOfTurningBackFrames = 60;
    var threatProb = .00001;
    var spreadProb = .5;

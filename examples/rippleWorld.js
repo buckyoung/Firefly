@@ -1,8 +1,8 @@
 var FFExamples = FFExamples || {};
 
-FFExamples.trippy3RippleWorld = {};
+FFExamples.rippleWorld = {};
 
-FFExamples.trippy3RippleWorld.initialize = function(FF) {
+FFExamples.rippleWorld.initialize = function(FF) {
     var numOfTurningBackFrames = 10; // 2 is dope and trippy -- 4 is stable
     var threatProb = .000001;
     var spreadProb = .5;

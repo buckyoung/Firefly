@@ -6,37 +6,40 @@ FFExamples.all.initialize = function() {
 
     // To add an example, just put the filename here:
 	var examples = [
-        'gas',
-        'gasVsGas',
-        'warringNations',
-        'trippy1AvocadoWorld',
-        'trippy2Epidemic',
-        'trippy2SunBurst',
-        'trippy3RippleWorld',
-        'trippy4MergingDiamonds',
-        'trippy5',
-        'beehive',
-        'briansBrain',
-        'conwaysGameOfLife',
-        'cyclic',
-        'cyclicWithConway',
-        'forestFire',
-        'seed',
-        'serviettes',
-        'walledCities',
-        'iceVsForest',
-        'iceVsSeed',
-        'rule110',
-        'rule184',
-        'rule184SingleLine',
-        'rule30',
-        'rule90',
+        'new - mouseColony',
+        'bloomType - avocadoWorld',
+        'bloomType - epidemic',
+        'bloomType - mergingDiamonds',
+        'bloomType - rippleWorld',
+        'bloomType - runBloom',
+        'bloomType - sunBurst',
+        'buck - beehive',
+        'buck - cyclicWithConway',
+        'buck - iceVsForest',
+        'buck - iceVsSeed',
+        'classic - briansBrain',
+        'classic - conwaysGameOfLife',
+        'classic - cyclic',
+        'classic - forestFire',
+        'classic - seed',
+        'classic - serviettes',
+        'classic - walledCities',
+        'elementary - rule110',
+        'elementary - rule184',
+        'elementary - rule184SingleLine',
+        'elementary - rule30',
+        'elementary - rule90',
+        'gasType - gas',
+        'gasType - gasVsGas',
+        'gasType - warringNations',
 	];
 
     // Dynamically load js on page
 	examples.forEach(function(example) {
+        var myArr = example.split(" - ");
+
 		var imported = document.createElement('script');
-		imported.src = './examples/' + example + '.js';
+		imported.src = './examples/' + myArr[1] + '.js';
 		document.head.appendChild(imported);
 	});
 
@@ -44,11 +47,17 @@ FFExamples.all.initialize = function() {
     Firefly(function(FF) {
         examples.forEach(function(example) {
             // title case to create names
-            var temp = example.replace( /([A-Z])/g, " $1" );
-            var name = temp.charAt(0).toUpperCase() + temp.slice(1);
+            var myArr = example.split(" - ");
 
-            FF.registerModel(name, function() {
-                FFExamples[example].initialize(FF);
+            var modelName = myArr[1];
+
+            myArr[0] = myArr[0].replace( /([A-Z])/g, " $1" );
+            myArr[1] = myArr[1].replace( /([A-Z])/g, " $1" );
+            myArr[0] = myArr[0].charAt(0).toUpperCase() + myArr[0].slice(1);
+            myArr[1] = myArr[1].charAt(0).toUpperCase() + myArr[1].slice(1);
+
+            FF.registerModel(myArr[0] + " - " + myArr[1], function() {
+                FFExamples[modelName].initialize(FF);
             });
         });  
     });

@@ -3,6 +3,7 @@
  */
 Firefly.modules.world = function(FF) {
     // Public Variables
+    FF.generationCount = 1;
 
     // Public Methods
     FF.initialize = initialize;
@@ -17,13 +18,13 @@ Firefly.modules.world = function(FF) {
     document.onkeydown = function(e) {
         // Escape toggles settings
         if (e.keyCode == 27) {
-            Firefly.toggleSettings();
+            Firefly.drawer.toggleSettings();
         }
 
         // Enter runs model
         if (e.keyCode == 13) {
-            Firefly.resetPlayModel();
-            Firefly.toggleSettings('hidden');
+            Firefly.drawer.resetPlayModel();
+            Firefly.drawer.toggleSettings('hidden');
         }
     };
 
@@ -36,7 +37,7 @@ Firefly.modules.world = function(FF) {
         clearTimeout(CANCEL_TIMEOUT);
 
         // Listen for resize
-        window.onresize = Firefly.resetPlayModel;
+        window.onresize = Firefly.drawer.resetPlayModel;
 
         // Prime the engine
         var canvas_1 = document.getElementById(Firefly.params.CANVAS_1_ID);
@@ -64,8 +65,10 @@ Firefly.modules.world = function(FF) {
         }
         endPaint(ctx_1, id);
 
+        FF.generationCount = 1;
+
         // Start the engine
-        swapBuffer(false, true, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2, 1);
+        swapBuffer(false, true, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2);
     }    
 
     /**
@@ -78,10 +81,10 @@ Firefly.modules.world = function(FF) {
      * @param  {Context} ctx_2 The context of canvas 2
      * @param  {World} world_1 The grid system of world 1
      * @param  {World} world_2 The grid system of world 2
-     * @param  {integer} count Generation counter
      */
-    function swapBuffer(visible_1, visible_2, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2, count) {
-        Firefly.updateCounter(count);
+    function swapBuffer(visible_1, visible_2, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2) {
+        FF.generationCount++;
+        Firefly.drawer.updateCounter();
 
         // Ensure boolean opposites
         if (visible_1 === visible_2) {
@@ -106,7 +109,7 @@ Firefly.modules.world = function(FF) {
         visible_2 = !visible_2;
 
         CANCEL_TIMEOUT = window.setTimeout(function() {
-            swapBuffer(visible_1, visible_2, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2, ++count);
+            swapBuffer(visible_1, visible_2, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2);
         }, Firefly.params.INVERSE_SPEED);
     }
 

@@ -143,6 +143,7 @@ FFExamples.warringNations.initialize = function(FF) {
                     world[i][j] = new FF.Cell('empty', i, j); 
                 }
             }
+
             var w = 0;
             var h = 0;
 

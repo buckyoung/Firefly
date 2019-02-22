@@ -200,7 +200,7 @@ FFExamples.anylife.updatePopulation = function(value) {
     populationValue.innerText = value;
     Firefly.params.POPULATION = value;
     initialBirthRate = birthRateMap[value];
-    Firefly.resetPlayModel();
+    Firefly.drawer.resetPlayModel();
 };
 
 // TODO BUCK - pause button? should be easy just clear timeout function -- but PLAYing again will be hard cause we lose the context for swap buffer -- OH DUDE JUST SET THE FRAME DELAY TO 999999999
