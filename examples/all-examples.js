@@ -6,7 +6,8 @@ FFExamples.all.initialize = function() {
 
     // To add an example, just put the filename here:
 	var examples = [
-        'new - mouseColony',
+        'new - risk',
+        'new - diagonalLines',
         'bloomType - avocadoWorld',
         'bloomType - epidemic',
         'bloomType - mergingDiamonds',

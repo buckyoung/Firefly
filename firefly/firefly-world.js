@@ -15,20 +15,6 @@ Firefly.modules.world = function(FF) {
     Firefly.CURRENT_WORLD;
     Firefly.GENERATION_COUNT;
 
-    // Listen for escape and enter keys
-    document.onkeydown = function(e) {
-        // Escape toggles settings
-        if (e.keyCode == 27) {
-            Firefly.drawer.toggleSettings();
-        }
-
-        // Enter runs model
-        if (e.keyCode == 13) {
-            Firefly.drawer.resetPlayModel();
-            Firefly.drawer.toggleSettings('hidden');
-        }
-    };
-
     /**
      * Initialize the engine
      * @param {Function} clientInitWorld Enable client to initialize the world 
@@ -66,7 +52,7 @@ Firefly.modules.world = function(FF) {
         }
         endPaint(ctx_1, id);
 
-        Firefly.GENERATION_COUNT = 1;
+        Firefly.GENERATION_COUNT = 0;
 
         // Start the engine
         swapBuffer(false, true, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2);

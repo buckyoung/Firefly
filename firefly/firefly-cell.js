@@ -144,7 +144,7 @@ Firefly.modules.cell = function(FF) {
 
     /**
      * @public Return specific neighbor cell
-     * @param  {Integer} targetX X position of target neighbor in relation to self
+     * @param {Integer} targetX X position of target neighbor in relation to self
      * @param {Integer} targetY Y position of target neighbor in relation to self
      * @param {Boolean} wrapX True if world should wrap horizontally (default true)
      * @param {Boolean} wrapY True if world should wrap vertically (default true)
