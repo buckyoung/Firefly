@@ -9,6 +9,7 @@ FFExamples.risk.initialize = function(FF) {
     var boundaryPhase = 100;
     var startingCityProb = .00006;
     var startingCity = 'greenPeopleCapital';
+    var startingCityCount = 0;
 
     initializeModel(FF);
 
@@ -52,29 +53,33 @@ FFExamples.risk.initialize = function(FF) {
     }
 
     function processEmpty(currentCell, nextCell) {
-        if (genCount < boundaryPhase + 1) {
-            genCount = FF.getGenerationCount();
-        }
-
-        if (genCount < boundaryPhase) { // Create boundaries for first X number of frames
+        // Create boundaries for first X number of frames
+        if (genCount <= boundaryPhase) { 
             // Grow walls
             if (currentCell.countMooreNeighbors('wall') >  0 && Math.random() < wallProb) {
                 nextCell.setState('wall');
             }
 
             // Fill in empty spaces inside of walls
-            if (currentCell.countMooreNeighbors('wall') > 5) {
+            if (currentCell.countMooreNeighbors('wall') > 4) { // Tip: Change this to 3 for more lake look
                 nextCell.setState('wall');
             }
+
+            genCount = FF.getGenerationCount();
+
             return;
         }
 
-        if (genCount == boundaryPhase) { // Populate capital cities now
+        // Populate capital cities now
+        if (startingCityCount < 4) { 
             if (currentCell.countMooreNeighbors('wall') == 0 && Math.random() < startingCityProb) {
                 nextCell.setState(startingCity);
 
                 startingCity = startingCity == 'greenPeopleCapital' ? 'pinkPeopleCapital' : 'greenPeopleCapital';
+
+                startingCityCount++;
             }
+
             return;
         }
 
@@ -190,7 +195,7 @@ FFExamples.risk.initialize = function(FF) {
         return function(world, width, height) {
             for (var i = 0; i < width; i++) {
                 for (var j = 0; j < height; j++) {
-                    var state = (Math.random() < .001 ? 'wall' : 'empty');
+                    var state = (Math.random() < .0005 ? 'wall' : 'empty');
 
                     world[i][j] = new FF.Cell(state, i, j); 
                 }

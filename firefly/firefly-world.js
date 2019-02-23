@@ -7,6 +7,7 @@ Firefly.modules.world = function(FF) {
 
     // Public Methods
     FF.initialize = initialize;
+    FF.stateCounts = {}; // Cached from the frame previous (to save compute)
 
     // Private Variables
     var CANCEL_TIMEOUT;
@@ -116,6 +117,7 @@ Firefly.modules.world = function(FF) {
         var currentCell;
         var nextCell;
         var states = Firefly.getStates();
+        var tempStateCounts = {};
 
         // Begin paint
         var id = beginPaint(nextCtx);
@@ -125,6 +127,9 @@ Firefly.modules.world = function(FF) {
                 currentCell = currentWorld[i][j];
                 nextCell = nextWorld[i][j];
 
+                // Count the state
+                tempStateCounts[currentCell.state] = tempStateCounts[currentCell.state] ? tempStateCounts[currentCell.state] + 1 : 1;
+
                 // Process next state
                 states[currentCell.state].processor(currentCell, nextCell);
 
@@ -132,6 +137,8 @@ Firefly.modules.world = function(FF) {
                 drawStep(id.data, nextCell.getColor(), i, j);
             }
         }
+
+        FF.stateCounts = tempStateCounts;
 
         // End paint
         endPaint(nextCtx, id);
