@@ -6,10 +6,11 @@ FFExamples.risk.initialize = function(FF) {
     var peopleProb = .4;
     var wallProb = .02;
     var genCount = 0;
-    var boundaryPhase = 100;
+    var boundaryPhase = 150;
     var startingCityProb = .00006;
     var startingCity = 'greenPeopleCapital';
     var startingCityCount = 0;
+    var startingCityTarget = 0;
 
     initializeModel(FF);
 
@@ -71,8 +72,13 @@ FFExamples.risk.initialize = function(FF) {
         }
 
         // Populate capital cities now
-        if (startingCityCount < 4) { 
-            if (currentCell.countMooreNeighbors('wall') == 0 && Math.random() < startingCityProb) {
+        if (startingCityCount < startingCityTarget) { 
+            if (
+                currentCell.countMooreNeighbors('wall') == 0 
+                && currentCell.countMooreNeighbors('wall', 2) == 0 
+                && currentCell.countMooreNeighbors('wall', 3) == 0
+                && Math.random() < startingCityProb
+            ) {
                 nextCell.setState(startingCity);
 
                 startingCity = startingCity == 'greenPeopleCapital' ? 'pinkPeopleCapital' : 'greenPeopleCapital';
@@ -200,6 +206,8 @@ FFExamples.risk.initialize = function(FF) {
                     world[i][j] = new FF.Cell(state, i, j); 
                 }
             }
+
+            startingCityTarget = Math.floor(Math.random() * 9) + 2; // 2 - 10 starting cities
         };
     }
 };
