@@ -16,7 +16,7 @@ FFExamples.risk.initialize = function(FF) {
 
     function initializeModel(FF) {
         FF.registerState('empty', [30,30,30], processEmpty);
-        FF.registerState('wall', [30,30,90], doNothing);
+        FF.registerState('wall', [30,30,150], doNothing);
 
         FF.registerState('greenPeople', [0, 120, 0], processGreenPeople);
         FF.registerState('greenPeopleCapital', [0, 255, 0], processGreenPeopleCapital);

@@ -61,14 +61,12 @@ Firefly.modules.drawer = function(FF) {
      * @private Initialize
      */
     function initialize() {
-        var speed = Firefly.params.INVERSE_SPEED;
-        var size = Firefly.params.INVERSE_SIZE;
+        var urlParams = new URLSearchParams(window.location.search);
+        var speed = urlParams.get('speed') || Firefly.params.INVERSE_SPEED;
+        var size = urlParams.get('size') || Firefly.params.INVERSE_SIZE;
 
-        speedValue.innerText = speed;
-        sizeValue.innerText = size;
-
-        speedInput.value = speed;
-        sizeInput.value = size;
+        updateSpeed(speed);
+        updateSize(size);
 
         Firefly.drawer.showPlayIcon()
 

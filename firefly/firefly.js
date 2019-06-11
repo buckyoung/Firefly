@@ -21,7 +21,13 @@ function Firefly() {
 
     // Support simplified calling of this sandbox (automatically get modules)
     if (!(this instanceof Firefly) || requiredModules.length === 0) { 
-        return new Firefly(['cell', 'state', 'world', 'model', 'drawer'], callback);
+        return new Firefly([
+            'cell',
+            'drawer',
+            'model',
+            'state',
+            'world'
+        ], callback);
     }
 
     //For each of the modules in 'requiredModules', add the module's methods to 'this'
