@@ -8,6 +8,7 @@ FFExamples.risk.initialize = function(FF) {
     var genCount = 0;
     var boundaryPhase = 150;
     var startingCityProb = .00006;
+    var revolutionProb = .0001;
     var startingCity = 'greenPeopleCapital';
     var startingCityCount = 0;
     var startingCityTarget = 0;
@@ -35,6 +36,11 @@ FFExamples.risk.initialize = function(FF) {
 
     // Capital should switch sides if the other faction gets there
     function processGreenPeopleCapital(currentCell, nextCell) {
+        if (!FF.stateCounts.pinkPeopleCapital && Math.random() < revolutionProb) { // Potential city allegiance switch when a single color rules all cities
+            nextCell.setState('pinkPeopleCapital');
+            return;
+        }
+
         if (currentCell.countMooreNeighbors('pinkPeople') > 0) {
             nextCell.setState('pinkPeopleCapital');
             return;
@@ -45,6 +51,11 @@ FFExamples.risk.initialize = function(FF) {
 
     // Capital should switch sides if the other faction gets there
     function processPinkPeopleCapital(currentCell, nextCell) {
+        if (!FF.stateCounts.greenPeopleCapital && Math.random() < revolutionProb) { // Potential city allegiance switch when a single color rules all cities
+            nextCell.setState('greenPeopleCapital');
+            return;
+        }
+
         if (currentCell.countMooreNeighbors('greenPeople') > 0) {
             nextCell.setState('greenPeopleCapital');
             return;
@@ -110,13 +121,14 @@ FFExamples.risk.initialize = function(FF) {
 
         var isFireNear = currentCell.countMooreNeighbors('fire', 1) > 0 || currentCell.countMooreNeighbors('fire', 2) > 0;
         var shouldSpread = Math.random() < peopleProb;
+        var shouldSpreadWithoutEnemy = Math.random() < peopleProb/1.2;
 
         // Determine if green people should propagate
         if (currentCell.countNeumannNeighbors('greenPeople') == 0
+            && ((!!FF.stateCounts.pinkPeopleCapital&&shouldSpread) || (!FF.stateCounts.pinkPeopleCapital&&shouldSpreadWithoutEnemy)) // Propagate at a lower rate when no enemy around
             && greenCount > pinkCount
             && greenCount > 0 
-            && greenCount < 5 
-            && shouldSpread
+            && greenCount < 5
             && !isFireNear
         ) {
             nextCell.setState('greenPeople');
@@ -125,10 +137,11 @@ FFExamples.risk.initialize = function(FF) {
 
         // Determine if pink people should propagate
         if (currentCell.countNeumannNeighbors('pinkPeople') == 0
+            
+            && ((!!FF.stateCounts.greenPeopleCapital&&shouldSpread) || (!FF.stateCounts.greenPeopleCapital&&shouldSpreadWithoutEnemy)) // Propagate at a lower rate when no enemy around
             && pinkCount > greenCount
             && pinkCount > 0 
-            && pinkCount < 5 
-            && shouldSpread
+            && pinkCount < 5
             && !isFireNear
         ) {
             nextCell.setState('pinkPeople');

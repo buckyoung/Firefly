@@ -8,6 +8,7 @@ Firefly.modules.world = function(FF) {
     // Public Methods
     FF.initialize = initialize;
     FF.stateCounts = {}; // Cached from the frame previous (to save compute)
+    // TODO - implement a getStateCounts function & return 0 if undefined!
 
     // Private Variables
     var CANCEL_TIMEOUT;
