@@ -203,6 +203,9 @@ FFExamples.anylife.updatePopulation = function(value) {
     Firefly.drawer.resetPlayModel();
 };
 
+// TODO Create query params for S/B so i can share links of cool worlds!
+// TODO turn off color trails / change colors from purple and yellow to something better
+
 // TODO BUCK - pause button? should be easy just clear timeout function -- but PLAYing again will be hard cause we lose the context for swap buffer -- OH DUDE JUST SET THE FRAME DELAY TO 999999999
 // TODO BUCK - implement color picker
 // TODO BUCK - implement trails on/off checkbox
