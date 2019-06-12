@@ -38,14 +38,14 @@ FFExamples.risk.initialize = function(FF) {
     function processGreenPeopleCapital(currentCell, nextCell) {
         // Potential city allegiance switch when a single color rules all cities
         if (!FF.stateCounts.pinkPeopleCapital && Math.random() < revolutionProb) { 
-            console.log(FF.getGenerationCount(), currentCell.getPosition(), "A rouge group of Pinks overthrew the Greens!");
+            FF.setHistory(currentCell.getPosition(), "A rogue group of Pinks overthrew the Greens!");
             nextCell.setState('pinkPeopleCapital');
             return;
         }
 
         // City should switch sides if it is being overrun
         if (currentCell.countMooreNeighbors('pinkPeople') > 1) {
-            console.log(FF.getGenerationCount(), currentCell.getPosition(), "Green city fell to the Pinks");
+            FF.setHistory(currentCell.getPosition(), "Green city fell to the Pinks");
             nextCell.setState('pinkPeopleCapital');
             return;
         }
@@ -58,14 +58,14 @@ FFExamples.risk.initialize = function(FF) {
     function processPinkPeopleCapital(currentCell, nextCell) {
         // Potential city allegiance switch when a single color rules all cities
         if (!FF.stateCounts.greenPeopleCapital && Math.random() < revolutionProb) {
-            console.log(FF.getGenerationCount(), currentCell.getPosition(), "A rouge group of Greens overthrew the Pink!");
+            FF.setHistory(currentCell.getPosition(), "A rogue group of Greens overthrew the Pinks!");
             nextCell.setState('greenPeopleCapital');
             return;
         }
 
         // City should switch sides if it is being overrun
         if (currentCell.countMooreNeighbors('greenPeople') > 1) {
-            console.log(FF.getGenerationCount(), currentCell.getPosition(), "Pink city fell to the Greens");
+            FF.setHistory(currentCell.getPosition(), "Pink city fell to the Greens");
             nextCell.setState('greenPeopleCapital');
             return;
         }
@@ -100,7 +100,7 @@ FFExamples.risk.initialize = function(FF) {
                 && currentCell.countMooreNeighbors('wall', 3) == 0
                 && Math.random() < startingCityProb
             ) {
-                console.log(FF.getGenerationCount(), currentCell.getPosition(), "The " + (startingCity == 'greenPeopleCapital' ? "Greens" : "Pinks") + " established a starting city" );
+                FF.setHistory(currentCell.getPosition(), "The " + (startingCity == 'greenPeopleCapital' ? "Greens" : "Pinks") + " established a starting city" );
                 nextCell.setState(startingCity);
 
                 startingCity = startingCity == 'greenPeopleCapital' ? 'pinkPeopleCapital' : 'greenPeopleCapital';
@@ -160,13 +160,13 @@ FFExamples.risk.initialize = function(FF) {
 
         // Determine if new city should be established
         if (pinkCount >= 5 || (pinkCount >= 4 && Math.random() < peopleProb/10000)) { // TODO only create a new city w/ count of 4 IF there are less than 10 total cities for that color
-            console.log(FF.getGenerationCount(), currentCell.getPosition(), "The Pinks established a new city");
+            FF.setHistory(currentCell.getPosition(), "The Pinks established a new city");
             nextCell.setState('pinkPeopleCapital');
             return;
         }
 
         if (greenCount >= 5 || (greenCount >= 4 && Math.random() < peopleProb/10000)) { // TODO only create a new city w/ count of 4 IF there are less than 10 total cities for that color
-            console.log(FF.getGenerationCount(), currentCell.getPosition(), "The Greens established a new city");
+            FF.setHistory(currentCell.getPosition(), "The Greens established a new city");
             nextCell.setState('greenPeopleCapital');
             return;
         }

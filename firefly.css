@@ -58,3 +58,11 @@ canvas {
     right: 5;
     z-index: 2;
 }
+
+#history {
+    background: white;
+    display: none;
+    padding: 10px;
+    max-height: 100px;
+    overflow: auto;
+}
