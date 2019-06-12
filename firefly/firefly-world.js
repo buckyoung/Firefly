@@ -35,6 +35,9 @@ Firefly.modules.world = function(FF) {
         var canvas_2 = document.getElementById(Firefly.params.CANVAS_2_ID);
         var ctx_2 = canvas_2.getContext('2d');
 
+        canvas_1.addEventListener('click', onCanvasClick, false);
+        canvas_2.addEventListener('click', onCanvasClick, false);
+
         Firefly.util.setDimensions(canvas_1, canvas_2);
 
         // Initialize world
@@ -181,5 +184,11 @@ Firefly.modules.world = function(FF) {
 
     function getGenerationCount() {
         return Firefly.GENERATION_COUNT;
+    }
+
+    function onCanvasClick(event) {
+        var translatedX = Math.floor(event.offsetX/Firefly.params.INVERSE_SIZE);
+        var translatedY = Math.floor(event.offsetY/Firefly.params.INVERSE_SIZE);
+        console.log({ x: translatedX, y: translatedY });
     }
 };

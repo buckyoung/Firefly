@@ -17,7 +17,7 @@ FFExamples.risk.initialize = function(FF) {
 
     function initializeModel(FF) {
         FF.registerState('empty', [30,30,30], processEmpty);
-        FF.registerState('wall', [30,30,150], doNothing);
+        FF.registerState('wall', [30,30,120], doNothing);
 
         FF.registerState('greenPeople', [0, 120, 0], processGreenPeople);
         FF.registerState('greenPeopleCapital', [0, 255, 0], processGreenPeopleCapital);
@@ -36,31 +36,41 @@ FFExamples.risk.initialize = function(FF) {
 
     // Capital should switch sides if the other faction gets there
     function processGreenPeopleCapital(currentCell, nextCell) {
-        if (!FF.stateCounts.pinkPeopleCapital && Math.random() < revolutionProb) { // Potential city allegiance switch when a single color rules all cities
+        // Potential city allegiance switch when a single color rules all cities
+        if (!FF.stateCounts.pinkPeopleCapital && Math.random() < revolutionProb) { 
+            console.log(FF.getGenerationCount(), currentCell.getPosition(), "A rouge group of Pinks overthrew the Greens!");
             nextCell.setState('pinkPeopleCapital');
             return;
         }
 
-        if (currentCell.countMooreNeighbors('pinkPeople') > 0) {
+        // City should switch sides if it is being overrun
+        if (currentCell.countMooreNeighbors('pinkPeople') > 1) {
+            console.log(FF.getGenerationCount(), currentCell.getPosition(), "Green city fell to the Pinks");
             nextCell.setState('pinkPeopleCapital');
             return;
         }
-
+        
+        // TODO add chance for fire to destroy city
         nextCell.setState(currentCell.getState());
     }
 
     // Capital should switch sides if the other faction gets there
     function processPinkPeopleCapital(currentCell, nextCell) {
-        if (!FF.stateCounts.greenPeopleCapital && Math.random() < revolutionProb) { // Potential city allegiance switch when a single color rules all cities
+        // Potential city allegiance switch when a single color rules all cities
+        if (!FF.stateCounts.greenPeopleCapital && Math.random() < revolutionProb) {
+            console.log(FF.getGenerationCount(), currentCell.getPosition(), "A rouge group of Greens overthrew the Pink!");
             nextCell.setState('greenPeopleCapital');
             return;
         }
 
-        if (currentCell.countMooreNeighbors('greenPeople') > 0) {
+        // City should switch sides if it is being overrun
+        if (currentCell.countMooreNeighbors('greenPeople') > 1) {
+            console.log(FF.getGenerationCount(), currentCell.getPosition(), "Pink city fell to the Greens");
             nextCell.setState('greenPeopleCapital');
             return;
         }
-
+        
+        // TODO add chance for fire to destroy city
         nextCell.setState(currentCell.getState());
     }
 
@@ -90,6 +100,7 @@ FFExamples.risk.initialize = function(FF) {
                 && currentCell.countMooreNeighbors('wall', 3) == 0
                 && Math.random() < startingCityProb
             ) {
+                console.log(FF.getGenerationCount(), currentCell.getPosition(), "The " + (startingCity == 'greenPeopleCapital' ? "Greens" : "Pinks") + " established a starting city" );
                 nextCell.setState(startingCity);
 
                 startingCity = startingCity == 'greenPeopleCapital' ? 'pinkPeopleCapital' : 'greenPeopleCapital';
@@ -125,7 +136,7 @@ FFExamples.risk.initialize = function(FF) {
 
         // Determine if green people should propagate
         if (currentCell.countNeumannNeighbors('greenPeople') == 0
-            && ((!!FF.stateCounts.pinkPeopleCapital&&shouldSpread) || (!FF.stateCounts.pinkPeopleCapital&&shouldSpreadWithoutEnemy)) // Propagate at a lower rate when no enemy around
+            && (((!!FF.stateCounts.pinkPeople||!!FF.stateCounts.pinkPeopleCapital)&&shouldSpread) || (!FF.stateCounts.pinkPeople&&!FF.stateCounts.pinkPeopleCapital&&shouldSpreadWithoutEnemy)) // Propagate at a lower rate when no enemy around
             && greenCount > pinkCount
             && greenCount > 0 
             && greenCount < 5
@@ -137,8 +148,7 @@ FFExamples.risk.initialize = function(FF) {
 
         // Determine if pink people should propagate
         if (currentCell.countNeumannNeighbors('pinkPeople') == 0
-            
-            && ((!!FF.stateCounts.greenPeopleCapital&&shouldSpread) || (!FF.stateCounts.greenPeopleCapital&&shouldSpreadWithoutEnemy)) // Propagate at a lower rate when no enemy around
+            && (((!!FF.stateCounts.greenPeople||!!FF.stateCounts.greenPeopleCapital)&&shouldSpread) || (!FF.stateCounts.greenPeople&&!FF.stateCounts.greenPeopleCapital&&shouldSpreadWithoutEnemy)) // Propagate at a lower rate when no enemy around
             && pinkCount > greenCount
             && pinkCount > 0 
             && pinkCount < 5
@@ -150,11 +160,13 @@ FFExamples.risk.initialize = function(FF) {
 
         // Determine if new city should be established
         if (pinkCount >= 5 || (pinkCount >= 4 && Math.random() < peopleProb/10000)) { // TODO only create a new city w/ count of 4 IF there are less than 10 total cities for that color
+            console.log(FF.getGenerationCount(), currentCell.getPosition(), "The Pinks established a new city");
             nextCell.setState('pinkPeopleCapital');
             return;
         }
 
         if (greenCount >= 5 || (greenCount >= 4 && Math.random() < peopleProb/10000)) { // TODO only create a new city w/ count of 4 IF there are less than 10 total cities for that color
+            console.log(FF.getGenerationCount(), currentCell.getPosition(), "The Greens established a new city");
             nextCell.setState('greenPeopleCapital');
             return;
         }
