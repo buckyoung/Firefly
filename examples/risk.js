@@ -13,6 +13,14 @@ FFExamples.risk.initialize = function(FF) {
     var startingCityCount = 0;
     var startingCityTarget = 0;
 
+
+    // TODO register ui elements for parameters
+    
+    // TODO get a 3rd color in
+    
+    // TODO if all capitals are gone of pink, pink fighters should not propagate so much
+
+
     initializeModel(FF);
 
     function initializeModel(FF) {
@@ -33,6 +41,11 @@ FFExamples.risk.initialize = function(FF) {
     }
 
     function onMouseClick(currentCell, nextCell) {
+        if (currentCell.getState() !== 'empty') { return; }
+
+        // if shift-click, store the cell state as the paint brush
+        // click and drag would be nice for water
+
         nextCell.setState(startingCity);
         FF.setHistory(nextCell.getPosition(), "You brought forth a new " + (startingCity == 'greenPeopleCapital' ? "Green" : "Pink") + " city" );
         startingCity = startingCity == 'greenPeopleCapital' ? 'pinkPeopleCapital' : 'greenPeopleCapital';
@@ -41,6 +54,10 @@ FFExamples.risk.initialize = function(FF) {
     function doNothing(currentCell, nextCell) {
         nextCell.setState(currentCell.getState());
     }
+
+
+    // TODO allow cities to be destroyed by fire - maybe if a city is surrounded by fire on 2 or 3 sides, it can get destroyed
+
 
     // Capital should switch sides if the other faction gets there
     function processGreenPeopleCapital(currentCell, nextCell) {

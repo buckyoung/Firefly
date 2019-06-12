@@ -267,5 +267,7 @@ Firefly.modules.world = function(FF) {
         }
 
         HISTORY[position.x][position.y][generationCount] = message;
+
+        // TODO show popup information when something happens
     }
 };
