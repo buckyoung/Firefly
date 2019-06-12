@@ -26,8 +26,16 @@ FFExamples.risk.initialize = function(FF) {
         FF.registerState('pinkPeopleCapital', [255, 0, 255], processPinkPeopleCapital);
         
         FF.registerState('fire', [255, 30, 30], processFire);
+        
+        FF.registerState('onMouseClick', [0, 0, 0], onMouseClick); // TODO make a registerHandler - no color needed
 
         FF.initialize(initializeWorld(FF));
+    }
+
+    function onMouseClick(currentCell, nextCell) {
+        nextCell.setState(startingCity);
+        FF.setHistory(nextCell.getPosition(), "You brought forth a new " + (startingCity == 'greenPeopleCapital' ? "Green" : "Pink") + " city" );
+        startingCity = startingCity == 'greenPeopleCapital' ? 'pinkPeopleCapital' : 'greenPeopleCapital';
     }
 
     function doNothing(currentCell, nextCell) {
@@ -38,7 +46,7 @@ FFExamples.risk.initialize = function(FF) {
     function processGreenPeopleCapital(currentCell, nextCell) {
         // Potential city allegiance switch when a single color rules all cities
         if (!FF.stateCounts.pinkPeopleCapital && Math.random() < revolutionProb) { 
-            FF.setHistory(currentCell.getPosition(), "A rogue group of Pinks overthrew the Greens!");
+            FF.setHistory(currentCell.getPosition(), "Some rogue Pinks overthrew the Greens!");
             nextCell.setState('pinkPeopleCapital');
             return;
         }
@@ -58,7 +66,7 @@ FFExamples.risk.initialize = function(FF) {
     function processPinkPeopleCapital(currentCell, nextCell) {
         // Potential city allegiance switch when a single color rules all cities
         if (!FF.stateCounts.greenPeopleCapital && Math.random() < revolutionProb) {
-            FF.setHistory(currentCell.getPosition(), "A rogue group of Greens overthrew the Pinks!");
+            FF.setHistory(currentCell.getPosition(), "Some rogue Greens overthrew the Pinks!");
             nextCell.setState('greenPeopleCapital');
             return;
         }

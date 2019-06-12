@@ -19,6 +19,7 @@ Firefly.modules.world = function(FF) {
 
     // Protected Variables
     Firefly.CURRENT_WORLD;
+    Firefly.NEXT_WORLD;
     Firefly.GENERATION_COUNT;
 
     /**
@@ -127,6 +128,7 @@ Firefly.modules.world = function(FF) {
         nextCtx.clearRect(0, 0, Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
 
         Firefly.CURRENT_WORLD = currentWorld;
+        Firefly.NEXT_WORLD = nextWorld;
 
         // Populate
         var currentCell;
@@ -207,7 +209,7 @@ Firefly.modules.world = function(FF) {
         // Move the tooltip w/ the mouse
         if (event.type == 'mousemove' && !isFreezeHistoryTooltip) {
             var Yoffset = event.clientY < window.innerHeight/2 ? 50 : -80;
-            var Xoffset = event.clientX < window.innerWidth/2 ? 30 : -320;
+            var Xoffset = event.clientX < window.innerWidth/2 ? 30 : -350;
 
             historyTooltipElement.style.top = (event.clientY + Yoffset) + 'px';
             historyTooltipElement.style.left = (event.clientX + Xoffset) + 'px';
@@ -228,7 +230,15 @@ Firefly.modules.world = function(FF) {
             // Only freeze if clicking on a cell with history (allows the user to scroll a long tooltip)
             if (!isFreezeHistoryTooltip && HISTORY[translatedX] && HISTORY[translatedX][translatedY]) {
                 isFreezeHistoryTooltip = true;
+                return;
             }
+
+            // Allow the model to define what happens on a mouse click
+            var currentCell = Firefly.CURRENT_WORLD[translatedX][translatedY];
+            var nextCell = Firefly.NEXT_WORLD[translatedX][translatedY];
+            var states = Firefly.getStates();
+            states['onMouseClick'].processor(currentCell, nextCell);
+
             return;
         }
 

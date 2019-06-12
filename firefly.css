@@ -64,5 +64,6 @@ canvas {
     display: none;
     padding: 10px;
     max-height: 100px;
+    max-width: 320px;
     overflow: auto;
 }
