@@ -237,7 +237,7 @@ Firefly.modules.world = function(FF) {
             var currentCell = Firefly.CURRENT_WORLD[translatedX][translatedY];
             var nextCell = Firefly.NEXT_WORLD[translatedX][translatedY];
             var states = Firefly.getStates();
-            states['onMouseClick'].processor(currentCell, nextCell);
+            states['onMouseClick'].processor(currentCell, nextCell); // TODO refactor this to implement an arbitrary event registration for the models
 
             return;
         }
