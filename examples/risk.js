@@ -3,11 +3,14 @@ var FFExamples = FFExamples || {};
 FFExamples.risk = {};
 
 FFExamples.risk.initialize = function(FF) {
+    // TODO Build a system into FF to register ui elements to expose internal model parameters
     var peopleProb = .4;
     var wallProb = .02;
     var genCount = 0;
     var boundaryPhase = 150;
     var startingCityProb = .00006;
+    var revolutionProb = .0001;
+    var fireDestroyCityProb = .1;
     var startingCity = 'greenPeopleCapital';
     var startingCityCount = 0;
     var startingCityTarget = 0;
@@ -16,7 +19,9 @@ FFExamples.risk.initialize = function(FF) {
 
     function initializeModel(FF) {
         FF.registerState('empty', [30,30,30], processEmpty);
-        FF.registerState('wall', [30,30,150], doNothing);
+        FF.registerState('wall', [30,30,120], doNothing);
+
+        // TODO Refactor to allow a 3rd color / an arbitrary number of colors 
 
         FF.registerState('greenPeople', [0, 120, 0], processGreenPeople);
         FF.registerState('greenPeopleCapital', [0, 255, 0], processGreenPeopleCapital);
@@ -25,18 +30,49 @@ FFExamples.risk.initialize = function(FF) {
         FF.registerState('pinkPeopleCapital', [255, 0, 255], processPinkPeopleCapital);
         
         FF.registerState('fire', [255, 30, 30], processFire);
+        
+        FF.registerState('onMouseClick', [0, 0, 0], onMouseClick); // TODO make a registerHandler - no color needed
 
         FF.initialize(initializeWorld(FF));
+    }
+
+    function onMouseClick(currentCell, nextCell) {
+        if (currentCell.getState() !== 'empty') { return; }
+
+        // TODO if shift-click, store the cell state as the paint brush
+        // TODO also... click and drag would be nice for water
+
+        nextCell.setState(startingCity);
+        FF.setHistory(nextCell.getPosition(), "You brought forth a new " + (startingCity == 'greenPeopleCapital' ? "Green" : "Pink") + " city" );
+        startingCity = startingCity == 'greenPeopleCapital' ? 'pinkPeopleCapital' : 'greenPeopleCapital';
     }
 
     function doNothing(currentCell, nextCell) {
         nextCell.setState(currentCell.getState());
     }
 
+
     // Capital should switch sides if the other faction gets there
     function processGreenPeopleCapital(currentCell, nextCell) {
-        if (currentCell.countMooreNeighbors('pinkPeople') > 0) {
+        // Potential city allegiance switch when a single color rules all cities
+        if (!FF.stateCounts.pinkPeopleCapital && Math.random() < revolutionProb) { 
+            FF.setHistory(currentCell.getPosition(), "Some rogue Pinks overthrew the Greens!");
             nextCell.setState('pinkPeopleCapital');
+            return;
+        }
+
+        // City should switch sides if it is being overrun
+        if (currentCell.countMooreNeighbors('pinkPeople') > 1) {
+            FF.setHistory(currentCell.getPosition(), "Green city fell to the Pinks");
+            nextCell.setState('pinkPeopleCapital');
+            return;
+        }
+        
+        // Chance for fire to destroy city
+        var fireCount = currentCell.countMooreNeighbors('fire');
+        if (fireCount >= 4 && Math.random() < fireDestroyCityProb) {
+            nextCell.setState('wall');
+            FF.setHistory(currentCell.getPosition(), "Green city burned to the ground");
             return;
         }
 
@@ -45,8 +81,25 @@ FFExamples.risk.initialize = function(FF) {
 
     // Capital should switch sides if the other faction gets there
     function processPinkPeopleCapital(currentCell, nextCell) {
-        if (currentCell.countMooreNeighbors('greenPeople') > 0) {
+        // Potential city allegiance switch when a single color rules all cities
+        if (!FF.stateCounts.greenPeopleCapital && Math.random() < revolutionProb) {
+            FF.setHistory(currentCell.getPosition(), "Some rogue Greens overthrew the Pinks!");
             nextCell.setState('greenPeopleCapital');
+            return;
+        }
+
+        // City should switch sides if it is being overrun
+        if (currentCell.countMooreNeighbors('greenPeople') > 1) {
+            FF.setHistory(currentCell.getPosition(), "Pink city fell to the Greens");
+            nextCell.setState('greenPeopleCapital');
+            return;
+        }
+        
+        // Chance for fire to destroy city
+        var fireCount = currentCell.countMooreNeighbors('fire', 1);
+        if (fireCount >= 4 && Math.random() < fireDestroyCityProb) {
+            nextCell.setState('wall');
+            FF.setHistory(currentCell.getPosition(), "Pink city burned to the ground");
             return;
         }
 
@@ -79,6 +132,7 @@ FFExamples.risk.initialize = function(FF) {
                 && currentCell.countMooreNeighbors('wall', 3) == 0
                 && Math.random() < startingCityProb
             ) {
+                FF.setHistory(currentCell.getPosition(), "The " + (startingCity == 'greenPeopleCapital' ? "Greens" : "Pinks") + " established a starting city" );
                 nextCell.setState(startingCity);
 
                 startingCity = startingCity == 'greenPeopleCapital' ? 'pinkPeopleCapital' : 'greenPeopleCapital';
@@ -110,13 +164,15 @@ FFExamples.risk.initialize = function(FF) {
 
         var isFireNear = currentCell.countMooreNeighbors('fire', 1) > 0 || currentCell.countMooreNeighbors('fire', 2) > 0;
         var shouldSpread = Math.random() < peopleProb;
+        var shouldSpreadWithoutEnemy = Math.random() < peopleProb/1.2;
 
         // Determine if green people should propagate
         if (currentCell.countNeumannNeighbors('greenPeople') == 0
+            && (((!!FF.stateCounts.pinkPeople||!!FF.stateCounts.pinkPeopleCapital)&&shouldSpread) || (!FF.stateCounts.pinkPeople&&!FF.stateCounts.pinkPeopleCapital&&shouldSpreadWithoutEnemy)) // Propagate at a lower rate when no enemy around
+            // && ((!!FF.stateCounts.greenPeopleCapital&&shouldSpread) || (!FF.stateCounts.greenPeopleCapital&&shouldSpreadWithoutEnemy)) // Propagate at a lower rate when no more capital of a friendly color
             && greenCount > pinkCount
             && greenCount > 0 
-            && greenCount < 5 
-            && shouldSpread
+            && greenCount < 5
             && !isFireNear
         ) {
             nextCell.setState('greenPeople');
@@ -125,10 +181,11 @@ FFExamples.risk.initialize = function(FF) {
 
         // Determine if pink people should propagate
         if (currentCell.countNeumannNeighbors('pinkPeople') == 0
+            && (((!!FF.stateCounts.greenPeople||!!FF.stateCounts.greenPeopleCapital)&&shouldSpread) || (!FF.stateCounts.greenPeople&&!FF.stateCounts.greenPeopleCapital&&shouldSpreadWithoutEnemy)) // Propagate at a lower rate when no enemy around
+            // && ((!!FF.stateCounts.pinkPeopleCapital&&shouldSpread) || (!FF.stateCounts.pinkPeopleCapital&&shouldSpreadWithoutEnemy)) // Propagate at a lower rate when no more capital of a friendly color
             && pinkCount > greenCount
             && pinkCount > 0 
-            && pinkCount < 5 
-            && shouldSpread
+            && pinkCount < 5
             && !isFireNear
         ) {
             nextCell.setState('pinkPeople');
@@ -137,11 +194,13 @@ FFExamples.risk.initialize = function(FF) {
 
         // Determine if new city should be established
         if (pinkCount >= 5 || (pinkCount >= 4 && Math.random() < peopleProb/10000)) { // TODO only create a new city w/ count of 4 IF there are less than 10 total cities for that color
+            FF.setHistory(currentCell.getPosition(), "The Pinks established a new city");
             nextCell.setState('pinkPeopleCapital');
             return;
         }
 
         if (greenCount >= 5 || (greenCount >= 4 && Math.random() < peopleProb/10000)) { // TODO only create a new city w/ count of 4 IF there are less than 10 total cities for that color
+            FF.setHistory(currentCell.getPosition(), "The Greens established a new city");
             nextCell.setState('greenPeopleCapital');
             return;
         }
@@ -195,6 +254,31 @@ FFExamples.risk.initialize = function(FF) {
 
     function processFire(currentCell, nextCell) {
         nextCell.setState('empty');
+    }
+
+    // TODO Flesh this out and start using?
+    function generateCityName(position, color) {
+        var name = [];
+
+        name.push((position.x % 26) + 97);
+        name.push((position.y % 26) + 97);
+        name.push(((position.x+color.length) % 26) + 97);
+        name.push(((position.x*color.length) % 26) + 97);
+        name.push(((position.y+color.length) % 26) + 97);
+        name.push(((position.y*color.length) % 26) + 97);
+        name.push(((color.length*Math.random()) % 26) + 97);
+
+        var result = [];
+
+        name.forEach(function(ch) {
+            result.push(String.fromCharCode(ch));
+        });
+
+        result[0] = result[0].toUpperCase();
+
+        // console.log(result.join(''));
+
+        return result.join('');
     }
 
     function initializeWorld(FF) {
