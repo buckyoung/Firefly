@@ -9,8 +9,9 @@ Firefly.modules.model = function(FF) {
     FF.registerModel = registerModel;
 
     // Protected Methods
-    Firefly.getModels = getModels;
-    Firefly.runModel = runModel;
+    Firefly.model = {};
+    Firefly.model.getRegisteredModels = getRegisteredModels;
+    Firefly.model.runModel = runModel;
 
     /**
      * @public Register a model type
@@ -28,7 +29,7 @@ Firefly.modules.model = function(FF) {
      * @protected Return the models object
      * @return {Array} Internal models array
      */
-    function getModels() {
+    function getRegisteredModels() {
         return models;
     }
 
@@ -36,6 +37,7 @@ Firefly.modules.model = function(FF) {
      * @public Runs the initializer at index in models array
      */
     function runModel(index) {
+        Firefly.reinitializeModules();
         models[index].initializer(FF);
     }
 };

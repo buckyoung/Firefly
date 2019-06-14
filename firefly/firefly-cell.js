@@ -21,11 +21,12 @@ Firefly.modules.cell = function(FF) {
         this.x = x;
         this.y = y;
         this.state = initState;
-        this.color = Firefly.getStates()[this.state].color;
+        this.color = Firefly.state.getRegisteredStates()[this.state].color;
 
         // Public Methods (redundant)
         this.setState = setState;
         this.getState = getState;
+        this.setPosition = setPosition;
         this.getPosition = getPosition;
         this.setColor = setColor;
         this.getColor = getColor;
@@ -41,7 +42,7 @@ Firefly.modules.cell = function(FF) {
             this.state = newState;
 
             if (shouldSetColor) {
-                this.setColor(Firefly.getStates()[this.state].color);
+                this.setColor(Firefly.state.getRegisteredStates()[this.state].color);
             }
         }
 
@@ -51,6 +52,16 @@ Firefly.modules.cell = function(FF) {
          */
         function getState() {
             return this.state;
+        }
+
+        /**
+         * @public Sets cells position
+         * @param {int} x cell position
+         * @param {int} y cell position
+         */
+        function setPosition(x, y) {
+            this.x = x;
+            this.y = y;
         }
 
         /**
@@ -93,7 +104,7 @@ Firefly.modules.cell = function(FF) {
         var result = 0;
         var x = this.x;
         var y = this.y;
-        var world = Firefly.CURRENT_WORLD;
+        var world = Firefly.world.getCurrentWorld();
 
         var xminus = (x-distance < 0) ? Firefly.CANVAS_WIDTH-distance : x-distance;
         var xplus = (x+distance >= Firefly.CANVAS_WIDTH) ? -1+distance : x+distance;
@@ -126,7 +137,7 @@ Firefly.modules.cell = function(FF) {
         var result = 0;
         var x = this.x;
         var y = this.y;
-        var world = Firefly.CURRENT_WORLD;
+        var world = Firefly.world.getCurrentWorld();
 
         var xminus = (x-distance < 0) ? Firefly.CANVAS_WIDTH-distance : x-distance;
         var xplus = (x+distance >= Firefly.CANVAS_WIDTH) ? -1+distance : x+distance;
@@ -157,7 +168,7 @@ Firefly.modules.cell = function(FF) {
 
         var x = this.x;
         var y = this.y;
-        var world = Firefly.CURRENT_WORLD;
+        var world = Firefly.world.getCurrentWorld();
         var xval = 0;
         var yval = 0;
 

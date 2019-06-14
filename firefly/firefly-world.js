@@ -3,24 +3,23 @@
  */
 Firefly.modules.world = function(FF) {
     // Public Variables
-    FF.getGenerationCount = getGenerationCount;
 
     // Public Methods
     FF.initialize = initialize;
-    FF.setHistory = setHistory;
-    FF.stateCounts = {}; // Cached from the frame previous (to save compute)
-    // TODO - implement a getStateCounts function & return 0 if undefined!
+    FF.getGenerationCount = getGenerationCount;
+    FF.getStateCount = getStateCount;
 
     // Private Variables
     var CANCEL_TIMEOUT;
-    var HISTORY;
-    var historyTooltipElement = document.getElementById('history');
-    var isFreezeHistoryTooltip = false;
+    var GENERATION_COUNT;
+    var CURRENT_WORLD;
+    var NEXT_WORLD;
+    var stateCounts = {}; // Cached from the frame previous (to save compute)
 
-    // Protected Variables
-    Firefly.CURRENT_WORLD;
-    Firefly.NEXT_WORLD;
-    Firefly.GENERATION_COUNT;
+    // Protected Methods
+    Firefly.world = {};
+    Firefly.world.getCurrentWorld = getCurrentWorld;
+    Firefly.world.getNextWorld = getNextWorld;
 
     /**
      * Initialize the engine
@@ -40,27 +39,33 @@ Firefly.modules.world = function(FF) {
         var canvas_2 = document.getElementById(Firefly.params.CANVAS_2_ID);
         var ctx_2 = canvas_2.getContext('2d');
 
-        canvas_1.addEventListener('mouseover', onMouseEvent, false);
-        canvas_2.addEventListener('mouseover', onMouseEvent, false);
-        canvas_1.addEventListener('mouseout', onMouseEvent, false);
-        canvas_2.addEventListener('mouseout', onMouseEvent, false);
-        canvas_1.addEventListener('mousemove', onMouseEvent, false);
-        canvas_2.addEventListener('mousemove', onMouseEvent, false);
-        canvas_1.addEventListener('mouseup', onMouseEvent, false);
-        canvas_2.addEventListener('mouseup', onMouseEvent, false);
+        canvas_1.addEventListener('mouseover', Firefly.history.onMouseOver, false);
+        canvas_2.addEventListener('mouseover', Firefly.history.onMouseOver, false);
+        canvas_1.addEventListener('mouseout', Firefly.history.onMouseOut, false);
+        canvas_2.addEventListener('mouseout', Firefly.history.onMouseOut, false);
+        canvas_1.addEventListener('mousemove', Firefly.history.onMouseMove, false);
+        canvas_2.addEventListener('mousemove', Firefly.history.onMouseMove, false);
+        canvas_1.addEventListener('mouseup', Firefly.history.onMouseUp, false);
+        canvas_2.addEventListener('mouseup', Firefly.history.onMouseUp, false);
 
-        Firefly.util.setDimensions(canvas_1, canvas_2);
+        canvas_1.addEventListener('mousemove', Firefly.brush.onMouseMove, false);
+        canvas_2.addEventListener('mousemove', Firefly.brush.onMouseMove, false);
+        canvas_1.addEventListener('mouseup', Firefly.brush.onMouseUp, false);
+        canvas_2.addEventListener('mouseup', Firefly.brush.onMouseUp, false);
 
         // Initialize world
+        canvas_1.width = Firefly.CANVAS_WIDTH;
+        canvas_1.height = Firefly.CANVAS_HEIGHT;
+        canvas_2.width = Firefly.CANVAS_WIDTH;
+        canvas_2.height = Firefly.CANVAS_HEIGHT;
         var world_1 = Firefly.util.create2dArray(Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
         var world_2 = Firefly.util.create2dArray(Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
-        HISTORY = Firefly.util.create2dArray(Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
         
         clientInitWorld(world_1, Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
         clientInitWorld(world_2, Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
 
         // Draw first frame
-        Firefly.CURRENT_WORLD = world_1;
+        CURRENT_WORLD = world_1;
         var id = beginPaint(ctx_1);
         for (var i = 0; i < Firefly.CANVAS_WIDTH; i++) {
             for (var j = 0; j < Firefly.CANVAS_HEIGHT; j++) {
@@ -69,11 +74,11 @@ Firefly.modules.world = function(FF) {
         }
         endPaint(ctx_1, id);
 
-        Firefly.GENERATION_COUNT = 0;
+        GENERATION_COUNT = 0;
 
         // Start the engine
         swapBuffer(false, true, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2);
-    }    
+    } 
 
     /**
      * The double-buffer engine. Will swap visibility between each buffer at time INVERSE_SPEED
@@ -87,7 +92,7 @@ Firefly.modules.world = function(FF) {
      * @param  {World} world_2 The grid system of world 2
      */
     function swapBuffer(visible_1, visible_2, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2) {
-        Firefly.GENERATION_COUNT++;
+        GENERATION_COUNT++;
         Firefly.drawer.updateCounter();
 
         // Ensure boolean opposites
@@ -112,6 +117,10 @@ Firefly.modules.world = function(FF) {
         visible_1 = !visible_1;
         visible_2 = !visible_2;
 
+        if (Firefly.camera.shouldPanCamera()) {
+            Firefly.camera.panCameraForWorlds(world_1, world_2);
+        }
+
         CANCEL_TIMEOUT = window.setTimeout(function() {
             swapBuffer(visible_1, visible_2, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2);
         }, Firefly.params.INVERSE_SPEED);
@@ -127,13 +136,13 @@ Firefly.modules.world = function(FF) {
         // Clear next 
         nextCtx.clearRect(0, 0, Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
 
-        Firefly.CURRENT_WORLD = currentWorld;
-        Firefly.NEXT_WORLD = nextWorld;
+        CURRENT_WORLD = currentWorld;
+        NEXT_WORLD = nextWorld;
 
         // Populate
         var currentCell;
         var nextCell;
-        var states = Firefly.getStates();
+        var states = Firefly.state.getRegisteredStates();
         var tempStateCounts = {};
 
         // Begin paint
@@ -147,6 +156,10 @@ Firefly.modules.world = function(FF) {
                 // Count the state
                 tempStateCounts[currentCell.state] = tempStateCounts[currentCell.state] ? tempStateCounts[currentCell.state] + 1 : 1;
 
+                // Re-set cell position (needs to be done when camera moves)
+                currentCell.setPosition(i, j);
+                nextCell.setPosition(i, j);
+
                 // Process next state
                 states[currentCell.state].processor(currentCell, nextCell);
 
@@ -155,7 +168,8 @@ Firefly.modules.world = function(FF) {
             }
         }
 
-        FF.stateCounts = tempStateCounts;
+        stateCounts = tempStateCounts;
+        Firefly.reporting.onUpdate();
 
         // End paint
         endPaint(nextCtx, id);
@@ -195,79 +209,21 @@ Firefly.modules.world = function(FF) {
         data[index] = 255;
     }
 
-    function getGenerationCount() {
-        return Firefly.GENERATION_COUNT;
+    function getGenerationCount() { // TODO maybe reporting module should handle generation counts?
+        return GENERATION_COUNT;
     }
 
-    function onMouseEvent(event) {
-        // Hide tooltip when mouse leaves a cell with history
-        if (event.type == 'mouseout' && !isFreezeHistoryTooltip) {
-            historyTooltipElement.style.display='none';
-            return;
-        }
-
-        // Move the tooltip w/ the mouse
-        if (event.type == 'mousemove' && !isFreezeHistoryTooltip) {
-            var Yoffset = event.clientY < window.innerHeight/2 ? 50 : -80;
-            var Xoffset = event.clientX < window.innerWidth/2 ? 30 : -350;
-
-            historyTooltipElement.style.top = (event.clientY + Yoffset) + 'px';
-            historyTooltipElement.style.left = (event.clientX + Xoffset) + 'px';
-            return;
-        }
-
-        var translatedX = Math.floor(event.offsetX/Firefly.params.INVERSE_SIZE);
-        var translatedY = Math.floor(event.offsetY/Firefly.params.INVERSE_SIZE);
-
-        if (event.type == 'mouseup') {
-            // Unfreeze & hide tooltip with a click to anywhere on the canvas
-            if (isFreezeHistoryTooltip) {
-                isFreezeHistoryTooltip = false;
-                historyTooltipElement.style.display='none';
-                return;
-            }
-
-            // Only freeze if clicking on a cell with history (allows the user to scroll a long tooltip)
-            if (!isFreezeHistoryTooltip && HISTORY[translatedX] && HISTORY[translatedX][translatedY]) {
-                isFreezeHistoryTooltip = true;
-                return;
-            }
-
-            // Allow the model to define what happens on a mouse click
-            var currentCell = Firefly.CURRENT_WORLD[translatedX][translatedY];
-            var nextCell = Firefly.NEXT_WORLD[translatedX][translatedY];
-            var states = Firefly.getStates();
-            states['onMouseClick'].processor(currentCell, nextCell); // TODO refactor this to implement an arbitrary event registration for the models
-
-            return;
-        }
-
-        // (event.type == mouseover) event processing:
-        if (HISTORY[translatedX] && HISTORY[translatedX][translatedY]) {
-            historyTooltipElement.style.display='block';
-            historyTooltipElement.style.position='fixed';
-            historyTooltipElement.scrollTop = historyTooltipElement.scrollHeight;
-
-            // Convert history object to a string
-            var result = '';
-            for (var key in HISTORY[translatedX][translatedY]) {
-                if (HISTORY[translatedX][translatedY].hasOwnProperty(key)) {
-                    result += 'g.' + key + ': ' + HISTORY[translatedX][translatedY][key] + '\n';
-                }
-            }
-
-            historyTooltipElement.innerText = result;
-        }
+    function getCurrentWorld() {
+        return CURRENT_WORLD;
     }
 
-    function setHistory(position, message) {
-        var generationCount = Firefly.GENERATION_COUNT;
-        if (!HISTORY[position.x][position.y]) {
-            HISTORY[position.x][position.y] = {};
-        }
+    function getNextWorld() {
+        return NEXT_WORLD;
+    }
 
-        HISTORY[position.x][position.y][generationCount] = message;
+    function getStateCount(state) { // TODO maybe reporting module should handle state counts?
+        if (!stateCounts.hasOwnProperty(state)) { return 0; }
 
-        // TODO show popup information when something happens
+        return stateCounts[state];
     }
 };
