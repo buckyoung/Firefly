@@ -26,6 +26,7 @@ Firefly.modules.cell = function(FF) {
         // Public Methods (redundant)
         this.setState = setState;
         this.getState = getState;
+        this.setPosition = setPosition;
         this.getPosition = getPosition;
         this.setColor = setColor;
         this.getColor = getColor;
@@ -51,6 +52,16 @@ Firefly.modules.cell = function(FF) {
          */
         function getState() {
             return this.state;
+        }
+
+        /**
+         * @public Sets cells position
+         * @param {int} x cell position
+         * @param {int} y cell position
+         */
+        function setPosition(x, y) {
+            this.x = x;
+            this.y = y;
         }
 
         /**

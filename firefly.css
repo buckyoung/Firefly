@@ -83,4 +83,5 @@ canvas {
     bottom: 0;
     left: 0;
     opacity: .7;
+    pointer-events: none;
 }

@@ -21,6 +21,8 @@ Firefly.modules.reporting = function(FF) {
 
     document.addEventListener('keydown', onKeyDown, false);
 
+    // TODO add hover text that tells you generation + state name + count values
+
     function initialize() {
         registeredStates = [];
         report = {};

@@ -79,7 +79,7 @@ Firefly.modules.world = function(FF) {
 
         // Start the engine
         swapBuffer(false, true, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2);
-    }    
+    } 
 
     /**
      * The double-buffer engine. Will swap visibility between each buffer at time INVERSE_SPEED
@@ -118,6 +118,10 @@ Firefly.modules.world = function(FF) {
         visible_1 = !visible_1;
         visible_2 = !visible_2;
 
+        if (Firefly.camera.shouldPanCamera()) {
+            Firefly.camera.panCameraForWorlds(world_1, world_2);
+        }
+
         CANCEL_TIMEOUT = window.setTimeout(function() {
             swapBuffer(visible_1, visible_2, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2);
         }, Firefly.params.INVERSE_SPEED);
@@ -153,6 +157,10 @@ Firefly.modules.world = function(FF) {
                 // Count the state
                 tempStateCounts[currentCell.state] = tempStateCounts[currentCell.state] ? tempStateCounts[currentCell.state] + 1 : 1;
 
+                // Re-set cell position (needs to be done when camera moves)
+                currentCell.setPosition(i, j);
+                nextCell.setPosition(i, j);
+
                 // Process next state
                 states[currentCell.state].processor(currentCell, nextCell);
 
@@ -167,9 +175,6 @@ Firefly.modules.world = function(FF) {
         // End paint
         endPaint(nextCtx, id);
     }
-
-    // TODO Make it so i can press arrow keys to PAN the CAMERA around the WORLD
-    //      -- would require some array manipulation of both CURRENT and NEXT world
 
     /**
      * Get the image data object -- 'open' it for drawing
