@@ -27,17 +27,17 @@ FFExamples.risk.initialize = function(FF) {
 
         FF.registerState('greenPeople', [0, 120, 0], processGreenPeople);
         FF.registerState('greenPeopleCapital', [0, 255, 0], processGreenPeopleCapital);
-        FF.registerReportTracking('greenPeopleCapital');
         
         FF.registerState('pinkPeople', [120, 0, 120], processPinkPeople);
         FF.registerState('pinkPeopleCapital', [255, 0, 255], processPinkPeopleCapital);
-        FF.registerReportTracking('pinkPeopleCapital');
         
         FF.registerState('fire', [255, 30, 30], processFire);
         
         FF.registerState('onMouseClick', [0, 0, 0], onMouseClick); // TODO make a registerHandler - no color needed
 
-        FF.setReportingSnapshotInterval(100);
+        FF.registerReportTracking('greenPeople');
+        FF.registerReportTracking('pinkPeople');
+        FF.setReportingSnapshotInterval(500);
 
         FF.initialize(initializeWorld(FF));
     }

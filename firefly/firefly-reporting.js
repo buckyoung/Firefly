@@ -4,10 +4,11 @@
 Firefly.modules.reporting = function(FF) {
     // Private Variables
     var registeredStates = [];
-    var snapshotInterval = 100;
+    var snapshotInterval = 500;
     var report = {};
     var table = document.getElementById('report');
     var row = table.insertRow();
+    var isVisible = true;
 
     // Public Methods
     FF.registerReportTracking = registerReportTracking;
@@ -18,13 +19,23 @@ Firefly.modules.reporting = function(FF) {
     Firefly.reporting.onUpdate = onUpdate;
     Firefly.reporting.initialize = initialize;
 
+    document.addEventListener('keydown', onKeyDown, false);
+
     function initialize() {
         registeredStates = [];
         report = {};
-        snapshotInterval = 100;
+        snapshotInterval = 500;
         table = document.getElementById('report');
         table.innerHTML = '';
         row = table.insertRow();
+    }
+
+    /** Listen for R key to toggle the reporting drawer */
+    function onKeyDown(e) {
+        if (e.keyCode == 82) { // "r" 
+            table.style.display = isVisible ? 'none' : '';
+            isVisible = !isVisible;
+        }
     }
 
     /** Registeres a cell state to track & the color to report it as */
@@ -100,7 +111,7 @@ Firefly.modules.reporting = function(FF) {
         }
 
         // Only report the last X number of snapshots in the UI
-        if (row.childElementCount > 50) {
+        if (row.childElementCount > 1000) {
             var fc = row.firstChild;
             row.removeChild(fc);
         }

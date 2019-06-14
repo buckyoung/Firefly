@@ -20,8 +20,35 @@ Firefly.modules.drawer = function(FF) {
     Firefly.drawer.showPlayIcon = showPlayIcon;
     Firefly.drawer.updateCounter = updateCounter;
 
-    // Listen for escape and enter keys
-    document.onkeydown = function(e) {
+    document.addEventListener('keydown', onKeyDown, false);
+
+    // Initialize
+    // -- this shouldnt be a "module" initializer, but rather a one-time initialization
+    initialize();
+
+    /**
+     * @private Initialize
+     */
+    function initialize() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var speed = urlParams.get('speed') || Firefly.params.INVERSE_SPEED;
+        var size = urlParams.get('size') || Firefly.params.INVERSE_SIZE;
+
+        updateSpeed(speed);
+        updateSize(size);
+
+        Firefly.drawer.showPlayIcon()
+
+        var timeout = setTimeout(function() {
+            if (Firefly.model.getRegisteredModels().length) {
+                populateModelSelect();
+                clearTimeout(timeout); 
+            }
+        }, 250);
+    }
+
+    /** Listen for keys */
+    function onKeyDown(e) {
         // Escape toggles settings
         if (e.keyCode == 27) {
             Firefly.drawer.toggleSettings();
@@ -53,30 +80,6 @@ Firefly.modules.drawer = function(FF) {
             Firefly.drawer.updateSpeed(Firefly.params.INVERSE_SPEED + offsetAmount);
         }
     };
-
-    // Initialize
-    initialize();
-
-    /**
-     * @private Initialize
-     */
-    function initialize() {
-        var urlParams = new URLSearchParams(window.location.search);
-        var speed = urlParams.get('speed') || Firefly.params.INVERSE_SPEED;
-        var size = urlParams.get('size') || Firefly.params.INVERSE_SIZE;
-
-        updateSpeed(speed);
-        updateSize(size);
-
-        Firefly.drawer.showPlayIcon()
-
-        var timeout = setTimeout(function() {
-            if (Firefly.model.getRegisteredModels().length) {
-                populateModelSelect();
-                clearTimeout(timeout); 
-            }
-        }, 250);
-    }
 
     /**
      * @private Initialize the model selector
