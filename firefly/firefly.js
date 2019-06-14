@@ -5,6 +5,8 @@ Firefly.modules = {};
  *     - Call out to init all modules attached to Firefly that have initializers attached to their module object
  */
 Firefly.reinitializeModules = function() {
+    Firefly.util.setDimensions();
+
     for (var module in Firefly) {
         if (!Firefly.hasOwnProperty(module)) { continue; } // Short circuit
         if (!Firefly[module].hasOwnProperty('initialize')) { continue; } // Short circuit
@@ -68,12 +70,8 @@ Firefly.util = {
 
         return arr;
     },
-    setDimensions: function(canvas_1, canvas_2) {
+    setDimensions: function() {
         Firefly.CANVAS_WIDTH = Math.floor(window.innerWidth/Firefly.params.INVERSE_SIZE);
         Firefly.CANVAS_HEIGHT = Math.floor(window.innerHeight/Firefly.params.INVERSE_SIZE);
-        canvas_1.width = Firefly.CANVAS_WIDTH;
-        canvas_1.height = Firefly.CANVAS_HEIGHT;
-        canvas_2.width = Firefly.CANVAS_WIDTH;
-        canvas_2.height = Firefly.CANVAS_HEIGHT;
     }
 };

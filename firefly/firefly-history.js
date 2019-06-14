@@ -13,8 +13,7 @@ Firefly.modules.history = function(FF) {
     // Protected Methods
     Firefly.history = {};
     Firefly.history.initialize = initialize;
-    
-    document.addEventListener('onMouseEvent', onMouseEvent, false);
+    Firefly.history.onMouseEvent = onMouseEvent;
 
     function initialize() {
         HISTORY_WORLD = Firefly.util.create2dArray(Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
@@ -55,8 +54,8 @@ Firefly.modules.history = function(FF) {
             }
 
             // Allow the model to define what happens on a mouse click
-            var currentCell = CURRENT_WORLD[translatedX][translatedY];
-            var nextCell = NEXT_WORLD[translatedX][translatedY];
+            var currentCell = Firefly.world.getCurrentWorld()[translatedX][translatedY];
+            var nextCell = Firefly.world.getNextWorld()[translatedX][translatedY];
             var states = Firefly.state.getRegisteredStates();
             states['onMouseClick'].processor(currentCell, nextCell); // TODO refactor this to implement an arbitrary event registration for the models
 
@@ -81,7 +80,8 @@ Firefly.modules.history = function(FF) {
     }
 
     function setHistory(position, message) {
-        var generationCount = GENERATION_COUNT;
+        var generationCount = FF.getGenerationCount();
+
         if (!HISTORY_WORLD[position.x][position.y]) {
             HISTORY_WORLD[position.x][position.y] = {};
         }

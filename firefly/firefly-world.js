@@ -20,6 +20,7 @@ Firefly.modules.world = function(FF) {
     // Protected Methods
     Firefly.world = {};
     Firefly.world.getCurrentWorld = getCurrentWorld;
+    Firefly.world.getNextWorld = getNextWorld;
 
     /**
      * Initialize the engine
@@ -39,21 +40,23 @@ Firefly.modules.world = function(FF) {
         var canvas_2 = document.getElementById(Firefly.params.CANVAS_2_ID);
         var ctx_2 = canvas_2.getContext('2d');
 
-        canvas_1.addEventListener('mouseover', onMouseEvent, false);
-        canvas_2.addEventListener('mouseover', onMouseEvent, false);
-        canvas_1.addEventListener('mouseout', onMouseEvent, false);
-        canvas_2.addEventListener('mouseout', onMouseEvent, false);
-        canvas_1.addEventListener('mousemove', onMouseEvent, false);
-        canvas_2.addEventListener('mousemove', onMouseEvent, false);
-        canvas_1.addEventListener('mouseup', onMouseEvent, false);
-        canvas_2.addEventListener('mouseup', onMouseEvent, false);
+        canvas_1.addEventListener('mouseover', Firefly.history.onMouseEvent, false);
+        canvas_2.addEventListener('mouseover', Firefly.history.onMouseEvent, false);
+        canvas_1.addEventListener('mouseout', Firefly.history.onMouseEvent, false);
+        canvas_2.addEventListener('mouseout', Firefly.history.onMouseEvent, false);
+        canvas_1.addEventListener('mousemove', Firefly.history.onMouseEvent, false);
+        canvas_2.addEventListener('mousemove', Firefly.history.onMouseEvent, false);
+        canvas_1.addEventListener('mouseup', Firefly.history.onMouseEvent, false);
+        canvas_2.addEventListener('mouseup', Firefly.history.onMouseEvent, false);
 
         canvas_1.addEventListener('mousemove', onCursorMove, false);
         canvas_2.addEventListener('mousemove', onCursorMove, false);
 
-        Firefly.util.setDimensions(canvas_1, canvas_2);
-
         // Initialize world
+        canvas_1.width = Firefly.CANVAS_WIDTH;
+        canvas_1.height = Firefly.CANVAS_HEIGHT;
+        canvas_2.width = Firefly.CANVAS_WIDTH;
+        canvas_2.height = Firefly.CANVAS_HEIGHT;
         var world_1 = Firefly.util.create2dArray(Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
         var world_2 = Firefly.util.create2dArray(Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
         
@@ -211,6 +214,10 @@ Firefly.modules.world = function(FF) {
 
     function getCurrentWorld() {
         return CURRENT_WORLD;
+    }
+
+    function getNextWorld() {
+        return NEXT_WORLD;
     }
 
     function getStateCount(state) {
