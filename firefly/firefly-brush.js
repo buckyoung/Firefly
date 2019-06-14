@@ -35,7 +35,7 @@ Firefly.modules.brush = function(FF) {
     }
 
     function onMouseUp(event) {
-        if (cursorBrushElement.style.display == 'none') { return; } // Short circuit
+        if (cursorBrushElement.style.display == 'none') { return; } // Short circuit - dont add cell if the cursor isnt shown
 
         var translatedX = Math.floor(event.offsetX/Firefly.params.INVERSE_SIZE);
         var translatedY = Math.floor(event.offsetY/Firefly.params.INVERSE_SIZE);
