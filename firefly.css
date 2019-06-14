@@ -67,3 +67,20 @@ canvas {
     max-width: 320px;
     overflow: auto;
 }
+
+#cursor-brush {
+    background: white;
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    pointer-events: none;
+}
+
+#report {
+    background: red;
+    height: 100px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}

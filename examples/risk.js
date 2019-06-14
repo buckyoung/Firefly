@@ -15,6 +15,8 @@ FFExamples.risk.initialize = function(FF) {
     var startingCityCount = 0;
     var startingCityTarget = 0;
 
+    var cursorBrushElement = document.getElementById('cursor-brush'); // TODO refactor this to be a firefly modules w an interface
+
     initializeModel(FF);
 
     function initializeModel(FF) {
@@ -24,14 +26,18 @@ FFExamples.risk.initialize = function(FF) {
         // TODO Refactor to allow a 3rd color / an arbitrary number of colors 
 
         FF.registerState('greenPeople', [0, 120, 0], processGreenPeople);
+        FF.registerReportTracking('greenPeople', [0, 120, 0]);
         FF.registerState('greenPeopleCapital', [0, 255, 0], processGreenPeopleCapital);
         
         FF.registerState('pinkPeople', [120, 0, 120], processPinkPeople);
+        FF.registerReportTracking('pinkPeople', [120, 0, 120]);
         FF.registerState('pinkPeopleCapital', [255, 0, 255], processPinkPeopleCapital);
         
         FF.registerState('fire', [255, 30, 30], processFire);
         
         FF.registerState('onMouseClick', [0, 0, 0], onMouseClick); // TODO make a registerHandler - no color needed
+
+        FF.setReportingSnapshotInterval(200);
 
         FF.initialize(initializeWorld(FF));
     }
@@ -45,6 +51,7 @@ FFExamples.risk.initialize = function(FF) {
         nextCell.setState(startingCity);
         FF.setHistory(nextCell.getPosition(), "You brought forth a new " + (startingCity == 'greenPeopleCapital' ? "Green" : "Pink") + " city" );
         startingCity = startingCity == 'greenPeopleCapital' ? 'pinkPeopleCapital' : 'greenPeopleCapital';
+        cursorBrushElement.style.background=(startingCity == 'greenPeopleCapital' ? "lawngreen" : "deeppink");
     }
 
     function doNothing(currentCell, nextCell) {
@@ -55,7 +62,7 @@ FFExamples.risk.initialize = function(FF) {
     // Capital should switch sides if the other faction gets there
     function processGreenPeopleCapital(currentCell, nextCell) {
         // Potential city allegiance switch when a single color rules all cities
-        if (!FF.stateCounts.pinkPeopleCapital && Math.random() < revolutionProb) { 
+        if (!FF.getStateCount('pinkPeopleCapital') && Math.random() < revolutionProb) { 
             FF.setHistory(currentCell.getPosition(), "Some rogue Pinks overthrew the Greens!");
             nextCell.setState('pinkPeopleCapital');
             return;
@@ -82,7 +89,7 @@ FFExamples.risk.initialize = function(FF) {
     // Capital should switch sides if the other faction gets there
     function processPinkPeopleCapital(currentCell, nextCell) {
         // Potential city allegiance switch when a single color rules all cities
-        if (!FF.stateCounts.greenPeopleCapital && Math.random() < revolutionProb) {
+        if (!FF.getStateCount('greenPeopleCapital') && Math.random() < revolutionProb) {
             FF.setHistory(currentCell.getPosition(), "Some rogue Greens overthrew the Pinks!");
             nextCell.setState('greenPeopleCapital');
             return;
@@ -168,8 +175,7 @@ FFExamples.risk.initialize = function(FF) {
 
         // Determine if green people should propagate
         if (currentCell.countNeumannNeighbors('greenPeople') == 0
-            && (((!!FF.stateCounts.pinkPeople||!!FF.stateCounts.pinkPeopleCapital)&&shouldSpread) || (!FF.stateCounts.pinkPeople&&!FF.stateCounts.pinkPeopleCapital&&shouldSpreadWithoutEnemy)) // Propagate at a lower rate when no enemy around
-            // && ((!!FF.stateCounts.greenPeopleCapital&&shouldSpread) || (!FF.stateCounts.greenPeopleCapital&&shouldSpreadWithoutEnemy)) // Propagate at a lower rate when no more capital of a friendly color
+            && (((!!FF.getStateCount('pinkPeople')||!!FF.getStateCount('pinkPeopleCapital'))&&shouldSpread) || (!FF.getStateCount('pinkPeople')&&!FF.getStateCount('pinkPeopleCapital')&&shouldSpreadWithoutEnemy)) // Propagate at a lower rate when no enemy around
             && greenCount > pinkCount
             && greenCount > 0 
             && greenCount < 5
@@ -181,8 +187,7 @@ FFExamples.risk.initialize = function(FF) {
 
         // Determine if pink people should propagate
         if (currentCell.countNeumannNeighbors('pinkPeople') == 0
-            && (((!!FF.stateCounts.greenPeople||!!FF.stateCounts.greenPeopleCapital)&&shouldSpread) || (!FF.stateCounts.greenPeople&&!FF.stateCounts.greenPeopleCapital&&shouldSpreadWithoutEnemy)) // Propagate at a lower rate when no enemy around
-            // && ((!!FF.stateCounts.pinkPeopleCapital&&shouldSpread) || (!FF.stateCounts.pinkPeopleCapital&&shouldSpreadWithoutEnemy)) // Propagate at a lower rate when no more capital of a friendly color
+            && (((!!FF.getStateCount('greenPeople')||!!FF.getStateCount('greenPeopleCapital'))&&shouldSpread) || (!FF.getStateCount('greenPeople')&&!FF.getStateCount('greenPeopleCapital')&&shouldSpreadWithoutEnemy)) // Propagate at a lower rate when no enemy around
             && pinkCount > greenCount
             && pinkCount > 0 
             && pinkCount < 5
@@ -219,6 +224,7 @@ FFExamples.risk.initialize = function(FF) {
         }
 
         // Fire spreads up to 3 away
+        // TODO OPTIMIZATION - check if theres any fire at all before checking if theres fire around a person. Use the FF.getStateCount()
         if (currentCell.countMooreNeighbors('fire', 1) > 0
             || currentCell.countMooreNeighbors('fire', 2) > 0
             || currentCell.countMooreNeighbors('fire', 3) > 0
@@ -241,6 +247,7 @@ FFExamples.risk.initialize = function(FF) {
         }
 
         // Fire spreads up to 3 away
+        // TODO OPTIMIZATION - check if theres any fire at all before checking if theres fire around a person. Use the FF.getStateCount()
         if (currentCell.countMooreNeighbors('fire', 1) > 0
             || currentCell.countMooreNeighbors('fire', 2) > 0
             || currentCell.countMooreNeighbors('fire', 3) > 0

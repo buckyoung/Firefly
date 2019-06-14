@@ -1,6 +1,19 @@
 Firefly.modules = {};
 
 /***************************
+ * Reinitialize all Modules
+ *     - Call out to init all modules attached to Firefly
+ *     - Ignore .world initializer because it is a special case (called from client)
+ */
+Firefly.reinitializeModules = function() {
+    for (var module in Firefly) {
+        if (!Firefly.hasOwnProperty(module) || module == 'world') { continue; } // Short circuit
+        if (!Firefly[module].hasOwnProperty('initialize')) { continue; } // Short circuit
+        Firefly[module].initialize();
+    }
+}
+
+/***************************
  * Quick access parameters
  */
 Firefly.params = {
@@ -25,6 +38,7 @@ function Firefly() {
             'cell',
             'drawer',
             'model',
+            'reporting',
             'state',
             'world'
         ], callback);

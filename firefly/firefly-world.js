@@ -3,24 +3,27 @@
  */
 Firefly.modules.world = function(FF) {
     // Public Variables
-    FF.getGenerationCount = getGenerationCount;
 
     // Public Methods
     FF.initialize = initialize;
     FF.setHistory = setHistory;
-    FF.stateCounts = {}; // Cached from the frame previous (to save compute)
-    // TODO - implement a getStateCounts function & return 0 if undefined!
+    FF.getGenerationCount = getGenerationCount;
+    FF.getStateCount = getStateCount;
 
     // Private Variables
     var CANCEL_TIMEOUT;
+    var GENERATION_COUNT;
+    var CURRENT_WORLD;
+    var NEXT_WORLD;
+    var stateCounts = {}; // Cached from the frame previous (to save compute)
     var HISTORY;
-    var historyTooltipElement = document.getElementById('history');
+    var historyTooltipElement = document.getElementById('history'); // TODO refactor this into its own FF module
+    var cursorBrushElement = document.getElementById('cursor-brush'); // TODO refactor this into its own FF module
     var isFreezeHistoryTooltip = false;
 
-    // Protected Variables
-    Firefly.CURRENT_WORLD;
-    Firefly.NEXT_WORLD;
-    Firefly.GENERATION_COUNT;
+    // Protected Methods
+    Firefly.world = {};
+    Firefly.world.getCurrentWorld = getCurrentWorld;
 
     /**
      * Initialize the engine
@@ -49,6 +52,9 @@ Firefly.modules.world = function(FF) {
         canvas_1.addEventListener('mouseup', onMouseEvent, false);
         canvas_2.addEventListener('mouseup', onMouseEvent, false);
 
+        canvas_1.addEventListener('mousemove', onCursorMove, false);
+        canvas_2.addEventListener('mousemove', onCursorMove, false);
+
         Firefly.util.setDimensions(canvas_1, canvas_2);
 
         // Initialize world
@@ -60,7 +66,7 @@ Firefly.modules.world = function(FF) {
         clientInitWorld(world_2, Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
 
         // Draw first frame
-        Firefly.CURRENT_WORLD = world_1;
+        CURRENT_WORLD = world_1;
         var id = beginPaint(ctx_1);
         for (var i = 0; i < Firefly.CANVAS_WIDTH; i++) {
             for (var j = 0; j < Firefly.CANVAS_HEIGHT; j++) {
@@ -69,7 +75,7 @@ Firefly.modules.world = function(FF) {
         }
         endPaint(ctx_1, id);
 
-        Firefly.GENERATION_COUNT = 0;
+        GENERATION_COUNT = 0;
 
         // Start the engine
         swapBuffer(false, true, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2);
@@ -87,7 +93,7 @@ Firefly.modules.world = function(FF) {
      * @param  {World} world_2 The grid system of world 2
      */
     function swapBuffer(visible_1, visible_2, canvas_1, canvas_2, ctx_1, ctx_2, world_1, world_2) {
-        Firefly.GENERATION_COUNT++;
+        GENERATION_COUNT++;
         Firefly.drawer.updateCounter();
 
         // Ensure boolean opposites
@@ -127,13 +133,13 @@ Firefly.modules.world = function(FF) {
         // Clear next 
         nextCtx.clearRect(0, 0, Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
 
-        Firefly.CURRENT_WORLD = currentWorld;
-        Firefly.NEXT_WORLD = nextWorld;
+        CURRENT_WORLD = currentWorld;
+        NEXT_WORLD = nextWorld;
 
         // Populate
         var currentCell;
         var nextCell;
-        var states = Firefly.getStates();
+        var states = Firefly.state.getRegisteredStates();
         var tempStateCounts = {};
 
         // Begin paint
@@ -155,7 +161,8 @@ Firefly.modules.world = function(FF) {
             }
         }
 
-        FF.stateCounts = tempStateCounts;
+        stateCounts = tempStateCounts;
+        Firefly.reporting.onUpdate();
 
         // End paint
         endPaint(nextCtx, id);
@@ -196,7 +203,25 @@ Firefly.modules.world = function(FF) {
     }
 
     function getGenerationCount() {
-        return Firefly.GENERATION_COUNT;
+        return GENERATION_COUNT;
+    }
+
+    function getCurrentWorld() {
+        return CURRENT_WORLD;
+    }
+
+    function getStateCount(state) {
+        if (!stateCounts.hasOwnProperty(state)) { return 0; }
+
+        return stateCounts[state];
+    }
+
+    function onCursorMove(event) {
+        var Yoffset = -5;
+        var Xoffset = -5;
+
+        cursorBrushElement.style.top = (event.clientY + Yoffset) + 'px';
+        cursorBrushElement.style.left = (event.clientX + Xoffset) + 'px';
     }
 
     function onMouseEvent(event) {
@@ -234,9 +259,9 @@ Firefly.modules.world = function(FF) {
             }
 
             // Allow the model to define what happens on a mouse click
-            var currentCell = Firefly.CURRENT_WORLD[translatedX][translatedY];
-            var nextCell = Firefly.NEXT_WORLD[translatedX][translatedY];
-            var states = Firefly.getStates();
+            var currentCell = CURRENT_WORLD[translatedX][translatedY];
+            var nextCell = NEXT_WORLD[translatedX][translatedY];
+            var states = Firefly.state.getRegisteredStates();
             states['onMouseClick'].processor(currentCell, nextCell); // TODO refactor this to implement an arbitrary event registration for the models
 
             return;
@@ -251,9 +276,8 @@ Firefly.modules.world = function(FF) {
             // Convert history object to a string
             var result = '';
             for (var key in HISTORY[translatedX][translatedY]) {
-                if (HISTORY[translatedX][translatedY].hasOwnProperty(key)) {
-                    result += 'g.' + key + ': ' + HISTORY[translatedX][translatedY][key] + '\n';
-                }
+                if (!HISTORY[translatedX][translatedY].hasOwnProperty(key)) { continue; } // Short circuit
+                result += 'g.' + key + ': ' + HISTORY[translatedX][translatedY][key] + '\n';
             }
 
             historyTooltipElement.innerText = result;
@@ -261,13 +285,13 @@ Firefly.modules.world = function(FF) {
     }
 
     function setHistory(position, message) {
-        var generationCount = Firefly.GENERATION_COUNT;
+        var generationCount = GENERATION_COUNT;
         if (!HISTORY[position.x][position.y]) {
             HISTORY[position.x][position.y] = {};
         }
 
         HISTORY[position.x][position.y][generationCount] = message;
 
-        // TODO show popup information when something happens
+        // TODO show popup information / popup icon when something happens
     }
 };

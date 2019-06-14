@@ -71,7 +71,7 @@ Firefly.modules.drawer = function(FF) {
         Firefly.drawer.showPlayIcon()
 
         var timeout = setTimeout(function() {
-            if (Firefly.getModels().length) {
+            if (Firefly.model.getRegisteredModels().length) {
                 populateModelSelect();
                 clearTimeout(timeout); 
             }
@@ -82,7 +82,7 @@ Firefly.modules.drawer = function(FF) {
      * @private Initialize the model selector
      */
     function populateModelSelect() {
-        var models = Firefly.getModels();
+        var models = Firefly.model.getRegisteredModels();
 
         models.forEach(function(model, index) {
             var option = document.createElement('option');
@@ -151,7 +151,7 @@ Firefly.modules.drawer = function(FF) {
      * @protected Reinitialize the model from step 0
      */
     function resetPlayModel() {
-        Firefly.runModel(modelSelect.value);
+        Firefly.model.runModel(modelSelect.value);
         reset.innerText = '\u27F3';
     }
 

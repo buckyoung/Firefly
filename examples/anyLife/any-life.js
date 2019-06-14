@@ -85,7 +85,7 @@ FFExamples.anylife.initialize = function(FF) {
 
         // Transitioning from alive to dead, lets transition color
         var currentColor = nextCell.getColor();
-        var deadColor = Firefly.getStates()['dead'].color;
+        var deadColor = Firefly.state.getRegisteredStates()['dead'].color; // TODO this shouldnt be hitting the Firefly protected method -- only FF should be exposed
 
         var halfRed = parseInt((currentColor[0] - deadColor[0]) / 2);
         var newRed = currentColor[0] - halfRed;
@@ -111,7 +111,7 @@ FFExamples.anylife.initialize = function(FF) {
         
         // Potentially still transitioning to full-on dead color
         var currentColor = nextCell.getColor();
-        var deadColor = Firefly.getStates()['dead'].color;
+        var deadColor = Firefly.state.getRegisteredStates()['dead'].color; // TODO this shouldnt be hitting the Firefly protected method -- only FF should be exposed
 
         var halfRed = parseInt((currentColor[0] - deadColor[0]) / 2);
         var newRed = currentColor[0] - halfRed;
