@@ -23,6 +23,7 @@ FFExamples.risk.initialize = function(FF) {
         FF.registerState('empty', [30,30,30], processEmpty);
         FF.registerState('wall', [30,30,120], doNothing);
 
+        // TODO - ADD burning building state to show when cities burn!
         // TODO Refactor to allow a 3rd color / an arbitrary number of colors 
 
         FF.registerState('greenPeople', [0, 120, 0], processGreenPeople);
