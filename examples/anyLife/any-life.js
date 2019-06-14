@@ -27,6 +27,8 @@ Firefly.params = {
 };
 
 FFExamples.anylife.initialize = function(FF) {
+
+
     // 134/3 -- my shit!
     // 678/2 or 456/2 or 234/2, etc -- crazy glider world
     // 23456/2 w/ density 2 - stable zipper world - then try /23 or /24 or /26 etc its wild

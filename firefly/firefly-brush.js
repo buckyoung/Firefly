@@ -9,8 +9,13 @@ Firefly.modules.brush = function(FF) {
 
     // Protected Methods
     Firefly.brush = {};
+    Firefly.brush.initialize = initialize;
     Firefly.brush.onMouseMove = onMouseMove;
     Firefly.brush.onMouseUp = onMouseUp;
+
+    function initialize(event) {
+        cursorBrushElement.style.display='none';
+    }
 
     function onMouseMove(event) {
         var Yoffset = -5;
@@ -23,12 +28,15 @@ Firefly.modules.brush = function(FF) {
     function onMouseUp(event) {
         var translatedX = Math.floor(event.offsetX/Firefly.params.INVERSE_SIZE);
         var translatedY = Math.floor(event.offsetY/Firefly.params.INVERSE_SIZE);
-        
+
         // Allow the model to define what happens on a mouse click
         var currentCell = Firefly.world.getCurrentWorld()[translatedX][translatedY];
         var nextCell = Firefly.world.getNextWorld()[translatedX][translatedY];
         var states = Firefly.state.getRegisteredStates();
-        states['onMouseClick'].processor(currentCell, nextCell); // TODO refactor this to implement an arbitrary event registration for the models
+        
+        if (states.hasOwnProperty('onMouseClick')) {
+            states['onMouseClick'].processor(currentCell, nextCell); // TODO refactor this to implement an arbitrary event registration for the models
+        }
     }
 
     // TODO make mouse click registation system for risk.js
