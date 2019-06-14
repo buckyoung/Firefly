@@ -15,7 +15,6 @@ Firefly.modules.world = function(FF) {
     var CURRENT_WORLD;
     var NEXT_WORLD;
     var stateCounts = {}; // Cached from the frame previous (to save compute)
-    var cursorBrushElement = document.getElementById('cursor-brush'); // TODO refactor this into its own FF module
 
     // Protected Methods
     Firefly.world = {};
@@ -40,17 +39,19 @@ Firefly.modules.world = function(FF) {
         var canvas_2 = document.getElementById(Firefly.params.CANVAS_2_ID);
         var ctx_2 = canvas_2.getContext('2d');
 
-        canvas_1.addEventListener('mouseover', Firefly.history.onMouseEvent, false);
-        canvas_2.addEventListener('mouseover', Firefly.history.onMouseEvent, false);
-        canvas_1.addEventListener('mouseout', Firefly.history.onMouseEvent, false);
-        canvas_2.addEventListener('mouseout', Firefly.history.onMouseEvent, false);
-        canvas_1.addEventListener('mousemove', Firefly.history.onMouseEvent, false);
-        canvas_2.addEventListener('mousemove', Firefly.history.onMouseEvent, false);
-        canvas_1.addEventListener('mouseup', Firefly.history.onMouseEvent, false);
-        canvas_2.addEventListener('mouseup', Firefly.history.onMouseEvent, false);
+        canvas_1.addEventListener('mouseover', Firefly.history.onMouseOver, false);
+        canvas_2.addEventListener('mouseover', Firefly.history.onMouseOver, false);
+        canvas_1.addEventListener('mouseout', Firefly.history.onMouseOut, false);
+        canvas_2.addEventListener('mouseout', Firefly.history.onMouseOut, false);
+        canvas_1.addEventListener('mousemove', Firefly.history.onMouseMove, false);
+        canvas_2.addEventListener('mousemove', Firefly.history.onMouseMove, false);
+        canvas_1.addEventListener('mouseup', Firefly.history.onMouseUp, false);
+        canvas_2.addEventListener('mouseup', Firefly.history.onMouseUp, false);
 
-        canvas_1.addEventListener('mousemove', onCursorMove, false);
-        canvas_2.addEventListener('mousemove', onCursorMove, false);
+        canvas_1.addEventListener('mousemove', Firefly.brush.onMouseMove, false);
+        canvas_2.addEventListener('mousemove', Firefly.brush.onMouseMove, false);
+        canvas_1.addEventListener('mouseup', Firefly.brush.onMouseUp, false);
+        canvas_2.addEventListener('mouseup', Firefly.brush.onMouseUp, false);
 
         // Initialize world
         canvas_1.width = Firefly.CANVAS_WIDTH;
@@ -208,7 +209,7 @@ Firefly.modules.world = function(FF) {
         data[index] = 255;
     }
 
-    function getGenerationCount() {
+    function getGenerationCount() { // TODO maybe reporting module should handle generation counts?
         return GENERATION_COUNT;
     }
 
@@ -220,17 +221,9 @@ Firefly.modules.world = function(FF) {
         return NEXT_WORLD;
     }
 
-    function getStateCount(state) {
+    function getStateCount(state) { // TODO maybe reporting module should handle state counts?
         if (!stateCounts.hasOwnProperty(state)) { return 0; }
 
         return stateCounts[state];
-    }
-
-    function onCursorMove(event) {
-        var Yoffset = -5;
-        var Xoffset = -5;
-
-        cursorBrushElement.style.top = (event.clientY + Yoffset) + 'px';
-        cursorBrushElement.style.left = (event.clientX + Xoffset) + 'px';
     }
 };

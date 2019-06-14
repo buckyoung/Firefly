@@ -36,6 +36,7 @@ function Firefly() {
     // Support simplified calling of this sandbox (automatically get modules)
     if (!(this instanceof Firefly) || requiredModules.length === 0) { 
         return new Firefly([
+            'brush',
             'camera',
             'cell',
             'drawer',

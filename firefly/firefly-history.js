@@ -13,57 +13,21 @@ Firefly.modules.history = function(FF) {
     // Protected Methods
     Firefly.history = {};
     Firefly.history.initialize = initialize;
-    Firefly.history.onMouseEvent = onMouseEvent;
+    Firefly.history.onMouseOver = onMouseOver;
+    Firefly.history.onMouseOut = onMouseOut;
+    Firefly.history.onMouseMove = onMouseMove;
+    Firefly.history.onMouseUp = onMouseUp;
 
     function initialize() {
         HISTORY_WORLD = Firefly.util.create2dArray(Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
     }
 
-    function onMouseEvent(event) {
-        // Hide tooltip when mouse leaves a cell with history
-        if (event.type == 'mouseout' && !isFreezeHistoryTooltip) {
-            historyTooltipElement.style.display='none';
-            return;
-        }
-
-        // Move the tooltip w/ the mouse
-        if (event.type == 'mousemove' && !isFreezeHistoryTooltip) {
-            var Yoffset = event.clientY < window.innerHeight/2 ? 50 : -80;
-            var Xoffset = event.clientX < window.innerWidth/2 ? 30 : -350;
-
-            historyTooltipElement.style.top = (event.clientY + Yoffset) + 'px';
-            historyTooltipElement.style.left = (event.clientX + Xoffset) + 'px';
-            return;
-        }
-
+    function onMouseOver(event) {
         var translatedX = Math.floor(event.offsetX/Firefly.params.INVERSE_SIZE);
         var translatedY = Math.floor(event.offsetY/Firefly.params.INVERSE_SIZE);
 
-        if (event.type == 'mouseup') {
-            // Unfreeze & hide tooltip with a click to anywhere on the canvas
-            if (isFreezeHistoryTooltip) {
-                isFreezeHistoryTooltip = false;
-                historyTooltipElement.style.display='none';
-                return;
-            }
-
-            // Only freeze if clicking on a cell with history (allows the user to scroll a long tooltip)
-            if (!isFreezeHistoryTooltip && HISTORY_WORLD[translatedX] && HISTORY_WORLD[translatedX][translatedY]) {
-                isFreezeHistoryTooltip = true;
-                return;
-            }
-
-            // Allow the model to define what happens on a mouse click
-            var currentCell = Firefly.world.getCurrentWorld()[translatedX][translatedY];
-            var nextCell = Firefly.world.getNextWorld()[translatedX][translatedY];
-            var states = Firefly.state.getRegisteredStates();
-            states['onMouseClick'].processor(currentCell, nextCell); // TODO refactor this to implement an arbitrary event registration for the models
-
-            return;
-        }
-
-        // (event.type == mouseover) event processing:
-        if (HISTORY_WORLD[translatedX] && HISTORY_WORLD[translatedX][translatedY]) {
+        // Show history tooltip if theres history to be shown
+        if (!isFreezeHistoryTooltip && HISTORY_WORLD[translatedX] && HISTORY_WORLD[translatedX][translatedY]) {
             historyTooltipElement.style.display='block';
             historyTooltipElement.style.position='fixed';
             historyTooltipElement.scrollTop = historyTooltipElement.scrollHeight;
@@ -76,6 +40,42 @@ Firefly.modules.history = function(FF) {
             }
 
             historyTooltipElement.innerText = result;
+        }
+    }
+
+    function onMouseOut(event) {
+        // Hide tooltip when mouse leaves a cell with history
+        if (!isFreezeHistoryTooltip) {
+            historyTooltipElement.style.display='none';
+        }
+    }
+
+    function onMouseMove(event) {
+        // Move the tooltip w/ the mouse
+        if (!isFreezeHistoryTooltip) {
+            var Yoffset = event.clientY < window.innerHeight/2 ? 50 : -80;
+            var Xoffset = event.clientX < window.innerWidth/2 ? 30 : -350;
+
+            historyTooltipElement.style.top = (event.clientY + Yoffset) + 'px';
+            historyTooltipElement.style.left = (event.clientX + Xoffset) + 'px';
+        }
+    }
+
+    function onMouseUp(event) {
+        var translatedX = Math.floor(event.offsetX/Firefly.params.INVERSE_SIZE);
+        var translatedY = Math.floor(event.offsetY/Firefly.params.INVERSE_SIZE);
+
+        // Unfreeze & hide tooltip with a click to anywhere on the canvas
+        if (isFreezeHistoryTooltip) {
+            isFreezeHistoryTooltip = false;
+            historyTooltipElement.style.display='none';
+            return;
+        }
+
+        // Only freeze if clicking on a cell with history (allows the user to scroll a long tooltip)
+        if (!isFreezeHistoryTooltip && HISTORY_WORLD[translatedX] && HISTORY_WORLD[translatedX][translatedY]) {
+            isFreezeHistoryTooltip = true;
+            return;
         }
     }
 
