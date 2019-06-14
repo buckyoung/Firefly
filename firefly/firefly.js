@@ -37,6 +37,7 @@ function Firefly() {
             'camera',
             'cell',
             'drawer',
+            'history',
             'model',
             'reporting',
             'state',

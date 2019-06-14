@@ -69,7 +69,7 @@ FFExamples.risk.initialize = function(FF) {
         }
 
         // City should switch sides if it is being overrun
-        if (currentCell.countMooreNeighbors('pinkPeople') > 1) { // TODO -- this lead to large city states w/ blotchy allegences over time... maybe move this back to "> 0"
+        if (currentCell.countMooreNeighbors('pinkPeople') > 0) {
             FF.setHistory(currentCell.getPosition(), "Green city fell to the Pinks");
             nextCell.setState('pinkPeopleCapital');
             return;
@@ -96,7 +96,7 @@ FFExamples.risk.initialize = function(FF) {
         }
 
         // City should switch sides if it is being overrun
-        if (currentCell.countMooreNeighbors('greenPeople') > 1) { // TODO -- this lead to large city states w/ blotchy allegences over time... maybe move this back to "> 0"
+        if (currentCell.countMooreNeighbors('greenPeople') > 0) {
             FF.setHistory(currentCell.getPosition(), "Pink city fell to the Greens");
             nextCell.setState('greenPeopleCapital');
             return;

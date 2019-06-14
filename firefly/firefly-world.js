@@ -6,7 +6,6 @@ Firefly.modules.world = function(FF) {
 
     // Public Methods
     FF.initialize = initialize;
-    FF.setHistory = setHistory;
     FF.getGenerationCount = getGenerationCount;
     FF.getStateCount = getStateCount;
 
@@ -16,10 +15,7 @@ Firefly.modules.world = function(FF) {
     var CURRENT_WORLD;
     var NEXT_WORLD;
     var stateCounts = {}; // Cached from the frame previous (to save compute)
-    var HISTORY;
-    var historyTooltipElement = document.getElementById('history'); // TODO refactor this into its own FF module
     var cursorBrushElement = document.getElementById('cursor-brush'); // TODO refactor this into its own FF module
-    var isFreezeHistoryTooltip = false;
 
     // Protected Methods
     Firefly.world = {};
@@ -60,7 +56,6 @@ Firefly.modules.world = function(FF) {
         // Initialize world
         var world_1 = Firefly.util.create2dArray(Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
         var world_2 = Firefly.util.create2dArray(Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
-        HISTORY = Firefly.util.create2dArray(Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
         
         clientInitWorld(world_1, Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
         clientInitWorld(world_2, Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
@@ -230,76 +225,5 @@ Firefly.modules.world = function(FF) {
 
         cursorBrushElement.style.top = (event.clientY + Yoffset) + 'px';
         cursorBrushElement.style.left = (event.clientX + Xoffset) + 'px';
-    }
-
-    function onMouseEvent(event) {
-        // Hide tooltip when mouse leaves a cell with history
-        if (event.type == 'mouseout' && !isFreezeHistoryTooltip) {
-            historyTooltipElement.style.display='none';
-            return;
-        }
-
-        // Move the tooltip w/ the mouse
-        if (event.type == 'mousemove' && !isFreezeHistoryTooltip) {
-            var Yoffset = event.clientY < window.innerHeight/2 ? 50 : -80;
-            var Xoffset = event.clientX < window.innerWidth/2 ? 30 : -350;
-
-            historyTooltipElement.style.top = (event.clientY + Yoffset) + 'px';
-            historyTooltipElement.style.left = (event.clientX + Xoffset) + 'px';
-            return;
-        }
-
-        var translatedX = Math.floor(event.offsetX/Firefly.params.INVERSE_SIZE);
-        var translatedY = Math.floor(event.offsetY/Firefly.params.INVERSE_SIZE);
-
-        if (event.type == 'mouseup') {
-            // Unfreeze & hide tooltip with a click to anywhere on the canvas
-            if (isFreezeHistoryTooltip) {
-                isFreezeHistoryTooltip = false;
-                historyTooltipElement.style.display='none';
-                return;
-            }
-
-            // Only freeze if clicking on a cell with history (allows the user to scroll a long tooltip)
-            if (!isFreezeHistoryTooltip && HISTORY[translatedX] && HISTORY[translatedX][translatedY]) {
-                isFreezeHistoryTooltip = true;
-                return;
-            }
-
-            // Allow the model to define what happens on a mouse click
-            var currentCell = CURRENT_WORLD[translatedX][translatedY];
-            var nextCell = NEXT_WORLD[translatedX][translatedY];
-            var states = Firefly.state.getRegisteredStates();
-            states['onMouseClick'].processor(currentCell, nextCell); // TODO refactor this to implement an arbitrary event registration for the models
-
-            return;
-        }
-
-        // (event.type == mouseover) event processing:
-        if (HISTORY[translatedX] && HISTORY[translatedX][translatedY]) {
-            historyTooltipElement.style.display='block';
-            historyTooltipElement.style.position='fixed';
-            historyTooltipElement.scrollTop = historyTooltipElement.scrollHeight;
-
-            // Convert history object to a string
-            var result = '';
-            for (var key in HISTORY[translatedX][translatedY]) {
-                if (!HISTORY[translatedX][translatedY].hasOwnProperty(key)) { continue; } // Short circuit
-                result += 'g.' + key + ': ' + HISTORY[translatedX][translatedY][key] + '\n';
-            }
-
-            historyTooltipElement.innerText = result;
-        }
-    }
-
-    function setHistory(position, message) {
-        var generationCount = GENERATION_COUNT;
-        if (!HISTORY[position.x][position.y]) {
-            HISTORY[position.x][position.y] = {};
-        }
-
-        HISTORY[position.x][position.y][generationCount] = message;
-
-        // TODO *IDEA* show popup information / popup icon when something happens
     }
 };

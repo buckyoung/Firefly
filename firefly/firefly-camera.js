@@ -56,7 +56,7 @@ Firefly.modules.camera = function(FF) {
      *     +y |  Pan camera left
      *     -y |  Pan camera right
      */
-    function panCameraForWorlds(world1, world2) {
+    function panCameraForWorlds(world1, world2) { // TODO change this to onUpdate, similar to reporting -- these functions can hook into the world update
         var y = leftRightOffset;
         var x = upDownOffset;
 
