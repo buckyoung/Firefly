@@ -13,8 +13,17 @@ Firefly.modules.brush = function(FF) {
     Firefly.brush.onMouseMove = onMouseMove;
     Firefly.brush.onMouseUp = onMouseUp;
 
+    document.addEventListener('keydown', onKeyDown, false);
+
     function initialize(event) {
-        cursorBrushElement.style.display='none';
+        cursorBrushElement.style.display='none'; // hide by default since most models dont use it
+    }
+
+    /** Listen for keys */
+    function onKeyDown(e) {
+        if (e.keyCode == 66) { // "B"
+            cursorBrushElement.style.display = cursorBrushElement.style.display == 'none' ? '' : 'none';
+        }
     }
 
     function onMouseMove(event) {
@@ -26,6 +35,8 @@ Firefly.modules.brush = function(FF) {
     }
 
     function onMouseUp(event) {
+        if (cursorBrushElement.style.display == 'none') { return; } // Short circuit
+
         var translatedX = Math.floor(event.offsetX/Firefly.params.INVERSE_SIZE);
         var translatedY = Math.floor(event.offsetY/Firefly.params.INVERSE_SIZE);
 
