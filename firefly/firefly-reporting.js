@@ -21,7 +21,7 @@ Firefly.modules.reporting = function(FF) {
 
     document.addEventListener('keydown', onKeyDown, false);
 
-    // TODO add hover text that tells you generation + state name + count values
+    // TODO *IDEA* add hover text that tells you generation + state name + count values
 
     function initialize() {
         registeredStates = [];
@@ -42,7 +42,7 @@ Firefly.modules.reporting = function(FF) {
 
     /** Registeres a cell state to track & the color to report it as */
     function registerReportTracking(name) {
-        // TODO add ROW parameter that allows the reporting drawer to track multiple different things at once
+        // TODO *IDEA* add ROW parameter that allows the reporting drawer to track multiple different things at once
         //      -- example: One row tracks pinkPeople vs greenPeople, another row tracks pinkCities vs greenCities
 
         registeredStates.push(name);

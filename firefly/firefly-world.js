@@ -300,6 +300,6 @@ Firefly.modules.world = function(FF) {
 
         HISTORY[position.x][position.y][generationCount] = message;
 
-        // TODO show popup information / popup icon when something happens
+        // TODO *IDEA* show popup information / popup icon when something happens
     }
 };
