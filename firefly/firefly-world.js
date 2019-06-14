@@ -168,6 +168,9 @@ Firefly.modules.world = function(FF) {
         endPaint(nextCtx, id);
     }
 
+    // TODO Make it so i can press arrow keys to PAN the CAMERA around the WORLD
+    //      -- would require some array manipulation of both CURRENT and NEXT world
+
     /**
      * Get the image data object -- 'open' it for drawing
      * @param  {Ctx} ctx The context to draw on
