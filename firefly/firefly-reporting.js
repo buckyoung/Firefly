@@ -6,8 +6,8 @@ Firefly.modules.reporting = function(FF) {
     var registeredStates = [];
     var snapshotInterval = 100;
     var report = {};
-    var table;
-    var row;
+    var table = document.getElementById('report');
+    var row = table.insertRow();
 
     // Public Methods
     FF.registerReportTracking = registerReportTracking;
@@ -16,14 +16,15 @@ Firefly.modules.reporting = function(FF) {
     // Protected Methods
     Firefly.reporting = {};
     Firefly.reporting.onUpdate = onUpdate;
-    
     Firefly.reporting.initialize = initialize;
+
     function initialize() {
-        console.log('youre a genious');
         registeredStates = [];
         report = {};
+        snapshotInterval = 100;
         table = document.getElementById('report');
-        row = table.insertRow(0);
+        table.innerHTML = '';
+        row = table.insertRow();
     }
 
     /** Registeres a cell state to track & the color to report it as */
@@ -56,15 +57,11 @@ Firefly.modules.reporting = function(FF) {
 
         registeredStates.forEach(function(stateName) {
             count = FF.getStateCount(stateName);
-            console.log('count', count);
             report[generationCount][stateName] = count;
             totalCellCount += count;
-            console.log('total', totalCellCount);
         });
 
         report[generationCount]['total'] = totalCellCount;
-
-        console.log('finaltotal', totalCellCount);
 
         /*
             report =   
@@ -77,41 +74,35 @@ Firefly.modules.reporting = function(FF) {
                 }
         */
 
-        updateUI();
+        updateUI(report[generationCount]);
     }
 
     /** To be called every snapshot */
-    function updateUI() {
+    function updateUI(snapshot) {
+        if (snapshot['total'] === 0) { return; } // Short circuit
+
         var td = row.insertCell();
         var div;
         var percent = 0;
 
-        for (var generation in report) {
-            if (!report.hasOwnProperty(generation)) { continue; } // Short circuit
+        for (var stateName in snapshot) {
+            if (!snapshot.hasOwnProperty(stateName)) { continue; } // Short circuit
+            if (stateName === 'total') { continue; } // Short circuit
+            
+            percent = parseInt((snapshot[stateName] / snapshot['total']) * 100);
 
-            for (var stateName in report[generation]) {
-                if (!report[generation].hasOwnProperty(stateName)) { continue; } // Short circuit
-                if (stateName === 'total') { continue; } // Short circuit
-                if (report[generation]['total'] === 0) { continue; } // Short circuit
+            div = document.createElement('div');
+            div.style.background = Firefly.state.getStateHexColor(stateName);
+            div.style.height = percent + '%';
+            div.style.width = '100%';
 
-                console.log(report[generation]);
-                console.log(report[generation][stateName] / report[generation]['total']);
-
-                percent = parseInt((report[generation][stateName] / report[generation]['total']) * 100);
-
-                console.log(percent);
-
-                if (Number.isNaN(percent)) { continue; } // Short circuit
-
-
-                div = document.createElement('div');
-                div.style.background = Firefly.state.getStateHexColor(stateName);
-                div.style.height = percent + '%';
-                div.style.width = '100%';
-
-                td.appendChild(div);
-            }
+            td.appendChild(div);
         }
-        throw new Error("my error message");
+
+        // Only report the last X number of snapshots in the UI
+        if (row.childElementCount > 50) {
+            var fc = row.firstChild;
+            row.removeChild(fc);
+        }
     }
 };

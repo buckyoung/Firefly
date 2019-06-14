@@ -26,18 +26,18 @@ FFExamples.risk.initialize = function(FF) {
         // TODO Refactor to allow a 3rd color / an arbitrary number of colors 
 
         FF.registerState('greenPeople', [0, 120, 0], processGreenPeople);
-        FF.registerReportTracking('greenPeople', [0, 120, 0]);
         FF.registerState('greenPeopleCapital', [0, 255, 0], processGreenPeopleCapital);
+        FF.registerReportTracking('greenPeopleCapital');
         
         FF.registerState('pinkPeople', [120, 0, 120], processPinkPeople);
-        FF.registerReportTracking('pinkPeople', [120, 0, 120]);
         FF.registerState('pinkPeopleCapital', [255, 0, 255], processPinkPeopleCapital);
+        FF.registerReportTracking('pinkPeopleCapital');
         
         FF.registerState('fire', [255, 30, 30], processFire);
         
         FF.registerState('onMouseClick', [0, 0, 0], onMouseClick); // TODO make a registerHandler - no color needed
 
-        FF.setReportingSnapshotInterval(200);
+        FF.setReportingSnapshotInterval(100);
 
         FF.initialize(initializeWorld(FF));
     }

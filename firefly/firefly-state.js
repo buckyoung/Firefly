@@ -12,8 +12,8 @@ Firefly.modules.state = function(FF) {
     Firefly.state = {};
     Firefly.state.getRegisteredStates = getRegisteredStates;
     Firefly.state.getStateHexColor = getStateHexColor;
-
     Firefly.state.initialize = initialize;
+
     function initialize() {
         states = {};
     }
