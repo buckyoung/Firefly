@@ -10,7 +10,6 @@ FFExamples.risk.initialize = function(FF) {
     var boundaryPhase = 150;
     var startingCityProb = .00006;
     var revolutionProb = .0001;
-    var fireDestroyCityProb = .1;
     var startingCity = 'greenPeopleCapital';
     var startingCityCount = 0;
     var startingCityTarget = 0;
@@ -21,7 +20,9 @@ FFExamples.risk.initialize = function(FF) {
 
     function initializeModel(FF) {
         FF.registerState('empty', [30,30,30], processEmpty);
-        FF.registerState('wall', [30,30,120], doNothing);
+        FF.registerState('wall', [30,30,120], processWall);
+        
+        FF.registerState('burningCity', [130, 30, 6], processBurningCity);
 
         // TODO - ADD burning building state to show when cities burn!
         // TODO Refactor to allow a 3rd color / an arbitrary number of colors 
@@ -43,6 +44,10 @@ FFExamples.risk.initialize = function(FF) {
         FF.initialize(initializeWorld(FF));
     }
 
+    function processBurningCity(currentCell, nextCell) {
+        nextCell.setState('empty');
+    }
+
     function onMouseClick(currentCell, nextCell) {
         if (currentCell.getState() !== 'empty') { return; }
 
@@ -55,10 +60,11 @@ FFExamples.risk.initialize = function(FF) {
         cursorBrushElement.style.background=(startingCity == 'greenPeopleCapital' ? "lawngreen" : "deeppink");
     }
 
-    function doNothing(currentCell, nextCell) {
+    function processWall(currentCell, nextCell) {
         nextCell.setState(currentCell.getState());
     }
 
+    // TODO refactor everything in here to be generalized somehow... so i can extend it to three colors, etc
 
     // Capital should switch sides if the other faction gets there
     function processGreenPeopleCapital(currentCell, nextCell) {
@@ -76,11 +82,19 @@ FFExamples.risk.initialize = function(FF) {
             return;
         }
         
-        // Chance for fire to destroy city
-        var fireCount = currentCell.countMooreNeighbors('fire');
-        if (fireCount >= 4 && Math.random() < fireDestroyCityProb) {
-            nextCell.setState('wall');
-            FF.setHistory(currentCell.getPosition(), "Green city burned to the ground");
+        // Chance for city to kamikaze
+        var enemyCityCount = currentCell.countMooreNeighbors('pinkPeopleCapital', 1);
+        enemyCityCount += currentCell.countMooreNeighbors('pinkPeopleCapital', 2);
+        if (enemyCityCount >= 5) {
+            nextCell.setState('burningCity');
+            FF.setHistory(currentCell.getPosition(), "The Greens blew up their own city!");
+            return;
+        }
+
+        // Burn if a city is burning nearby
+        if (currentCell.countMooreNeighbors('burningCity', 1) > 0 || currentCell.countMooreNeighbors('burningCity', 2) > 0) {
+            nextCell.setState('burningCity');
+            FF.setHistory(currentCell.getPosition(), "Green city has burned to the ground");
             return;
         }
 
@@ -103,11 +117,19 @@ FFExamples.risk.initialize = function(FF) {
             return;
         }
         
-        // Chance for fire to destroy city
-        var fireCount = currentCell.countMooreNeighbors('fire', 1);
-        if (fireCount >= 4 && Math.random() < fireDestroyCityProb) {
-            nextCell.setState('wall');
-            FF.setHistory(currentCell.getPosition(), "Pink city burned to the ground");
+        // Chance for city to kamikaze
+        var enemyCityCount = currentCell.countMooreNeighbors('greenPeopleCapital', 1);
+        enemyCityCount += currentCell.countMooreNeighbors('greenPeopleCapital', 2);
+        if (enemyCityCount >= 5) {
+            nextCell.setState('burningCity');
+            FF.setHistory(currentCell.getPosition(), "The Pinks blew up their own city!");
+            return;
+        }
+
+        // Burn if a city is burning nearby
+        if (currentCell.countMooreNeighbors('burningCity', 1) > 0 || currentCell.countMooreNeighbors('burningCity', 2) > 0) {
+            nextCell.setState('burningCity');
+            FF.setHistory(currentCell.getPosition(), "Pink city has burned to the ground");
             return;
         }
 
