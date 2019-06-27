@@ -12,44 +12,113 @@
     <script src="./firefly/firefly-reporting.js"></script>
     <script src="./firefly/firefly-state.js"></script>
     <script src="./firefly/firefly-world.js"></script>
-    
+
     <script src="./examples/all-examples.js"></script>
-    
+
+    <link rel="stylesheet" href="normalize.css">
     <link rel="stylesheet" href="firefly.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css">
 </head>
 <body onload="FFExamples.all.initialize();">
-    <div id="toggle" onclick="Firefly.drawer.toggleSettings()">
-        &#9881;
+
+    <div class="drawer" id="drawer">
+        <button type="button" id="drawer-toggle-left" class="drawer-toggle" onclick="Firefly.drawer.toggleSettings()">
+            <span class="fa fa-cog"></span>
+        </button>
+
+        <div class="drawer-content">
+            <!-- Play / Reset? -->
+            <div class="drawer-content-block">
+                <button type="button" class="button is-full-width" onclick="Firefly.drawer.resetPlayModel()">
+                    <span class="fa fa-play"></span>
+                    Play / Reset
+                </button>
+            </div>
+
+            <!-- Model -->
+            <div class="drawer-content-block">
+                <label for="model-input" class="label">
+                    Model
+                </label>
+                <select class="input" id="model-input" onchange="Firefly.drawer.showPlayIcon()"></select>
+            </div>
+
+            <!-- Speed -->
+            <div class="drawer-content-block">
+                <label for="frame-delay-input" class="label">
+                    Speed
+                </label>
+                <div class="rocker">
+                    <button class="rocker-button is-left">
+                        <span class="fa fa-backward"></span>
+                    </button>
+
+                    <button class="rocker-button">
+                        <span class="fa fa-minus"></span>
+                    </button>
+
+                    <input
+                        class="rocker-input"
+                        id="speed-input"
+                        type="number"
+                        value="100"
+                        min="10"
+                        max="300"
+                        onchange="Firefly.drawer.updateSpeed(this.value)"
+                        disabled>
+
+                    <button class="rocker-button">
+                        <span class="fa fa-plus"></span>
+                    </button>
+
+                    <button class="rocker-button is-right">
+                        <span class="fa fa-forward"></span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Size -->
+            <div class="drawer-content-block">
+                <label for="size-input" class="label">
+                    Size
+                </label>
+                <div class="rocker">
+                    <button class="rocker-button is-left">
+                        <span class="fa fa-backward"></span>
+                    </button>
+
+                    <button class="rocker-button">
+                        <span class="fa fa-minus"></span>
+                    </button>
+
+                    <input
+                        class="rocker-input"
+                        id="size-input"
+                        type="number"
+                        value="1"
+                        min="1"
+                        max="10"
+                        onchange="Firefly.drawer.updateSize(this.value)"
+                        disabled>
+
+                    <button class="rocker-button">
+                        <span class="fa fa-plus"></span>
+                    </button>
+
+                    <button class="rocker-button is-right">
+                        <span class="fa fa-forward"></span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Counter -->
+            <div class="drawer-content-block">
+                <label class="label" for="counter">Counter</label>
+                <input type="input" class="input" id="counter" disabled></input>
+            </div>
+        </div>
     </div>
-    <div id="drawer" class="visible">
-        <!-- RESET / PLAY -->
-        <div id="reset" class="control" onclick="Firefly.drawer.resetPlayModel()"></div>
-        <!-- GAMETYPE -->
-        <div class="control">
-            <div>
-                <label for="model-input">Model</label>
-            </div>
-            <select id="model-input" onchange="Firefly.drawer.showPlayIcon()"></select>
-        </div>
-        <!-- SPEED -->
-        <div class="control">
-            <div>
-                <label for="speed-input">Frame Delay</label>
-                <span id="speed-value"></span>
-            </div>
-            <input id="speed-input" type="range" min="10" max="300" onchange="Firefly.drawer.updateSpeed(this.value)">
-        </div>
-        <!-- SIZE -->
-        <div class="control">
-            <div>
-                <label for="size-input">Size</label>
-                <span id="size-value"></span>
-            </div>
-            <input id="size-input" type="range" min="1" max="10" onchange="Firefly.drawer.updateSize(this.value)">
-        </div>
-        <!-- Generation Counter -->
-        <div id="counter"></div>
-    </div>
+
     <canvas id="A"></canvas>
     <canvas id="B"></canvas>
     <!-- History tooltip -->
@@ -57,7 +126,20 @@
     <!-- Custom cursor -->
     <div id="cursor-brush"></div>
     <!-- Report -->
-    <table id="report" cellspacing="0" cellpadding="0">
-></table>
+    <table id="report" cellspacing="0" cellpadding="0"></table>
+
+    <!-- Delete, For Dev Only -->
+    <script type="text/javascript">
+        // var toggleDrawerLeft = document.getElementById('drawer-toggle-left');
+        // var toggleDrawerRight = document.getElementById('drawer-toggle-right');
+
+        // toggleDrawerLeft.addEventListener('click', function () {
+        //     this.parentElement.classList.toggle('is-open');
+        // });
+
+        // toggleDrawerRight.addEventListener('click', function () {
+        //     this.parentElement.classList.toggle('is-open');
+        // });
+    </script>
 </body>
 </html>

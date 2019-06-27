@@ -6,9 +6,9 @@ Firefly.modules.drawer = function(FF) {
     var counter = document.getElementById('counter');
     var drawer = document.getElementById('drawer');
     var modelSelect = document.getElementById('model-input');
-    var speedValue = document.getElementById('speed-value');
+    //var speedValue = document.getElementById('speed-value');
     var speedInput = document.getElementById('speed-input');
-    var sizeValue = document.getElementById('size-value');
+    //var sizeValue = document.getElementById('size-value');
     var sizeInput = document.getElementById('size-input');
 
     // Protected Methods
@@ -42,7 +42,7 @@ Firefly.modules.drawer = function(FF) {
         var timeout = setTimeout(function() {
             if (Firefly.model.getRegisteredModels().length) {
                 populateModelSelect();
-                clearTimeout(timeout); 
+                clearTimeout(timeout);
             }
         }, 250);
     }
@@ -75,7 +75,7 @@ Firefly.modules.drawer = function(FF) {
             }
 
             // determine if minus or plus was pressed & set offset accordingly
-            offsetAmount = e.keyCode == 189 ? offsetAmount * -1 : offsetAmount; 
+            offsetAmount = e.keyCode == 189 ? offsetAmount * -1 : offsetAmount;
 
             Firefly.drawer.updateSpeed(Firefly.params.INVERSE_SPEED + offsetAmount);
         }
@@ -107,11 +107,14 @@ Firefly.modules.drawer = function(FF) {
             return;
         }
 
-        if (drawer.className === 'hidden') {
-            drawer.className = 'visible';
-        } else {
-            drawer.className = 'hidden';
-        }
+        // Toggle Open Modifier
+        drawer.classList.toggle('is-open');
+
+        // if (drawer.className === 'is-hidden') {
+        //     drawer.className = 'is-open';
+        // } else {
+        //     drawer.className = 'is-hidden';
+        // }
     }
 
     /**
@@ -124,9 +127,9 @@ Firefly.modules.drawer = function(FF) {
             value = 10;
         } else if (value > 300) {
             value = 300;
-        } 
+        }
 
-        speedValue.innerText = value;
+        //speedValue.innerText = value;
         speedInput.value = value;
         Firefly.params.INVERSE_SPEED = value;
     }
@@ -143,7 +146,7 @@ Firefly.modules.drawer = function(FF) {
             value = 10;
         }
 
-        sizeValue.innerText = value;
+        //sizeValue.innerText = value;
         sizeInput.value = value;
         Firefly.params.INVERSE_SIZE = value;
         Firefly.drawer.showPlayIcon();
@@ -155,14 +158,14 @@ Firefly.modules.drawer = function(FF) {
      */
     function resetPlayModel() {
         Firefly.model.runModel(modelSelect.value);
-        reset.innerText = '\u27F3';
+        //reset.innerText = '\u27F3';
     }
 
     /**
      * @protected Shows the play icon
      */
     function showPlayIcon() {
-        reset.innerText = '\u25B6';
+        //reset.innerText = '\u25B6';
     }
 
     /**
@@ -170,7 +173,7 @@ Firefly.modules.drawer = function(FF) {
      */
     function updateCounter() {
         if (counter) {
-            counter.innerText = FF.getGenerationCount();
+            counter.value = FF.getGenerationCount();
         }
     }
 };
