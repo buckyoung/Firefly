@@ -6,9 +6,7 @@ Firefly.modules.drawer = function(FF) {
     var counter = document.getElementById('counter');
     var drawer = document.getElementById('drawer');
     var modelSelect = document.getElementById('model-input');
-    //var speedValue = document.getElementById('speed-value');
     var speedInput = document.getElementById('speed-input');
-    //var sizeValue = document.getElementById('size-value');
     var sizeInput = document.getElementById('size-input');
 
     // Protected Methods
@@ -109,12 +107,6 @@ Firefly.modules.drawer = function(FF) {
 
         // Toggle Open Modifier
         drawer.classList.toggle('is-open');
-
-        // if (drawer.className === 'is-hidden') {
-        //     drawer.className = 'is-open';
-        // } else {
-        //     drawer.className = 'is-hidden';
-        // }
     }
 
     /**
@@ -129,7 +121,6 @@ Firefly.modules.drawer = function(FF) {
             value = 300;
         }
 
-        //speedValue.innerText = value;
         speedInput.value = value;
         Firefly.params.INVERSE_SPEED = value;
     }
@@ -146,7 +137,6 @@ Firefly.modules.drawer = function(FF) {
             value = 10;
         }
 
-        //sizeValue.innerText = value;
         sizeInput.value = value;
         Firefly.params.INVERSE_SIZE = value;
         Firefly.drawer.showPlayIcon();
