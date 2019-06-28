@@ -19,7 +19,6 @@ Firefly.modules.drawer = function(FF) {
     Firefly.drawer.increaseSize = increaseSize;
     Firefly.drawer.decreaseSize = decreaseSize;
     Firefly.drawer.resetPlayModel = resetPlayModel;
-    Firefly.drawer.showPlayIcon = showPlayIcon;
     Firefly.drawer.updateCounter = updateCounter;
 
     document.addEventListener('keydown', onKeyDown, false);
@@ -38,8 +37,6 @@ Firefly.modules.drawer = function(FF) {
 
         updateSpeed(speed);
         updateSize(size);
-
-        Firefly.drawer.showPlayIcon()
 
         var timeout = setTimeout(function() {
             if (Firefly.model.getRegisteredModels().length) {
@@ -179,7 +176,6 @@ Firefly.modules.drawer = function(FF) {
 
         sizeInput.value = value;
         Firefly.params.INVERSE_SIZE = value;
-        Firefly.drawer.showPlayIcon();
         // Firefly.drawer.resetPlayModel(); // Decided to show play icon instead
     }
 
@@ -224,14 +220,6 @@ Firefly.modules.drawer = function(FF) {
      */
     function resetPlayModel() {
         Firefly.model.runModel(modelSelect.value);
-        //reset.innerText = '\u27F3';
-    }
-
-    /**
-     * @protected Shows the play icon
-     */
-    function showPlayIcon() {
-        //reset.innerText = '\u25B6';
     }
 
     /**
