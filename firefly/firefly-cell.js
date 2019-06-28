@@ -8,6 +8,7 @@ Firefly.modules.cell = function(FF) {
     // Prototypical Methods
     Cell.prototype.countMooreNeighbors = countMooreNeighbors;
     Cell.prototype.countNeumannNeighbors = countNeumannNeighbors;
+    Cell.prototype.getMooreNeighborsTotalisticStates = getMooreNeighborsTotalisticStates;
     Cell.prototype.getSpecificNeighbor = getSpecificNeighbor;
 
     /**
@@ -95,8 +96,8 @@ Firefly.modules.cell = function(FF) {
     /**
      * @public Return count of Moore Neighbors of type targetState
      * @param  {String} targetState Cell type to count
+     * @param {Integer} distance away from center -- NOTE this does not consider all cells in neighborhood, only X distance to the North, South, East, West, NorthEast, NorthWest, SouthEast, and SouthWest
      * @return {Integer} count of Moore Neighbors
-     * @return {Integer} distance away from center -- NOTE this does not consider all cells in neighborhood
      */
     function countMooreNeighbors(targetState, distance) {
         if (!distance) { distance = 1; }
@@ -128,8 +129,8 @@ Firefly.modules.cell = function(FF) {
     /**
      * @public Return count of von Neumann Neighbors of type targetState
      * @param  {String} targetState Cell type to count
-     * @return {Integer} count of von Neumann Neighbors
-     * @return {Integer} distance away from center -- NOTE this does not consider all cells in neighborhood
+     * @param {Integer} distance away from center -- NOTE this does not consider all cells in neighborhood, only X distance to the North, South, East, West, NorthEast, NorthWest, SouthEast, and SouthWest
+     * @return {Integer} count of Moore Neighbors
      */
     function countNeumannNeighbors(targetState, distance) {
         if (!distance) { distance = 1; }
@@ -149,6 +150,84 @@ Firefly.modules.cell = function(FF) {
         if ( world[xminus][y     ].state === targetState ) { result++; }
         if ( world[xplus ][y     ].state === targetState ) { result++; }
         if ( world[x     ][yplus ].state === targetState ) { result++; }
+
+        return result;
+    }
+
+    /**
+     * @public Returns an object with the total count of Moore neighbors for each state around self
+     * @return {Object} Total count of each state of Moore neighbors
+     *                        Example Return Value: { "stateA": 2, "empty": 5, "stateB": 1 }
+     */
+    function getMooreNeighborsTotalisticStates() {
+        var result = {};
+        var x = this.x;
+        var y = this.y;
+        var world = Firefly.world.getCurrentWorld();
+        var state = null;
+
+        var xminus = (x-1 < 0) ? Firefly.CANVAS_WIDTH-1 : x-1;
+        var xplus = (x+1 >= Firefly.CANVAS_WIDTH) ? 0 : x+1;
+
+        var yminus = (y-1 < 0) ? Firefly.CANVAS_HEIGHT-1 : y-1;
+        var yplus = (y+1 >= Firefly.CANVAS_HEIGHT) ? 0 : y+1;
+        
+        state = world[x     ][yminus].state;
+        if (result.hasOwnProperty(state)) {
+            result[state] += 1;
+        } else {
+            result[state] = 1;
+        }
+
+        state = world[xminus][y     ].state;
+        if (result.hasOwnProperty(state)) {
+            result[state] += 1;
+        } else {
+            result[state] = 1;
+        }
+
+        state = world[xplus ][y     ].state;
+        if (result.hasOwnProperty(state)) {
+            result[state] += 1;
+        } else {
+            result[state] = 1;
+        }
+
+        state = world[x     ][yplus ].state;
+        if (result.hasOwnProperty(state)) {
+            result[state] += 1;
+        } else {
+            result[state] = 1;
+        }
+
+        //
+        state = world[xminus][yminus].state;
+        if (result.hasOwnProperty(state)) {
+            result[state] += 1;
+        } else {
+            result[state] = 1;
+        }
+
+        state = world[xplus ][yminus].state;
+        if (result.hasOwnProperty(state)) {
+            result[state] += 1;
+        } else {
+            result[state] = 1;
+        }
+
+        state = world[xminus][yplus ].state;
+        if (result.hasOwnProperty(state)) {
+            result[state] += 1;
+        } else {
+            result[state] = 1;
+        }
+
+        state = world[xplus ][yplus ].state;
+        if (result.hasOwnProperty(state)) {
+            result[state] += 1;
+        } else {
+            result[state] = 1;
+        }
 
         return result;
     }

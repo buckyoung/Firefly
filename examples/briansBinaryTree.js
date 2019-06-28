@@ -1,8 +1,11 @@
 var FFExamples = FFExamples || {};
 
-FFExamples.briansBrain = {};
+FFExamples.briansBinaryTree = {};
 
-FFExamples.briansBrain.initialize = function(FF) {
+// A fresh take on Brians Brain CA - author buck young
+// Tends towards 2cell wide cars that drive in lanes, crashing into each other occassionally
+
+FFExamples.briansBinaryTree.initialize = function(FF) {
     initializeModel(FF);
 
     function initializeModel(FF) {
@@ -23,8 +26,22 @@ FFExamples.briansBrain.initialize = function(FF) {
 
     function processDead(currentCell, nextCell) {
         var aliveNeighborCount = currentCell.countMooreNeighbors('alive');
+        var dyingNeighborCount = currentCell.countMooreNeighbors('dying');
 
-        if (aliveNeighborCount === 2) {
+        // triangle repeating world
+        if (dyingNeighborCount == 2 || dyingNeighborCount == 4) {
+            nextCell.setState('dead');
+            return;
+        }
+
+        var nNeighborCount = currentCell.countNeumannNeighbors('alive');
+
+        if (nNeighborCount === 2) {
+            nextCell.setState('dead');
+            return;
+        }
+
+        if (aliveNeighborCount == 2 || aliveNeighborCount == 2) {
             nextCell.setState('alive');
             return;
         }
@@ -37,7 +54,7 @@ FFExamples.briansBrain.initialize = function(FF) {
             for (var i = 0; i < width; i++) {
                 for (var j = 0; j < height; j++) {
                     var state = (Math.random() > .7 ? 'dead' : 'alive');
-                    
+
                     world[i][j] = new FF.Cell(state, i, j); 
                 }
             }
