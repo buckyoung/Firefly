@@ -6,18 +6,17 @@ FFExamples.all.initialize = function() {
 
     // To add an example, just put the filename here:
 	var examples = [
-        'new - risk',
-        'new - diagonalLines',
+        'wip - flyingFireV2',
+        'wip - moveDemo',
+        'wip - flyingFire',
+        'wip - arbitraryRisk',
+        'wip - risk',
         'bloomType - avocadoWorld',
         'bloomType - epidemic',
         'bloomType - mergingDiamonds',
         'bloomType - rippleWorld',
         'bloomType - runBloom',
         'bloomType - sunBurst',
-        // 'buck - beehive',
-        'classicMods - cyclicWithConway',
-        'classicMods - iceVsForest',
-        'classicMods - iceVsSeed',
         'classic - briansBrain',
         'classic - conwaysGameOfLife',
         'classic - cyclic',
@@ -25,6 +24,13 @@ FFExamples.all.initialize = function() {
         'classic - seed',
         'classic - serviettes',
         'classic - walledCities',
+        'classicMods - briansBinaryTree',
+        'classicMods - briansFreeway',
+        'classicMods - briansTradeRoutes',
+        'classicMods - briansZipper',
+        'classicMods - cyclicWithConway',
+        'classicMods - iceVsForest',
+        'classicMods - iceVsSeed',
         'elementary - rule110',
         'elementary - rule184',
         'elementary - rule184SingleLine',
@@ -33,6 +39,9 @@ FFExamples.all.initialize = function() {
         'gasType - gas',
         'gasType - gasVsGas',
         'gasType - warringNations',
+        'random - diagonalLines',
+        'random - goldDiamonds',
+        // 'bloomType - beehive',
 	];
 
     // Dynamically load js on page

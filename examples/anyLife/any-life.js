@@ -53,8 +53,8 @@ FFExamples.anylife.initialize = function(FF) {
         populationValue.innerText = Firefly.params.POPULATION;
         populationInput.value = Firefly.params.POPULATION;
 
-        FF.registerState('alive', [250,255,0], processAlive);
-        FF.registerState('dead', [67,36,127], processDead);
+        FF.registerState('alive', [180,200,255], processAlive);
+        FF.registerState('dead', [20,20,40], processDead);
         
         FF.initialize(initializeWorld(FF));
 
@@ -89,13 +89,13 @@ FFExamples.anylife.initialize = function(FF) {
         var currentColor = nextCell.getColor();
         var deadColor = Firefly.state.getRegisteredStates()['dead'].color; // TODO this shouldnt be hitting the Firefly protected method -- only FF should be exposed
 
-        var halfRed = parseInt((currentColor[0] - deadColor[0]) / 2);
+        var halfRed = (parseInt((currentColor[0] - deadColor[0]) * 2) / 3);
         var newRed = currentColor[0] - halfRed;
 
-        var halfGreen = parseInt((currentColor[1] - deadColor[1]) / 2);
+        var halfGreen = (parseInt((currentColor[1] - deadColor[1]) * 2) / 3);
         var newGreen = currentColor[1] - halfGreen;
 
-        var halfBlue = parseInt((currentColor[2] - deadColor[2]) / 2);
+        var halfBlue = (parseInt((currentColor[2] - deadColor[2]) * 2) / 3);
         var newBlue = currentColor[2] - halfBlue;
 
         nextCell.setColor([newRed, newGreen, newBlue]);
@@ -115,13 +115,13 @@ FFExamples.anylife.initialize = function(FF) {
         var currentColor = nextCell.getColor();
         var deadColor = Firefly.state.getRegisteredStates()['dead'].color; // TODO this shouldnt be hitting the Firefly protected method -- only FF should be exposed
 
-        var halfRed = parseInt((currentColor[0] - deadColor[0]) / 2);
+        var halfRed = (parseInt((currentColor[0] - deadColor[0]) * 2) / 3);
         var newRed = currentColor[0] - halfRed;
 
-        var halfGreen = parseInt((currentColor[1] - deadColor[1]) / 2);
+        var halfGreen = (parseInt((currentColor[1] - deadColor[1]) * 2) / 3);
         var newGreen = currentColor[1] - halfGreen;
 
-        var halfBlue = parseInt((currentColor[2] - deadColor[2]) / 2);
+        var halfBlue = (parseInt((currentColor[2] - deadColor[2]) * 2) / 3);
         var newBlue = currentColor[2] - halfBlue;
 
         nextCell.setColor([newRed, newGreen, newBlue]);

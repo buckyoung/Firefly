@@ -1,0 +1,26 @@
+# Example Ideas #
+
+1)
+"Wizarding World" -- imagine a bunch of dementors swimming around the scene and then a 
+patronous fires from the end of a wand and parts the sea of dementors
+- black cells that want to fill in the whole map and move randomly
+- they keep away from any "light" cells that come near
+would essentially create a flocking pattern where one cell-state flock-avoids another cell-state
+
+2)
+create a FIREFLY example game! some kind of blinking of lights on and off 
+
+3) 
+do the ant... 
+"Interesting behavior follows: a single ant, starting with all cells in to-left state, has a more or less symmetric trajectory in the first 500 steps; then it goes seemingly randomly for about 10,000 steps, until it suddenly starts building an infinite diagonal “highway” (a periodic motion with drift)."
+https://www.sciencedirect.com/science/article/pii/S0166218X00003346
+
+4)
+after the ant, do a turmite
+https://en.wikipedia.org/wiki/Turmite#/media/File:Turmite-180121020081-223577.png
+
+
+# Engine Ideas #
+
+1)
+Refactor firefly-world to use a shader instead... could implement an interface to run both then swap over?

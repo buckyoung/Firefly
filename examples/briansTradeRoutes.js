@@ -1,8 +1,13 @@
 var FFExamples = FFExamples || {};
 
-FFExamples.briansBrain = {};
+FFExamples.briansTradeRoutes = {};
 
-FFExamples.briansBrain.initialize = function(FF) {
+// A fresh take on Brians Brain CA - author buck young
+// Tends towards stable lanes of spaceships
+// Sometimes very interesting spaceships emerge
+// Sometimes they are ever-growing until they cannibalize themselves
+
+FFExamples.briansTradeRoutes.initialize = function(FF) {
     initializeModel(FF);
 
     function initializeModel(FF) {
@@ -24,7 +29,14 @@ FFExamples.briansBrain.initialize = function(FF) {
     function processDead(currentCell, nextCell) {
         var aliveNeighborCount = currentCell.countMooreNeighbors('alive');
 
-        if (aliveNeighborCount === 2) {
+        var nNeighborCount = currentCell.countNeumannNeighbors('alive');
+
+        if (nNeighborCount === 2) {
+            nextCell.setState('dead');
+            return;
+        }
+
+        if (aliveNeighborCount == 2) {
             nextCell.setState('alive');
             return;
         }

@@ -6,9 +6,11 @@ Firefly.modules.history = function(FF) {
     var HISTORY_WORLD;
     var historyTooltipElement = document.getElementById('history'); // TODO refactor this into its own FF module
     var isFreezeHistoryTooltip = false;
+    var shouldTrackHistory = true;
 
     // Public Methods
     FF.setHistory = setHistory;
+    FF.trackHistory = trackHistory;
 
     // Protected Methods
     Firefly.history = {};
@@ -22,7 +24,14 @@ Firefly.modules.history = function(FF) {
         HISTORY_WORLD = Firefly.util.create2dArray(Firefly.CANVAS_WIDTH, Firefly.CANVAS_HEIGHT);
     }
 
+    // Turns on / off history tracking across the board
+    function trackHistory(shouldTrack) {
+        shouldTrackHistory = shouldTrack;
+    }
+
     function onMouseOver(event) {
+        if (!shouldTrackHistory) { return; }
+
         var translatedX = Math.floor(event.offsetX/Firefly.params.INVERSE_SIZE);
         var translatedY = Math.floor(event.offsetY/Firefly.params.INVERSE_SIZE);
 
@@ -44,6 +53,8 @@ Firefly.modules.history = function(FF) {
     }
 
     function onMouseOut(event) {
+        if (!shouldTrackHistory) { return; }
+
         // Hide tooltip when mouse leaves a cell with history
         if (!isFreezeHistoryTooltip) {
             historyTooltipElement.style.display='none';
@@ -51,6 +62,8 @@ Firefly.modules.history = function(FF) {
     }
 
     function onMouseMove(event) {
+        if (!shouldTrackHistory) { return; }
+
         // Move the tooltip w/ the mouse
         if (!isFreezeHistoryTooltip) {
             var Yoffset = event.clientY < window.innerHeight/2 ? 50 : -80;
@@ -62,6 +75,8 @@ Firefly.modules.history = function(FF) {
     }
 
     function onMouseUp(event) {
+        if (!shouldTrackHistory) { return; } 
+
         var translatedX = Math.floor(event.offsetX/Firefly.params.INVERSE_SIZE);
         var translatedY = Math.floor(event.offsetY/Firefly.params.INVERSE_SIZE);
 
@@ -80,6 +95,8 @@ Firefly.modules.history = function(FF) {
     }
 
     function setHistory(position, message) {
+        if (!shouldTrackHistory) { return; }
+        
         var generationCount = FF.getGenerationCount();
 
         if (!HISTORY_WORLD[position.x][position.y]) {

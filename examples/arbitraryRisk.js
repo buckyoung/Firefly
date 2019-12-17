@@ -1,8 +1,8 @@
 var FFExamples = FFExamples || {};
 
-FFExamples.risk = {};
+FFExamples.arbitraryRisk = {};
 
-FFExamples.risk.initialize = function(FF) {
+FFExamples.arbitraryRisk.initialize = function(FF) {
     // TODO Build in a NEUTRAL (gray) city -- doenst produce people but is placed during the start
     //      Then green and pink only have 1 city each to start maybe & can overtake the grays naturally
     // 
@@ -42,9 +42,7 @@ FFExamples.risk.initialize = function(FF) {
 
         FF.registerReportTracking('greenPeople');
         FF.registerReportTracking('pinkPeople');
-        FF.setReportingSnapshotInterval(4000);
-
-        FF.trackHistory(false); // temporarily turn off history tracking 
+        FF.setReportingSnapshotInterval(1);
 
         FF.initialize(initializeWorld(FF));
     }
@@ -242,19 +240,17 @@ FFExamples.risk.initialize = function(FF) {
     }
 
     function processGreenPeople(currentCell, nextCell) {
-        var pinkCount = currentCell.countMooreNeighbors('pinkPeople');
-        var greenCount = currentCell.countMooreNeighbors('greenPeople');
-        // TODO - #ColorGeneralizationProject - make a getTotalisticStateOfNeighbors to return the count of each cell type around you, then i can look at the states to determine which are people of various colors and then get the total nubmer of all nearby enemies to determine if i should be set on fire -- maybe make this a new project?
+        var stateCounts = currentCell.getMooreNeighborsTotalisticStates();
 
         // Go up in flames if more pink people directly around you
-        if (greenCount < pinkCount) {
+        if (stateCounts['greenPeople'] < stateCounts['pinkPeople']) { // TODO what if state doesnt exist on state counts? // TODO seems to be biasing green???
             nextCell.setState('fire');
             return;
         }
 
         // Fire spreads up to 3 away
         // TODO OPTIMIZATION - check if theres any fire at all before checking if theres fire around a person. Use the FF.getStateCount() - BUT maybe this wont work because the count is from the last frame??
-        if (currentCell.countMooreNeighbors('fire', 1) > 0
+        if (stateCounts['fire'] > 0 // (distance 1)
             || currentCell.countMooreNeighbors('fire', 2) > 0
             || currentCell.countMooreNeighbors('fire', 3) > 0
         ) {
